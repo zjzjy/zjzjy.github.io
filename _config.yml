@@ -1,5 +1,5 @@
-name: "Pianfan's blog"
-description: "翩帆的个人技术博客"
+name: "Junyin's blog"
+description: "钧尹的个人博客"
 
 avatar: https://zjzjy.github.io/images/images/0e44c96c93043edc821f385a1227c20.jpg
 favicon: 
@@ -18,14 +18,14 @@ excerpt_separator: <!-- more -->
 
 footer-links:
   zhihu: 
-  email: xiongyunhan@outlook.com
+  email: 
   facebook:
   github: zjzjy
   rss: # just type anything here for a working RSS icon
   twitter: 
   youtube:
 
-footer-text: Copyright (c) 2024 Pianfan
+footer-text: Copyright (c) 2024 Junyin
 
 url: https://zjzjy.github.io
 
