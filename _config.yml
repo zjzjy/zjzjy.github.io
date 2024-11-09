@@ -1,8 +1,8 @@
 name: "Pianfan's blog"
 description: "翩帆的个人技术博客"
 
-avatar: https://pianfan.github.io/images/avatar.png
-favicon: https://pianfan.github.io/images/favicon.ico
+avatar: https://zjzjy.github.io/images/images/0e44c96c93043edc821f385a1227c20.jpg
+favicon: 
 
 navigation:
   - name: 首页
@@ -20,7 +20,7 @@ footer-links:
   zhihu: 
   email: xiongyunhan@outlook.com
   facebook:
-  github: pianfan
+  github: zjzjy
   rss: # just type anything here for a working RSS icon
   twitter: 
   youtube:
