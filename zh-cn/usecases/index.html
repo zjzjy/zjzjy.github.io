@@ -1,0 +1,599 @@
+<!doctype html><html lang=zh-CN><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>Workflows based on usecases - Zhengjunyin's Blog</title><meta name=Description content="zhengjunyin's blog"><meta property="og:title" content="Workflows based on usecases"><meta property="og:description" content="Usecases"><meta property="og:type" content="article"><meta property="og:url" content="https://zjzjy.github.io/zh-cn/usecases/"><meta property="og:image" content="https://zjzjy.github.io/person-circle.svg"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-11-19T09:31:35+08:00"><meta property="article:modified_time" content="2024-11-21T11:43:43+08:00"><meta property="og:site_name" content="ZhengJunyin's blog"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://zjzjy.github.io/person-circle.svg"><meta name=twitter:title content="Workflows based on usecases"><meta name=twitter:description content="Usecases"><meta name=application-name content="Zhengjunyin's Blog"><meta name=apple-mobile-web-app-title content="Zhengjunyin's Blog"><meta name=theme-color content="#f8f8f8"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=canonical href=https://zjzjy.github.io/zh-cn/usecases/><link rel=prev href=https://zjzjy.github.io/zh-cn/iot/><link rel=next href=https://zjzjy.github.io/zh-cn/siop/><link rel=stylesheet href=/css/main.css><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/color.css><link rel=stylesheet href=/css/style.min.css><link rel=preload as=style onload='this.onload=null,this.rel="stylesheet"' href=/lib/fontawesome-free/all.min.css><noscript><link rel=stylesheet href=/lib/fontawesome-free/all.min.css></noscript><link rel=preload as=style onload='this.onload=null,this.rel="stylesheet"' href=/lib/animate/animate.min.css><noscript><link rel=stylesheet href=/lib/animate/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Workflows based on usecases","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/zjzjy.github.io\/zh-cn\/usecases\/"},"genre":"posts","wordcount":17583,"url":"https:\/\/zjzjy.github.io\/zh-cn\/usecases\/","datePublished":"2024-11-19T09:31:35+08:00","dateModified":"2024-11-21T11:43:43+08:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"Yewentao"},"description":""}</script><script src=//instant.page/5.2.0 defer type=module integrity=sha384-jnZyxPjiipYXnSU0ygqeac2q7CVYMbh84q0uHVRRxEtvFPiQYbXWUorga2aqZJ0z></script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>function setTheme(e){document.body.setAttribute("theme",e),document.documentElement.style.setProperty("color-scheme",e==="light"?"light":"dark"),window.theme=e,window.isDark=window.theme!=="light"}function saveTheme(e){window.localStorage&&localStorage.setItem("theme",e)}function getMeta(e){const t=document.getElementsByTagName("meta");for(let n=0;n<t.length;n++)if(t[n].getAttribute("name")===e)return t[n];return""}if(window.localStorage&&localStorage.getItem("theme")){let e=localStorage.getItem("theme");e==="light"||e==="dark"||e==="black"?setTheme(e):setTheme(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")}else"auto"==="light"||"auto"==="dark"||"auto"==="black"?(setTheme("auto"),saveTheme("auto")):(saveTheme("auto"),setTheme(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"));let metaColors={light:"#f8f8f8",dark:"#252627",black:"#000000"};getMeta("theme-color").content=metaColors[document.body.getAttribute("theme")],window.switchThemeEventSet=new Set</script><div id=back-to-top></div><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/zh-cn/ title="Zhengjunyin's Blog">Home</a></div><div class=menu><div class=menu-inner><a class=menu-item href=/zh-cn/posts/>文章 </a><a class=menu-item href=/zh-cn/categories/>分类 </a><a class=menu-item href=/zh-cn/about/>关于 </a><a class=menu-item href=https://github.com/zjzjy title=GitHub rel="noopener noreferrer" target=_blank><i class='fab fa-github fa-fw' aria-hidden=true></i> </a><span class="menu-item delimiter"></span><a href=javascript:void(0); class="menu-item language" title=选择语言>简体中文<i class="fas fa-chevron-right fa-fw"></i>
+<select class=language-select title=选择语言 id=language-select-desktop onchange="location=this.value"><option value=/usecases/>English</option><option value=/zh-cn/usecases/ selected>简体中文</option></select>
+</a><span class="menu-item search" id=search-desktop><input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin"></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw"></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/zh-cn/ title="Zhengjunyin's Blog">Home</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin"></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/zh-cn/posts/ title>文章</a><a class=menu-item href=/zh-cn/categories/ title>分类</a><a class=menu-item href=/zh-cn/about/ title>关于</a><a class=menu-item href=https://github.com/zjzjy title=GitHub rel="noopener noreferrer" target=_blank><i class='fab fa-github fa-fw' aria-hidden=true></i></a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i>
+</a><a href=javascript:void(0); class=menu-item title=选择语言>简体中文<i class="fas fa-chevron-right fa-fw"></i>
+<select class=language-select title=选择语言 onchange="location=this.value"><option value=/usecases/>English</option><option value=/zh-cn/usecases/ selected>简体中文</option></select></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto><nav id=TableOfContents><ul><li><a href=#summary>Summary</a></li><li><a href=#to-be-translated>To be translated</a></li><li><a href=#等待被翻译>等待被翻译</a></li><li><a href=#1-概要>1 概要</a></li><li><a href=#2-各部分详解>2 各部分详解</a><ul><li><a href=#21-包裹递送公司>2.1 包裹递送公司</a><ul><li><ul><li><a href=#211-deliveryorder>2.1.1 DELIVERYORDER</a></li></ul></li></ul></li><li><a href=#22-数据服务消费者happypets-inc>2.2 数据服务消费者：HappyPets Inc.</a></li><li><a href=#23-数据服务消费者no-cheaper-ltd>2.3 数据服务消费者：No Cheaper Ltd.</a></li><li><a href=#24-数据市场平台>2.4 数据市场平台</a></li><li><a href=#25-信任锚框架>2.5 信任锚框架</a><ul><li><a href=#251-注册生态系统身份>2.5.1 注册生态系统身份</a></li><li><a href=#252-验证身份通用解析器>2.5.2 验证身份：通用解析器</a></li></ul></li></ul></li><li><a href=#3-生态系统中的可验证凭据>3 生态系统中的可验证凭据</a><ul><li><a href=#31-packet-delivery-员工>3.1 Packet Delivery 员工</a></li><li><a href=#32-happy-pets-or-no-cheaper-员工凭证>3.2 Happy Pets or No Cheaper 员工凭证</a></li><li><a href=#33-happy-pets-or-no-cheaper-顾客凭证>3.3 Happy Pets or No Cheaper 顾客凭证</a></li><li><a href=#34-基于角色的访问控制>3.4 基于角色的访问控制</a></li><li><a href=#35-组件部署>3.5 组件部署</a></li></ul></li><li><a href=#4-详细工作流程>4 详细工作流程</a><ul><li><a href=#41-订单创建>4.1 订单创建</a><ul><li><a href=#411-用户访问>4.1.1 用户访问</a></li><li><a href=#412-启动身份验证流程>4.1.2 启动身份验证流程</a></li><li><a href=#413-解析did>4.1.3 解析DID</a></li><li><a href=#414-验证身份请求>4.1.4 验证身份请求</a></li><li><a href=#415-创建身份验证响应>4.1.5 创建身份验证响应</a></li><li><a href=#416-验证身份响应>4.1.6 验证身份响应</a></li><li><a href=#417-创建获取访问token>4.1.7 创建、获取访问token</a></li><li><a href=#418-请求订单创建服务>4.1.8 请求订单创建服务</a></li></ul></li><li><a href=#42-获得权力激活>4.2 获得权力/激活</a></li><li><a href=#43-访问数据服务>4.3 访问数据服务</a></li><li><a href=#44-无权限>4.4 无权限</a></li><li><a href=#45-为connectors--application-context发布token>4.5 为Connectors / application context发布token</a></li></ul></li></ul></nav></div></div><script>document.getElementsByTagName("main")[0].setAttribute("autoTOC","true")</script><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Workflows based on usecases</h1><div class=post-meta><div class=post-meta-line><span class=post-author><span class="author fas fa-user-circle fa-fw"></span><a href=https://zjzjy.github.io title=Author target=_blank rel="noopener noreferrer author" class=author>Yewentao</a>
+</span>&nbsp;<span class=post-category>收录于 </span>&nbsp;<span class=post-category>类别 <a href=/zh-cn/categories/data-space/><i class="far fa-folder fa-fw"></i>Data Space</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2024-11-19>2024-11-19</time>&nbsp;<i class="far fa-edit fa-fw"></i>&nbsp;<time datetime=2024-11-21>2024-11-21</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 17583 字&nbsp;<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 36 分钟&nbsp;</div></div><div class="details toc" id=toc-static kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#summary>Summary</a></li><li><a href=#to-be-translated>To be translated</a></li><li><a href=#等待被翻译>等待被翻译</a></li><li><a href=#1-概要>1 概要</a></li><li><a href=#2-各部分详解>2 各部分详解</a><ul><li><a href=#21-包裹递送公司>2.1 包裹递送公司</a><ul><li><ul><li><a href=#211-deliveryorder>2.1.1 DELIVERYORDER</a></li></ul></li></ul></li><li><a href=#22-数据服务消费者happypets-inc>2.2 数据服务消费者：HappyPets Inc.</a></li><li><a href=#23-数据服务消费者no-cheaper-ltd>2.3 数据服务消费者：No Cheaper Ltd.</a></li><li><a href=#24-数据市场平台>2.4 数据市场平台</a></li><li><a href=#25-信任锚框架>2.5 信任锚框架</a><ul><li><a href=#251-注册生态系统身份>2.5.1 注册生态系统身份</a></li><li><a href=#252-验证身份通用解析器>2.5.2 验证身份：通用解析器</a></li></ul></li></ul></li><li><a href=#3-生态系统中的可验证凭据>3 生态系统中的可验证凭据</a><ul><li><a href=#31-packet-delivery-员工>3.1 Packet Delivery 员工</a></li><li><a href=#32-happy-pets-or-no-cheaper-员工凭证>3.2 Happy Pets or No Cheaper 员工凭证</a></li><li><a href=#33-happy-pets-or-no-cheaper-顾客凭证>3.3 Happy Pets or No Cheaper 顾客凭证</a></li><li><a href=#34-基于角色的访问控制>3.4 基于角色的访问控制</a></li><li><a href=#35-组件部署>3.5 组件部署</a></li></ul></li><li><a href=#4-详细工作流程>4 详细工作流程</a><ul><li><a href=#41-订单创建>4.1 订单创建</a><ul><li><a href=#411-用户访问>4.1.1 用户访问</a></li><li><a href=#412-启动身份验证流程>4.1.2 启动身份验证流程</a></li><li><a href=#413-解析did>4.1.3 解析DID</a></li><li><a href=#414-验证身份请求>4.1.4 验证身份请求</a></li><li><a href=#415-创建身份验证响应>4.1.5 创建身份验证响应</a></li><li><a href=#416-验证身份响应>4.1.6 验证身份响应</a></li><li><a href=#417-创建获取访问token>4.1.7 创建、获取访问token</a></li><li><a href=#418-请求订单创建服务>4.1.8 请求订单创建服务</a></li></ul></li><li><a href=#42-获得权力激活>4.2 获得权力/激活</a></li><li><a href=#43-访问数据服务>4.3 访问数据服务</a></li><li><a href=#44-无权限>4.4 无权限</a></li><li><a href=#45-为connectors--application-context发布token>4.5 为Connectors / application context发布token</a></li></ul></li></ul></nav></div></div><div class=content id=content><h2 id=summary class=headerLink><a href=#summary class=header-mark></a>Summary</h2><p>基于详细用例的数据空间工作流程。</p><h2 id=to-be-translated class=headerLink><a href=#to-be-translated class=header-mark></a>To be translated</h2><p>Oh Sorry!</p><p>This blog has&rsquo;t been translated to English, please wait for a little while&mldr;</p><h2 id=等待被翻译 class=headerLink><a href=#%e7%ad%89%e5%be%85%e8%a2%ab%e7%bf%bb%e8%af%91 class=header-mark></a>等待被翻译</h2><p>非常抱歉，看起来这篇博文还没有被翻译成中文，请等待一段时间</p><h2 id=1-概要 class=headerLink><a href=#1-%e6%a6%82%e8%a6%81 class=header-mark></a>1 概要</h2><p>参考资料：<a href=https://data-spaces-business-alliance.eu/wp-content/uploads/dlm_uploads/Data-Spaces-Business-Alliance-Technical-Convergence-V2.pdf target=_blank rel="noopener noreferrer">DSBA Technical Convergence v2.0 chapter 6</a></p><p>本节实现了一个场景，其中数据服务提供者在公共平台上提供服务，以便服务消费方能够获取该服务的访问权限。此外，这些消费方可以将获取的服务访问权限委托给其用户/客户。</p><p>本节用例：数据服务提供者是一个包裹递送公司，支持创建和管理包裹递送订单，并且提供查看和修改订单的特定属性的服务；消费方是向其客户提供商品系统的零售商，他们可以通过数据空间市场获得对包裹递送公司服务的访问权，并将访问权委托给客户。</p><p>在参考用例中，涉及到多个参与方，每个参与方都有自己的基础设施。具体包括：</p><ol><li>数据空间市场： 用于创建服务产品和获取访问权限的公共市场。</li><li>信任锚： 担任方案管理员角色，持有有关每个参与方的信息【（包括通用唯一识别码，称为欧盟经济体注册和识别号（Economic Operators Registration and Identification: EORI number）】，并允许它检查每个参与方的准入情况。</li><li>包裹递送公司：提供检索和更新包裹交付订单数据的服务。</li><li>Happy pets: 高级宠物零售商。此外，还涉及两个人类角色：Happy Pets 员工和Happy Pets 客户。</li><li>No Cheaper： 提供大幅折扣的零售商。此外，还涉及两个人类角色：No Cheaper 员工和 No Cheaper 客户。</li></ol><p>总体架构如下：<figure><a class=lightgallery href=/zh-cn/usecases/architecture.png title=image data-thumbnail=/zh-cn/usecases/architecture.png><img loading=lazy src=/zh-cn/usecases/architecture.png srcset="/zh-cn/usecases/architecture.png, /zh-cn/usecases/architecture.png 1.5x, /zh-cn/usecases/architecture.png 2x" sizes=auto alt=image height=844 width=1062></a></figure></p><ul><li>包裹递送公司和商店系统的服务提供者各自拥有自己的身份提供者（identity provider: IdP）和授权注册表（authorization registry）。</li><li>包裹递送公司托管了一个门户（portal），允许用户查看和修改包裹递送订单的属性。</li><li>订单实体（entity）存储在上下文代理（context broker）的实例（instance）中。</li><li>对包裹递送订单实体的读写访问（read-and-write access）由策略执行点（policy enforcement point: PEP proxy）代理和策略决定点（policy decision point: PDP）控制，这会在之后的各个参与方详细介绍到。</li></ul><p><a id=components></a></p><h2 id=2-各部分详解 class=headerLink><a href=#2-%e5%90%84%e9%83%a8%e5%88%86%e8%af%a6%e8%a7%a3 class=header-mark></a>2 各部分详解</h2><h3 id=21-包裹递送公司 class=headerLink><a href=#21-%e5%8c%85%e8%a3%b9%e9%80%92%e9%80%81%e5%85%ac%e5%8f%b8 class=header-mark></a>2.1 包裹递送公司</h3><p>对应的架构图如下：<figure><a class=lightgallery href=/zh-cn/usecases/delivery.png title=image data-thumbnail=/zh-cn/usecases/delivery.png><img loading=lazy src=/zh-cn/usecases/delivery.png srcset="/zh-cn/usecases/delivery.png, /zh-cn/usecases/delivery.png 1.5x, /zh-cn/usecases/delivery.png 2x" sizes=auto alt=image height=447 width=631></a></figure>Packet Delivery是一家提供全球包裹递送服务的物流公司。它提供两种包裹递送服务：</p><ul><li>标准包裹递送服务<ul><li>客户可以指定包裹的发件人、收件地址、包裹准备取件的日期和时间，以及包裹的收件人姓名和地址。</li><li>当包裹递送公司收到客户的包裹递送订单时，它会返回包裹计划送达的目标日期。</li><li>在定义的条款和条件下（terms and conditions）【例如：无海关违规，地址有效等】，它承诺在同一国家内48小时内交付包裹，国际运输则需5-6天。</li><li>然而，客户不能调整具体的送达日期（例如，将其延迟到更适合的日期）或在选定的送达日期内微调具体的送达时间。</li></ul></li><li>金牌包裹递送服务<ul><li>客户享受标准包裹递送的所有好处，同时还可以在提供的时间段内调整具体的送达地址、送达日期，以及在选定的送达日期内微调具体的送达时间，前提是这些调整是可行的（例如，提前足够时间提出请求，并且不会产生额外费用）。</li></ul></li></ul><p>包裹递送公司以电子方式向不同的零售商提供服务，让他们通过REST API访问其包裹交付信息系统(P.Info)来发布包裹递送订单、追踪订单位置、允许被他们授权的顾客执行调整地址、日期和计划交付时间的请求。</p><h5 id=211-deliveryorder class=headerLink><a href=#211-deliveryorder class=header-mark></a>2.1.1 DELIVERYORDER</h5><p>P.Info通过上下文代理（context broker）提供的NGSI-LD接口实现的。DELIVERYORDER是一个具有以下属性的实体：</p><ul><li>issuer</li><li>pickingAddress（取件地址）</li><li>pickingDate（取件日期）</li><li>pickingTime（取件时间）</li><li>destinee（收件人）</li><li>deliveryAddress（送达地址）</li><li>PDA（planned date of arrival，计划送达日期）</li><li>PTA（planned time of arrival，计划送达时间）</li><li>EDA（expected date of arrival，预期送达日期）</li><li>ETA（expected time of arrival，预期送达时间）</li></ul><p>Packet Delivery为其P.Info系统定义了两个角色：P.Info.standard和P.Info.gold，并根据这些角色定义了通过上下文代理服务可以对上述属性执行的操作。</p><p>为了简化场景描述，我们将关注送达地址、计划送达日期和计划送达时间这三个属性，因为我们可以假设其他属性在订单创建时将被分配值，始终可读，但用户无法通过已定义的角色进行更改。对于这三个属性，一旦订单创建后，以下策略适用于已定义的角色：
+| Path | Verb | Verb |</p><table><thead><tr><th style=text-align:left>/ngsild/v1/entities/{entityID}/attrs/{attrName}</th><th style=text-align:center>GET</th><th style=text-align:right>PATCH</th></tr></thead><tbody><tr><td style=text-align:left>deliveryAddress</td><td style=text-align:center>P.Info.standard/gold</td><td style=text-align:right>P.Info.gold</td></tr><tr><td style=text-align:left>EDA</td><td style=text-align:center>P.Info.standard/gold</td><td style=text-align:right>&mdash;</td></tr><tr><td style=text-align:left>ETA</td><td style=text-align:center>P.Info.standard/gold</td><td style=text-align:right>&mdash;</td></tr><tr><td style=text-align:left>PDA</td><td style=text-align:center>P.Info.standard/gold</td><td style=text-align:right>P.Info.gold</td></tr><tr><td style=text-align:left>PTA</td><td style=text-align:center>P.Info.standard/gold</td><td style=text-align:right>P.Info.gold</td></tr></tbody></table><p>注意，订单将使用不同的路径（/ngsi-ld/v1/entities/）通过POST创建。为了发出此类请求，定义了一个额外的角色P.Create，该角色仅分配给Happy Pets和No Cheaper。</p><p>包裹递送公司针对潜在零售商和其他类型公司发布两种产品：</p><ul><li>基础（basic）递送：允许获取该服务的公司向其客户提供标准包裹递送服务。</li><li>高级（premium）递送：允许获取该服务的公司向其客户提供标准和金牌包裹递送服务。</li></ul><p>需要注意的是，Packet Delivery<strong>不应了解任何零售商应用程序（application）用户的身份</strong>。它只需要能够在接收到请求时：</p><p>a）<strong>识别</strong>该请求来自于与获取其平台产品（offering）的零售商公司相关联的用户</p><p>b）<strong>确定</strong>用户在零售商公司为其分配的P.Info应用程序中的角色（role，即P.Info.standard或P.Info.gold）</p><p>c）<strong>检查</strong>该角色是否是该零售商公司可以分配的角色，考虑到它在平台上获得的产品（offering）</p><p>在完成这些步骤后，Packet Delivery将只需检查拥有该角色的用户是否可以执行所请求的操作。</p><p>由No Cheaper创建的应用程序，无论其是否为用户分配了P.Info.gold角色，都无法成功更改某个订单的PTA属性的值，因为它已获取的标准包裹递送服务不允许更改这些值。（因为No Cheaper是廉价型公司，所以没有分配P.Info.gold角色的权限）。　</p><h3 id=22-数据服务消费者happypets-inc class=headerLink><a href=#22-%e6%95%b0%e6%8d%ae%e6%9c%8d%e5%8a%a1%e6%b6%88%e8%b4%b9%e8%80%85happypets-inc class=header-mark></a>2.2 数据服务消费者：HappyPets Inc.</h3><p><figure><a class=lightgallery href=/zh-cn/usecases/pets.png title=image data-thumbnail=/zh-cn/usecases/pets.png><img loading=lazy src=/zh-cn/usecases/pets.png srcset="/zh-cn/usecases/pets.png, /zh-cn/usecases/pets.png 1.5x, /zh-cn/usecases/pets.png 2x" sizes=auto alt=image height=469 width=258></a></figure>HappyPets Inc.（简称HappyPets）是一家销售宠物用品的公司。它将在市场上获得“高级递送”服务。这将使其能够通过HappyPets的商店应用程序向客户提供标准和金牌配送服务。此外，公司内部可能有某些员工，即公司提供的电话帮助台服务的主管和代理，他们可能会使用内部应用程序（HappyPetsBackOffice）更改给定订单的送货地址、PDA和PTA。</p><p>当客户在HappyPetsStore注册时，它可以作为“普通”客户或“主要”客户（支付年费）。“普通”客户将获得标准包裹递送服务，而“优质”客户将获得金牌包裹递送服务。这意味着他们分别在HappyPetsStore应用程序中被分配了P.Info.standard角色和P.Info.gold角色。</p><p>另一方面，不同的员工在HappyPetsBackOffice应用程序中被分配了不同的角色，因此在实体店（physical shop）担任监督员（supervisor）角色的员工或在中央帮助台工作的代理也被分配了P.Info.gold角色。</p><p>Happy Pets员工：</p><ul><li>在平台上获取高级包裹递送产品。
+Happy Pets客户：</li><li>在Happy Pets商店系统中注册并被分配为优质客户角色<ul><li>为简化，假设已经有一个Happy Pets客户已经注册为优质客户</li></ul></li><li>在商店系统下单，其本质是在P.Info系统中创建了一个包裹递送订单<ul><li>为简化，假设已经为该客户在P.Info系统中创建了一个订单</li></ul></li><li>成功通过Packet Delivery门户（portal）更改订单的PTA<ul><li>我们将在4. Detailed Workflow描述执行此操作的详细流程。</li></ul></li></ul><h3 id=23-数据服务消费者no-cheaper-ltd class=headerLink><a href=#23-%e6%95%b0%e6%8d%ae%e6%9c%8d%e5%8a%a1%e6%b6%88%e8%b4%b9%e8%80%85no-cheaper-ltd class=header-mark></a>2.3 数据服务消费者：No Cheaper Ltd.</h3><p><figure><a class=lightgallery href=/zh-cn/usecases/nocheaper.png title=image data-thumbnail=/zh-cn/usecases/nocheaper.png><img loading=lazy src=/zh-cn/usecases/nocheaper.png srcset="/zh-cn/usecases/nocheaper.png, /zh-cn/usecases/nocheaper.png 1.5x, /zh-cn/usecases/nocheaper.png 2x" sizes=auto alt=image height=484 width=261></a></figure>No Cheaper是一家以较大折扣销售各种产品的公司。它将在平台上获取Packet Delivery公司的基础包裹递送产品。</p><p>No Cheaper 员工：</p><ul><li>在平台上获取基础包裹递送产品
+No Cheaper 客户：</li><li>在No Cheaper商店系统中注册并被分配为普通客户角色<ul><li>为简化，假设已经有一个No Cheaper客户已经注册为普通客户</li></ul></li><li>在商店系统下单，其本质是在P.Info系统中创建了一个包裹递送订单<ul><li>为简化，假设已经为该客户在P.Info系统中创建了一个订单</li></ul></li><li>当尝试通过Packet Delivery门户（portal）更改订单的PTA时，被拒绝</li><li>还可以展示，当No Cheaper员工在其自己的身份提供者系统中为No Cheaper客户分配优质客户角色时，该请求也将被拒绝</li></ul><h3 id=24-数据市场平台 class=headerLink><a href=#24-%e6%95%b0%e6%8d%ae%e5%b8%82%e5%9c%ba%e5%b9%b3%e5%8f%b0 class=header-mark></a>2.4 数据市场平台</h3><p>市场是基于<a href=https://business-api-ecosystem.readthedocs.io/en/latest/ target=_blank rel="noopener noreferrer">FIWARE BAE(Business Application Ecosystem) component</a>
+组件构建的，该组件由FIWARE 业务框架和<a href=https://www.tmforum.org/ target=_blank rel="noopener noreferrer">TMForum</a>提供的一组API组成。它允许在整个服务生命周期（life cycle）内对不同类型的资产进行货币化（monetization），从创建产品（offering creation）到收费（charging）、记账（accounting）和涉及参与方的收入结算（revenue settlement required for billing and payment）。<figure><a class=lightgallery href=/zh-cn/usecases/FIWARE.png title=image data-thumbnail=/zh-cn/usecases/FIWARE.png><img loading=lazy src=/zh-cn/usecases/FIWARE.png srcset="/zh-cn/usecases/FIWARE.png, /zh-cn/usecases/FIWARE.png 1.5x, /zh-cn/usecases/FIWARE.png 2x" sizes=auto alt=image height=603 width=1044></a></figure>创建offer时的包裹递送订单参数，以及市场在获取和激活阶段执行的必要步骤的实现，都由安装在Charging Backend组件中的专用插件提供。</p><p>您可以在这里找到<a href=https://github.com/i4Trust/bae-i4trust-theme target=_blank rel="noopener noreferrer">Marketplace UI</a>的专用主题。</p><h3 id=25-信任锚框架 class=headerLink><a href=#25-%e4%bf%a1%e4%bb%bb%e9%94%9a%e6%a1%86%e6%9e%b6 class=header-mark></a>2.5 信任锚框架</h3><p>该系统使用可验证凭证(VC)，参与者通过did进行识别。为了对参与者的凭据和身份进行有效和分散的验证，必须实施基于区块链的信任框架，以避免在所有身份验证流中进行中央实体中介。</p><p>信任框架由两部分组成：</p><ul><li>信任组织列表：存储在区块链中的受信任组织的身份列表，以及每个实体的相关信息。</li><li>管理流程：添加、修改和删除可信实体的流程，实现具体的治理模型。</li></ul><p>信任框架的设计很大程度上是去中心化的，代表了现实世界中的信任关系。这里我们描述一种可能的实现方法一个基于区块链的信任框架。</p><p>特点：</p><ul><li>去中心化的信任系统：生态系统中中涉及的法人的身份注册在区块链中的公共目录，遵循与互联网中的DNS模式非常相似的分层方案。</li><li>自主管理子实体：一旦在系统中注册了一个实体，他就可以完全自主的添加作为子实体管理的其他实体。</li><li>明确、透明、可审计：任何参与者都可以获得关于生态系统当前信任结构的可信信息，以及导致系统处于当前状态的事件。例如，哪个实体注册了另一个实体，什么时候完成，父实体给子实体分配了什么属性。</li><li>根信任实体：这个系统可以非常去中心化。然而，有一个集中的元素：位于层次结构顶部的信任根应该是生态系统中负责引导系统的受信任实体（或实体联盟）。根据生态系统的具体治理框架，这可能是根实体的唯一使命，可能包括对生态系统的监测和监督。一般来说，它应该是一个监管机构、公共行政部门或一个中立的组织，被生态系统中所有参与者完全信任。</li><li>层级结构：信任框架支持多层级结构，以适应不同的治理需求。</li></ul><p>单个区块链网络的方法如下图所示（该方案很容易扩展到不同的区块链网络，我们希望在它们之间建立信任，以便一个网络中的实体可以以可信的方式与另一个网络中的实体进行交互）。<figure><a class=lightgallery href=/zh-cn/usecases/oneblock.png title=image data-thumbnail=/zh-cn/usecases/oneblock.png><img loading=lazy src=/zh-cn/usecases/oneblock.png srcset="/zh-cn/usecases/oneblock.png, /zh-cn/usecases/oneblock.png 1.5x, /zh-cn/usecases/oneblock.png 2x" sizes=auto alt=image height=1018 width=1057></a></figure></p><ul><li>根部：这个实体在EBSI中称为可信注册机构（TRA），在其他上下文中称为“可信锚”。我们将在下面的描述中使用术语可信锚。其本质特征是，这是生态系统中最受信任的实体/实体。<strong>根实体负责注册其他一些受信任实体的身份</strong>。<ul><li>例如，在一个国家的多个地区拥有管理大学的自主权，教育部可以在区块链上注册负责管理各地区大学的区域机构的身份。如图中的domainA, domainN。</li><li>一旦这个注册完成，每个区域机构可以继续注册它们的下属实体的身份，例如大学。如图中的registerA1等。</li><li>多层次管理。例如，一所大学可能很大，有几个具有一定自主权的组织单位，可能分布在地理上。它可以创建子身份并将其注册为区块链中的子节点。如图中subregisterA2_1。</li></ul></li></ul><h4 id=251-注册生态系统身份 class=headerLink><a href=#251-%e6%b3%a8%e5%86%8c%e7%94%9f%e6%80%81%e7%b3%bb%e7%bb%9f%e8%ba%ab%e4%bb%bd class=header-mark></a>2.5.1 注册生态系统身份</h4><p>新身份注册：</p><ul><li>一个新的身份只能由已经存在的身份来注册。</li><li>唯一例外，信任锚。它是将智能合约部署到区块链的实体，因此它具有特殊权限。在部署时，智能合约允许注册信任锚点的身份和相关信息。
+域名分配：</li><li>系统中的每个合法身份都会被分配一个域名，类似于互联网中的域名系统。当创建一个新身份时，它会被分配一个名称，并根据父身份自动设置为子域名。</li><li>例外：根域名（即信任锚）没有名字，是系统中最高级的身份。<ul><li>例如， 图中实体issuerA1 有完整域名：domainA.registerA2.subregisterA2_1.issuerA1。这个完整的域名能够唯一地标识该实体，确保在系统中没有重复或混淆。在这个例子中，“domainA”是一个最高级域名，它应该已经由信任锚实体添加到系统中。</li></ul></li><li>注册限制：一个实体只能由其父实体进行注册，信任框架中的其他任何实体，包括其父实体的父实体，都无法进行注册。组织需要对其所有子实体负责，这些子实体在信任框架中被表示为子节点。</li></ul><p>外部第三方在具有读取区块链权限的情况下，可以看到整个信任结构，包括从系统启动以来的不可篡改的历史事件。这种透明性对于确保系统的可信度和安全性至关重要。</p><h4 id=252-验证身份通用解析器 class=headerLink><a href=#252-%e9%aa%8c%e8%af%81%e8%ba%ab%e4%bb%bd%e9%80%9a%e7%94%a8%e8%a7%a3%e6%9e%90%e5%99%a8 class=header-mark></a>2.5.2 验证身份：通用解析器</h4><p>通用解析器的功能：</p><ul><li>通用解析器是一个公开的API，可以被任何参与者用来验证身份。它解析去中心化身份标识符（DID），并支持多种DID方法。</li><li>通过解析DID，确保参与者能够验证身份的真实性。
+DID解析过程：</li><li>DID解析是获取DID文档的关键步骤，涉及“读取”、“创建”、“更新”和“注销”四个主要操作。</li><li>解析后，还可以进行DID URL解引用，即获取DID URL代表的资源。
+在SIOP（Self-Issued OpenID Provider）流程中的应用：</li><li>在SIOP流程中，进行DID解析用于获取实体的公钥，并验证其签名，以确保信息交换的安全性。DID文档中的公钥是通过DID解析获得的。
+PS：为避免中心化风险，建议在多个节点上运行通用解析器，或者依赖可信的第三方。</li></ul><h2 id=3-生态系统中的可验证凭据 class=headerLink><a href=#3-%e7%94%9f%e6%80%81%e7%b3%bb%e7%bb%9f%e4%b8%ad%e7%9a%84%e5%8f%af%e9%aa%8c%e8%af%81%e5%87%ad%e6%8d%ae class=header-mark></a>3 生态系统中的可验证凭据</h2><p>在本节中，我们将描述生态系统中功能所需的不同类型的凭证。</p><h3 id=31-packet-delivery-员工 class=headerLink><a href=#31-packet-delivery-%e5%91%98%e5%b7%a5 class=header-mark></a>3.1 Packet Delivery 员工</h3><p>Packet Delivery向它的一些员工发放凭据，这样他们就可以访问Marketplace，创建产品或购买产品。
+该凭证由Packet Delivery的员工用于向第三方证明其有权代表雇佣公司（本例中为Packet Delivery）使用某些第三方提供的服务。<strong>换句话说，凭证用作Packet Delivery将其访问控制权利委托（delegate）给一个或多个员工的机制</strong>。
+证书的基本特征：</p><ul><li>自发行以来，无人篡改过证书的内容。因为证书是由颁发者Packet Delivery进行数字签名的。</li><li>证明发行者是Packet Delivery，因为验证凭证签名的公钥与在信任框架中注册的Packet Delivery的真实身份以加密方式相关联。</li><li>（可选）它可以证明凭证的发布不迟于给定时间，因为凭证在发布时已在区块链中注册（时间戳）。<ul><li>Note1: 时间戳的日期可以大于证书内包含的“签发日期”字段中的日期。例如，一次创建并签名凭据，但在第二天打上时间戳（可能是为了与其他凭据一起批处理操作）。关键是，没有人可以创建过去的凭证。验证器必须检查凭据“签发时间”内的字段不晚于时间戳（至少要留有一点余地，以考虑时钟同步差异）。</li><li>Note2：许多凭证可能不需要时间戳，从而避免了注册过程的开销。这完全取决于凭证的类型、凭证的预期用途和假定的风险级别。这里讨论的员工凭证是不需要具有相同风险级别的时间戳的凭证的一个示例。验证者要求的唯一一件事是，持有者可以证明在使用凭证的时候（例如：（登录）），凭证是由雇主颁发的（在我们的例子中是Packet Delivery）。显然，这并不需要时间戳，因为如果员工可以在执行登录时提供凭据，那么只有在凭据以前颁发过的情况下，她才能这样做。</li></ul></li></ul><p>从以上描述中，我们可以为接收凭证的验证者得出以下信任属性：</p><ul><li>对凭证发行者身份的信任程度取决于验证者对信任框架中实施的注册过程的信任程度。注册过程将发行者的公钥与其真实身份关联起来。</li><li>对凭证内声明的信任程度取决于验证者对发行者实体的信任程度。例如，Packet Delivery可以向并非真正员工的人士签发员工凭证。然而，如果发生这种情况，验证者有一个强有力的不可否认的机制来向第三方（例如法院）证明发行者陈述了错误的事实。
+由此可见，Packet Delivery可以签发包含某些员工数据（姓名、姓氏等）的员工凭证，并且验证者可以对这些声明给予一定程度的信任。</li></ul><p>但这只是证明了Packet Delivery证明凭证（称为声明）中的数据是真实的。它没有说明在线提交凭证的人是否与索赔中提到的人相同。换句话说，<strong>将员工凭证发送给验证者的人可能与员工不同</strong>。这就是凭证包含公钥作为与员工关联的声明之一的原因（在“credentialSubject”对象中）。</p><p>该公钥对应于在员工设备（PC或移动设备）上凭证签发过程中生成的私钥。该过程稍后将详细说明，但基本上包含以下流程：</p><ul><li>员工生成一对公钥/私钥，并通过经过身份验证和加密的通道（例如，HTTPS）将公钥发送给雇主。该通道可以是员工用于连接企业应用程序的常用机制。</li><li>雇主生成包含某些员工数据的凭证并包括公钥。</li><li>雇主签署凭证并通过同一经过身份验证的通道将其发送给员工。</li></ul><p>下面这个例子是由发行者Packet Delivery颁发凭证的元数据和可视化后的具体内容：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-JSON data-lang=JSON><span class=line><span class=cl><span class=c1>// Credential issued by PacketDelivery to its employees, providing access to 
+</span></span></span><span class=line><span class=cl><span class=c1>// Marketplace, either to create offerings or to purchase offerings. 
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>{</span> 
+</span></span><span class=line><span class=cl>   <span class=nt>&#34;@context&#34;</span><span class=p>:[</span> 
+</span></span><span class=line><span class=cl>   <span class=s2>&#34;https://www.w3.org/2018/credentials/v1&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>   <span class=s2>&#34;https://marketplace.fiware.io/2022/credentials/employee/v1&#34;</span> 
+</span></span><span class=line><span class=cl>   <span class=p>],</span> 
+</span></span><span class=line><span class=cl>   <span class=nt>&#34;id&#34;</span><span class=p>:</span> <span class=s2>&#34;https://pdc.fiware.io/credentials/6e14b8b8-87fa0014fe2a&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>   <span class=nt>&#34;type&#34;</span><span class=p>:</span> <span class=p>[</span><span class=s2>&#34;VerifiableCredential&#34;</span><span class=p>,</span> <span class=s2>&#34;EmployeeCredential&#34;</span><span class=p>],</span> 
+</span></span><span class=line><span class=cl>   <span class=nt>&#34;issuer&#34;</span><span class=p>:</span> <span class=p>{</span> 
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;id&#34;</span><span class=p>:</span> <span class=s2>&#34;did:elsi:EU.EORI.NLPACKETDEL&#34;</span> 
+</span></span><span class=line><span class=cl>   <span class=p>},</span> 
+</span></span><span class=line><span class=cl>   <span class=nt>&#34;issuanceDate&#34;</span><span class=p>:</span> <span class=s2>&#34;2022-03-22T14:00:00Z&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>   <span class=nt>&#34;validFrom&#34;</span><span class=p>:</span> <span class=s2>&#34;2022-03-22T14:00:00Z&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>   <span class=nt>&#34;expirationDate&#34;</span><span class=p>:</span> <span class=s2>&#34;2023-03-22T14:00:00Z&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>   <span class=nt>&#34;credentialSubject&#34;</span><span class=p>:</span> <span class=p>{</span> 
+</span></span><span class=line><span class=cl>       <span class=nt>&#34;id&#34;</span><span class=p>:</span> <span class=s2>&#34;did:peer:99ab5bca41bb45b78d242a46f0157b7d&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>       <span class=nt>&#34;verificationMethod&#34;</span><span class=p>:[</span> 
+</span></span><span class=line><span class=cl>       <span class=p>{</span> 
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;id&#34;</span><span class=p>:</span><span class=s2>&#34;did:peer:99ab5bca41bb45b78d242a46f0157b7d#key1&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;type&#34;</span><span class=p>:</span><span class=s2>&#34;JwsVerificationKey2020&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;controller&#34;</span><span class=p>:</span> <span class=s2>&#34;did:peer:99ab5bca41bb45b78d242a46f0157b7d&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;publicKeyJwk&#34;</span><span class=p>:</span> <span class=p>{</span> 
+</span></span><span class=line><span class=cl>                 <span class=nt>&#34;kid&#34;</span><span class=p>:</span><span class=s2>&#34;key1&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                 <span class=nt>&#34;kty&#34;</span><span class=p>:</span><span class=s2>&#34;EC&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                 <span class=nt>&#34;crv&#34;</span><span class=p>:</span><span class=s2>&#34;P-256&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                 <span class=nt>&#34;x&#34;</span><span class=p>:</span><span class=s2>&#34;lJtvoA5_XptBvcfcrvtGCvXd9bLymmfBSSdNJf5mogo&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                 <span class=nt>&#34;y&#34;</span><span class=p>:</span><span class=s2>&#34;fSc4gZX2R3QKKfHvS3m2vGSVSN8Xc04qsquyfEM55Z0&#34;</span> 
+</span></span><span class=line><span class=cl>            <span class=p>}</span> 
+</span></span><span class=line><span class=cl>        <span class=p>}</span> 
+</span></span><span class=line><span class=cl>   <span class=p>],</span> 
+</span></span><span class=line><span class=cl>       <span class=nt>&#34;roles&#34;</span><span class=p>:</span> <span class=p>[</span> 
+</span></span><span class=line><span class=cl>       <span class=p>{</span> 
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;target&#34;</span><span class=p>:</span> <span class=s2>&#34;did:elsi:EU.EORI.NLMARKETPLA&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;names&#34;</span><span class=p>:</span> <span class=p>[</span><span class=s2>&#34;seller&#34;</span><span class=p>,</span> <span class=s2>&#34;buyer&#34;</span><span class=p>]</span> 
+</span></span><span class=line><span class=cl>       <span class=p>}</span> 
+</span></span><span class=line><span class=cl>       <span class=p>],</span> 
+</span></span><span class=line><span class=cl>       <span class=nt>&#34;name&#34;</span><span class=p>:</span><span class=s2>&#34;Jane Doe&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>       <span class=nt>&#34;given_name&#34;</span><span class=p>:</span><span class=s2>&#34;Jane&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>       <span class=nt>&#34;family_name&#34;</span><span class=p>:</span><span class=s2>&#34;Doe&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>       <span class=nt>&#34;preferred_username&#34;</span><span class=p>:</span><span class=s2>&#34;j.doe&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>       <span class=nt>&#34;email&#34;</span><span class=p>:</span> <span class=s2>&#34;janedoe@packetdelivery.com&#34;</span> 
+</span></span><span class=line><span class=cl>   <span class=p>}</span> 
+</span></span><span class=line><span class=cl><span class=p>}</span> 
+</span></span></code></pre></td></tr></table></div></div><p>上述凭证的结构可以可视化如下：<figure><a class=lightgallery href=/zh-cn/usecases/employee.png title=image data-thumbnail=/zh-cn/usecases/employee.png><img loading=lazy src=/zh-cn/usecases/employee.png srcset="/zh-cn/usecases/employee.png, /zh-cn/usecases/employee.png 1.5x, /zh-cn/usecases/employee.png 2x" sizes=auto alt=image height=723 width=904></a></figure>该凭证类型为EmployeeCredential，并且为了启用对市场的访问，其中嵌入的角色可以是buyer、seller或两者兼有。@context字段中的URL指向市场（https://pdc.fiware.io/2022/credentials/employee/v1） ，该市场定义了员工凭证的一般要求。然而，生态系统中的参与者可以扩展它，并当然可以使用他们自己目的所需的角色和角色名称。</p><p>凭证中的credentialSubject部分具有以下对象：</p><ul><li>id，指定为DID。出于隐私原因，并且鉴于这是自然人，因此使用了W3C Peer DID方法规范中指定的Peer Method。该方法可以独立于任何中央真理源（central source of truth）使用，并且旨在便宜、快速、可扩展且安全。它适用于大多数人、组织和事物之间的私人关系。</li><li>verificationMethod，这是一个标准的W3C VC对象，指定了与员工的DID关联的公钥。员工的DID与公钥之间的绑定在Packet Delivery签发凭证时完成。</li><li>roles是一个包含一个或多个角色规范的数组。每个规范定义一个将接收凭证的潜在目标实体，以及该目标实体定义的一个或多个角色名称。<ul><li>target是将接收凭证的实体的DID。</li><li>names是一个包含一个或多个角色的数组，这些角色是目标实体认可的，并将由目标实体用于应用其自己的访问控制策略。在示例中，我们使用了市场定义的buyer和seller角色。其他实体可以为其特定目的定义自己的角色。名称在生态系统中由于目标属性而变得唯一。</li></ul></li><li>凭据中的其余字段在标准W3C可验证凭据数据模型中具有通常的含义。</li></ul><p>顶层的“id”字段是凭证的标识，如果需要该功能，可将其用于撤销。“ id ”字段的基本要求是:</p><ul><li>它在将要使用的范围内是唯一的</li><li>它基于加密安全的随机数生成器，因此很难被可能试图撤销给定凭据的潜在攻击者“猜测”。使用这样的id可以将攻击者猜测id的概率降低到与攻击者猜测私钥相同的水平，</li><li>它与证书中包含的个人资料没有任何关系，以尽量减少相关性的风险。</li><li>UUID版本4符合所有这些要求，但也可以使用其他模式。</li></ul><h3 id=32-happy-pets-or-no-cheaper-员工凭证 class=headerLink><a href=#32-happy-pets-or-no-cheaper-%e5%91%98%e5%b7%a5%e5%87%ad%e8%af%81 class=header-mark></a>3.2 Happy Pets or No Cheaper 员工凭证</h3><p>Happy Pets和No cheap公司发给员工的员工证书实际上与上文所述的Packet Delivery公司的员工证书相同。主要区别在于分配给员工的角色集和在“角色”声明中指定的角色集。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=line><span class=cl><span class=c1>// Credential issued by HappyPets to its employees, providing access 
+</span></span></span><span class=line><span class=cl><span class=c1>// to order creation in PacketDelivery. 
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>{</span> 
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;@context&#34;</span><span class=o>:</span><span class=p>[</span> 
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;https://www.w3.org/2018/credentials/v1&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;https://happypets.fiware.io/2022/credentials/employee/v1&#34;</span> 
+</span></span><span class=line><span class=cl>    <span class=p>],</span> 
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;id&#34;</span><span class=o>:</span><span class=s2>&#34;https://happypets.fiware.io/credentials/25159389-8dd17b796ac0&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;type&#34;</span><span class=o>:</span> <span class=p>[</span><span class=s2>&#34;VerifiableCredential&#34;</span><span class=p>,</span> <span class=s2>&#34;EmployeeCredential&#34;</span><span class=p>],</span> 
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;issuer&#34;</span><span class=o>:</span> <span class=p>{</span> 
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;id&#34;</span><span class=o>:</span><span class=s2>&#34;did:elsi:EU.EORI.NLHAPPYPETS&#34;</span> 
+</span></span><span class=line><span class=cl>    <span class=p>},</span> 
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;issuanceDate&#34;</span><span class=o>:</span> <span class=s2>&#34;2022-03-22T14:00:00Z&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;validFrom&#34;</span><span class=o>:</span> <span class=s2>&#34;2022-03-22T14:00:00Z&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;expirationDate&#34;</span><span class=o>:</span> <span class=s2>&#34;2023-03-22T14:00:00Z&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;credentialSubject&#34;</span><span class=o>:</span> <span class=p>{</span> 
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;id&#34;</span><span class=o>:</span> <span class=s2>&#34;did:peer:99ab5bca41bb45b78d242a46f0157b7d&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;verificationMethod&#34;</span><span class=o>:</span><span class=p>[</span> 
+</span></span><span class=line><span class=cl>        <span class=p>{</span> 
+</span></span><span class=line><span class=cl>             <span class=s2>&#34;id&#34;</span><span class=o>:</span><span class=s2>&#34;did:peer:99ab5bca41bb45b78d242a46f0157b7d#key1&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>             <span class=s2>&#34;type&#34;</span><span class=o>:</span><span class=s2>&#34;JwsVerificationKey2020&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>             <span class=s2>&#34;controller&#34;</span><span class=o>:</span><span class=s2>&#34;did:peer:99ab5bca41bb45b78d242a46f0157b7d&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>             <span class=s2>&#34;publicKeyJwk&#34;</span><span class=o>:</span> <span class=p>{</span> 
+</span></span><span class=line><span class=cl>                 <span class=s2>&#34;kid&#34;</span><span class=o>:</span><span class=s2>&#34;key1&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                 <span class=s2>&#34;kty&#34;</span><span class=o>:</span><span class=s2>&#34;EC&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                 <span class=s2>&#34;crv&#34;</span><span class=o>:</span><span class=s2>&#34;P-256&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                 <span class=s2>&#34;x&#34;</span><span class=o>:</span><span class=s2>&#34;lJtvoA5_XptBvcfcrvtGCvXd9bLymmfBSSdNJf5mogo&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                 <span class=s2>&#34;y&#34;</span><span class=o>:</span><span class=s2>&#34;fSc4gZX2R3QKKfHvS3m2vGSVSN8Xc04qsquyfEM55Z0&#34;</span> 
+</span></span><span class=line><span class=cl>             <span class=p>}</span> 
+</span></span><span class=line><span class=cl>        <span class=p>}</span> 
+</span></span><span class=line><span class=cl>        <span class=p>],</span> 
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;roles&#34;</span><span class=o>:</span><span class=p>[</span> 
+</span></span><span class=line><span class=cl>        <span class=p>{</span> 
+</span></span><span class=line><span class=cl>             <span class=s2>&#34;target&#34;</span><span class=o>:</span> <span class=s2>&#34;did:elsi:EU.EORI.NLPACKETDEL&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>             <span class=s2>&#34;names&#34;</span><span class=o>:</span> <span class=p>[</span><span class=s2>&#34;P.Create&#34;</span><span class=p>]</span> 
+</span></span><span class=line><span class=cl>        <span class=p>}</span> 
+</span></span><span class=line><span class=cl>        <span class=p>],</span> 
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;name&#34;</span><span class=o>:</span><span class=s2>&#34;Jane Doe&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;given_name&#34;</span><span class=o>:</span> <span class=s2>&#34;Jane&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;family_name&#34;</span><span class=o>:</span> <span class=s2>&#34;Doe&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;preferred_username&#34;</span><span class=o>:</span> <span class=s2>&#34;j.doe&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;email&#34;</span><span class=o>:</span> <span class=s2>&#34;janedoe@packetdelivery.com&#34;</span> 
+</span></span><span class=line><span class=cl>    <span class=p>}</span> 
+</span></span><span class=line><span class=cl><span class=p>}</span> 
+</span></span></code></pre></td></tr></table></div></div><h3 id=33-happy-pets-or-no-cheaper-顾客凭证 class=headerLink><a href=#33-happy-pets-or-no-cheaper-%e9%a1%be%e5%ae%a2%e5%87%ad%e8%af%81 class=header-mark></a>3.3 Happy Pets or No Cheaper 顾客凭证</h3><p>Happy Pets使用此凭据将访问控制<strong>委托</strong>给希望访问由Packet Delivery提供的服务的客户，这些服务是Happy Pets过去购买的。</p><p>它遵循与员工凭据相同的模型：</p><ul><li>凭证应由Happy Pets通过作为先前客户注册过程（KYC）一部分的安全和认证渠道向客户发行。</li><li>凭证中包含的角色对应于客户类型，角色名称由服务提供者（在本例中为Packet Delivery）定义和理解。</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-JSON data-lang=JSON><span class=line><span class=cl><span class=c1>// Credential issued by HappyPets to a customer,
+</span></span></span><span class=line><span class=cl><span class=c1>// providing access to Gold services at PacketDelivery.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>{</span> 
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;@context&#34;</span><span class=p>:[</span> 
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;https://www.w3.org/2018/credentials/v1&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;https://happypets.fiware.io/2022/credentials/employee/v1&#34;</span> 
+</span></span><span class=line><span class=cl>    <span class=p>],</span> 
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;id&#34;</span><span class=p>:</span><span class=s2>&#34;https://happypets.fiware.io/credentials/25159389-8dd17b796ac0&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;type&#34;</span><span class=p>:</span> <span class=p>[</span><span class=s2>&#34;VerifiableCredential&#34;</span><span class=p>,</span> <span class=s2>&#34;CustomerCredential&#34;</span><span class=p>],</span> 
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;issuer&#34;</span><span class=p>:</span> <span class=p>{</span> 
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;id&#34;</span><span class=p>:</span><span class=s2>&#34;did:elsi:EU.EORI.NLHAPPYPETS&#34;</span> 
+</span></span><span class=line><span class=cl>    <span class=p>},</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;issuanceDate&#34;</span><span class=p>:</span><span class=s2>&#34;2022-03-22T14:00:00Z&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;validFrom&#34;</span><span class=p>:</span><span class=s2>&#34;2022-03-22T14:00:00Z&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;expirationDate&#34;</span><span class=p>:</span><span class=s2>&#34;2023-03-22T14:00:00Z&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;credentialSubject&#34;</span><span class=p>:</span> <span class=p>{</span> 
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;id&#34;</span><span class=p>:</span><span class=s2>&#34;did:peer:99ab5bca41bb45b78d242a46f0157b7d&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;verificationMethod&#34;</span><span class=p>:[</span> 
+</span></span><span class=line><span class=cl>        <span class=p>{</span> 
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;id&#34;</span><span class=p>:</span><span class=s2>&#34;did:peer:99ab5bca41bb45b78d242a46f0157b7d#key1&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;type&#34;</span><span class=p>:</span><span class=s2>&#34;JwsVerificationKey2020&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;controller&#34;</span><span class=p>:</span><span class=s2>&#34;did:peer:99ab5bca41bb45b78d242a46f0157b7d&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;publicKeyJwk&#34;</span><span class=p>:{</span> 
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;kid&#34;</span><span class=p>:</span><span class=s2>&#34;key1&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;kty&#34;</span><span class=p>:</span><span class=s2>&#34;EC&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;crv&#34;</span><span class=p>:</span><span class=s2>&#34;P-256&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;x&#34;</span><span class=p>:</span><span class=s2>&#34;lJtvoA5_XptBvcfcrvtGCvXd9bLymmfBSSdNJf5mogo&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;y&#34;</span><span class=p>:</span> <span class=s2>&#34;fSc4gZX2R3QKKfHvS3m2vGSVSN8Xc04qsquyfEM55Z0&#34;</span> 
+</span></span><span class=line><span class=cl>            <span class=p>}</span> 
+</span></span><span class=line><span class=cl>        <span class=p>}</span> 
+</span></span><span class=line><span class=cl>        <span class=p>],</span> 
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;roles&#34;</span><span class=p>:[</span> 
+</span></span><span class=line><span class=cl>        <span class=p>{</span> 
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;target&#34;</span><span class=p>:</span><span class=s2>&#34;did:elsi:EU.EORI.NLPACKETDEL&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;names&#34;</span><span class=p>:</span> <span class=p>[</span><span class=s2>&#34;P.Info.gold&#34;</span><span class=p>]</span> <span class=c1>// Or P.Info.standard 
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=p>}</span> 
+</span></span><span class=line><span class=cl>        <span class=p>],</span> 
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;name&#34;</span><span class=p>:</span> <span class=s2>&#34;Jane Doe&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;given_name&#34;</span><span class=p>:</span> <span class=s2>&#34;Jane&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;family_name&#34;</span><span class=p>:</span> <span class=s2>&#34;Doe&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;preferred_username&#34;</span><span class=p>:</span> <span class=s2>&#34;j.doe&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;email&#34;</span><span class=p>:</span> <span class=s2>&#34;janedoe@packetdelivery.com&#34;</span> 
+</span></span><span class=line><span class=cl>    <span class=p>}</span> 
+</span></span><span class=line><span class=cl><span class=p>}</span> 
+</span></span></code></pre></td></tr></table></div></div><h3 id=34-基于角色的访问控制 class=headerLink><a href=#34-%e5%9f%ba%e4%ba%8e%e8%a7%92%e8%89%b2%e7%9a%84%e8%ae%bf%e9%97%ae%e6%8e%a7%e5%88%b6 class=header-mark></a>3.4 基于角色的访问控制</h3><p>从上面的凭据中可以看到，它们包含指定角色的声明。角色不是由凭据的颁发者定义的，而是由将要接收凭据并执行身份验证和授权的提供者（即：依赖方）定义的，在本例子中，是Packet Delivery。</p><p>提供者定义了一个具有特定名称的角色，该角色映射到表示提供者希望执行（enforce）的某个策略集合（policy set）。平台上的一个产品就代表了某个角色（或多个角色）。在获得对平台上产品的访问权限时，这些角色会在提供者的<strong>授权注册表</strong>中签发给获得访问权限的组织。此外，获得访问权限的组织可以通过将这些角色嵌入到向其用户签发的<strong>VC</strong>中，将这些角色分配给他们的用户。</p><p>在访问服务时，由提供者的PEP代理（proxy）/PDP组件获取属于分配角色的基于属性的策略集合，并根据NGSI-LD请求进行访问授权评估。</p><p>本文件的范围不包括描述执行这些策略的实际策略语言和引擎（如ODRL、Rego等）。</p><h3 id=35-组件部署 class=headerLink><a href=#35-%e7%bb%84%e4%bb%b6%e9%83%a8%e7%bd%b2 class=header-mark></a>3.5 组件部署</h3><p>除了<a href=#components rel>第二节</a>的各部分外，以下组件也是必须的：</p><ul><li>可验证数据注册表(Verifiable Data Registry): 以区块链网络的形式，作为实现生态系统信任框架的核心技术。参与生态系统的一些实体（不一定是所有实体）应当操作区块链节点，以便协作创建和运营一个适合的区块链网络，作为信任框架的骨干。</li><li>通用解析器(Universal Resolver)：通用解析器根据<a href=https://www.w3.org/TR/did-core/ target=_blank rel="noopener noreferrer">W3C DID Core 1.0</a>和DID解析规范（资料提供的原链接已无法访问），解析多种不同DID方法的去中心化标识符（DID）。</li><li>凭证发行和验证组件（Credential Issuer and Verifier components）：这些组件通常作为现有实现OpenID Credential（OIDC）流程的组件的扩展来实现。</li><li>终端用户钱包（End-User wallet）：终端用户使用的钱包组件，用于<strong>接收</strong>、<strong>持有</strong>和<strong>展示</strong>已向其颁发的可验证凭证。该组件可以实现为原生移动应用程序、PWA应用程序，甚至是由生态系统中一个或多个高度可信赖的实体托管的Web应用程序。</li></ul><h2 id=4-详细工作流程 class=headerLink><a href=#4-%e8%af%a6%e7%bb%86%e5%b7%a5%e4%bd%9c%e6%b5%81%e7%a8%8b class=header-mark></a>4 详细工作流程</h2><p>当使用带有可验证凭据的SIOP流时，可以观察到Marketplace不需要查询生态系统中的任何其他实体来验证凭据，因为所需的所有信息都在员工提供的可验证凭据和分散可验证注册表中（在我们的案例中使用区块链网络实现），通过通用解析器访问。</p><p>也就是说，工作流程实际上是点对点的，不需要查询集中式的IdP，从而提供了一个高效、可扩展、私有和弹性的框架。</p><h3 id=41-订单创建 class=headerLink><a href=#41-%e8%ae%a2%e5%8d%95%e5%88%9b%e5%bb%ba class=header-mark></a>4.1 订单创建</h3><p>在架构概述中展示了不同的交互：<figure><a class=lightgallery href=/zh-cn/usecases/create_architecture.png title=架构概述 data-thumbnail=/zh-cn/usecases/create_architecture.png><img loading=lazy src=/zh-cn/usecases/create_architecture.png srcset="/zh-cn/usecases/create_architecture.png, /zh-cn/usecases/create_architecture.png 1.5x, /zh-cn/usecases/create_architecture.png 2x" sizes=auto alt=架构概述 height=849 width=1093></a></figure></p><h4 id=411-用户访问 class=headerLink><a href=#411-%e7%94%a8%e6%88%b7%e8%ae%bf%e9%97%ae class=header-mark></a>4.1.1 用户访问</h4><p><figure><a class=lightgallery href=/zh-cn/usecases/1_3.png title=image data-thumbnail=/zh-cn/usecases/1_3.png><img loading=lazy src=/zh-cn/usecases/1_3.png srcset="/zh-cn/usecases/1_3.png, /zh-cn/usecases/1_3.png 1.5x, /zh-cn/usecases/1_3.png 2x" sizes=auto alt=image height=274 width=820></a></figure>1.Packet Delivery员工访问Marketplace门户（由BAE Logic Proxy提供），以便登录。</p><p>2.Marketplace门户显示一个身份提供者列表，用于选择所需的身份提供者进行登录。其中一个登录选项是“使用可验证凭据登录”。Packet Delivery Co员工选择“可验证凭据”登录方法，这会导致Marketplace门户生成一个QR，其中包含Marketplace服务器的/身份验证请求端点的URL。</p><p>3.员工启用数字钱包中的扫描功能扫描QR，手机调用/身份验证请求端点。扫描的目的启动身份验证流程，确保登录用户确实是拥有该凭证的员工。</p><h4 id=412-启动身份验证流程 class=headerLink><a href=#412-%e5%90%af%e5%8a%a8%e8%ba%ab%e4%bb%bd%e9%aa%8c%e8%af%81%e6%b5%81%e7%a8%8b class=header-mark></a>4.1.2 启动身份验证流程</h4><p><figure><a class=lightgallery href=/zh-cn/usecases/456.png title=image data-thumbnail=/zh-cn/usecases/456.png><img loading=lazy src=/zh-cn/usecases/456.png srcset="/zh-cn/usecases/456.png, /zh-cn/usecases/456.png 1.5x, /zh-cn/usecases/456.png 2x" sizes=auto alt=image height=153 width=943></a></figure>4.钱包会自动访问QR包含的URL来启动身份验证流程。此步骤中，钱包发送一个POST请求到指定的身份验证接口，向服务器请求验证信息。</p><p>5.SIOP（Self-Issued OpenID Provider）是一种开放的身份验证协议。这将启动一个标准的SIOP的流程。
+其中市场扮演依赖方（OpenID Connect术语中的RP）的角色，员工的移动设备充当Self-Issued IDP。在此步骤中，Marketplace创建SIOP身份验证请求。由于自我发布的OP可能作为本机应用程序或渐进式web应用程序（PWA）运行，RP可能没有网络可寻址端点来直接与OP通信。我们必须利用OpenID Connect的隐式流来与这些本地运行的OP通信，如[https://openid.net/specs/openid-connect-self-issued-v2-1_0.html]所述。</p><p>6.身份验证请求作为SIOP返回给员工钱包。SIOP流使用一个新的响应模式post，该post用于请求SIOP将身份验证过程的结果传递到某个端点。参数response_mode用于携带该值。SIOP交付身份验证结果的端点在标准参数redirect_uri中定义。</p><h4 id=413-解析did class=headerLink><a href=#413-%e8%a7%a3%e6%9e%90did class=header-mark></a>4.1.3 解析DID</h4><p><figure><a class=lightgallery href=/zh-cn/usecases/78.png title=image data-thumbnail=/zh-cn/usecases/78.png><img loading=lazy src=/zh-cn/usecases/78.png srcset="/zh-cn/usecases/78.png, /zh-cn/usecases/78.png 1.5x, /zh-cn/usecases/78.png 2x" sizes=auto alt=image height=256 width=1276></a></figure>7.在此步骤中，员工通过解析在身份验证请求的<strong>client_id</strong>参数中接收到的Marketplace的DID来验证Marketplace是属于生态系统的受信任实体。</p><p>为了解析DID，钱包发送一个GET请求到/api/did/v1/identifiers/did:elsi:EU.EORI.NLMARKETPLA可以实现通用解析器功能的几个可信服务器端点之一。</p><ul><li>通用解析器包括一个区块链节点，根据需要可以有多个节点。它的任务是使用区块链解析DID并返回相关的DID文档。</li><li>DID文档（根据W3C）包含关于DID实体所有者的相关信息。它包含其公钥，用于验证实体的数字签名。它还包含实体在数据空间生态系统中的状态。它是可扩展的，并且可以包含与用例相关的任何公共信息。通用解析器服务器必须由客户的可信实体操作。可以有由不同实体操作的任意数量的节点。必须在员工的钱包中配置这些可信实体中的至少一个。</li></ul><p>8.钱包可以获得Marketplace的DID文档。文档会提供市场的详细信息，包括市场的数字签名公钥，确保钱包与合法的市场实体进行交互。其中包含有关实体的可信信息，包含有关实体的可信信息，以及Marketplace用于对tokens进行数字签名的私钥关联的公钥。例如：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-JSON data-lang=JSON><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;payload&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>         <span class=nt>&#34;@context&#34;</span><span class=p>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;https://www.w3.org/ns/did/v1&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;https://w3id.org/security/v1&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=p>],</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;id&#34;</span><span class=p>:</span> <span class=s2>&#34;did:elsi:EU.EORI.NLMARKETPLA&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;verificationMethod&#34;</span><span class=p>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;id&#34;</span><span class=p>:</span> <span class=s2>&#34;did:elsi:EU.EORI.NLMARKETPLA#key-verification&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;type&#34;</span><span class=p>:</span> <span class=s2>&#34;JwsVerificationKey2020&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;controller&#34;</span><span class=p>:</span> <span class=s2>&#34;did:elsi:EU.EORI.NLMARKETPLA&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;publicKeyJwk&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;kid&#34;</span><span class=p>:</span> <span class=s2>&#34;key-verification&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;kty&#34;</span><span class=p>:</span> <span class=s2>&#34;EC&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;crv&#34;</span><span class=p>:</span> <span class=s2>&#34;secp256k1&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;x&#34;</span><span class=p>:</span> <span class=s2>&#34;V8XptJkb5wplYkExcTF4nkyYVp7t5H5d5C4UPqCCM9c&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;y&#34;</span><span class=p>:</span> <span class=s2>&#34;kn3nSPxIIvd9iaG0N4v14ceuo8E4PcLXhhGeDzCE7VM&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>],</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;service&#34;</span><span class=p>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;id&#34;</span><span class=p>:</span> <span class=s2>&#34;did:elsi:EU.EORI.NLMARKETPLA#info&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;type&#34;</span><span class=p>:</span> <span class=s2>&#34;EntityCommercialInfo&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;serviceEndpoint&#34;</span><span class=p>:</span> <span class=s2>&#34;https://marketplace.fiware.io/info&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;name&#34;</span><span class=p>:</span> <span class=s2>&#34;Packet Delivery co.&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;id&#34;</span><span class=p>:</span> <span class=s2>&#34;did:elsi:EU.EORI.NLMARKETPLA#sms&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;type&#34;</span><span class=p>:</span> <span class=s2>&#34;SecureMessagingService&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;serviceEndpoint&#34;</span><span class=p>:</span> <span class=s2>&#34;https://marketplace.fiware.io/api/sms&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>],</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;anchors&#34;</span><span class=p>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;id&#34;</span><span class=p>:</span> <span class=s2>&#34;redt.alastria&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;resolution&#34;</span><span class=p>:</span> <span class=s2>&#34;UniversalResolver&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;domain&#34;</span><span class=p>:</span> <span class=s2>&#34;marketplace.dataspace&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;ethereumAddress&#34;</span><span class=p>:</span> <span class=s2>&#34;0xbcB9b29eeb28f36fd84f1CfF98C3F1887D831d78&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>],</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;created&#34;</span><span class=p>:</span> <span class=s2>&#34;2021-11-14T13:02:37Z&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;updated&#34;</span><span class=p>:</span> <span class=s2>&#34;2021-11-14T13:02:37Z&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=414-验证身份请求 class=headerLink><a href=#414-%e9%aa%8c%e8%af%81%e8%ba%ab%e4%bb%bd%e8%af%b7%e6%b1%82 class=header-mark></a>4.1.4 验证身份请求</h4><p><figure><a class=lightgallery href=/zh-cn/usecases/9.png title=image data-thumbnail=/zh-cn/usecases/9.png><img loading=lazy src=/zh-cn/usecases/9.png srcset="/zh-cn/usecases/9.png, /zh-cn/usecases/9.png 1.5x, /zh-cn/usecases/9.png 2x" sizes=auto alt=image height=121 width=1168></a></figure>9.钱包对收到的身份验证请求进行验证。它会检查请求的数字签名，确认该签名是由合法的市场实体生成的。重要性：这一步骤确保钱包正在与真正的市场进行交互，而不是被中间人攻击或其他形式的网络欺诈所欺骗。
+DID文档在<strong>verificationMethod</strong>数组中包含一个或多个公钥。键由数组中每个元素的<strong>id</strong>字段标识。员工钱包使用身份验证请求（在JWT的受保护头中）中接收到的<strong>kid</strong>字段来选择相应的公钥并验证JWT的签名。它还验证DID文档（“DID:elsi:EU.EORI.NLMARKETPLA”）中的顶级<strong>id</strong>字段是否等于身份验证请求的<strong>client_id</strong>参数。</p><h4 id=415-创建身份验证响应 class=headerLink><a href=#415-%e5%88%9b%e5%bb%ba%e8%ba%ab%e4%bb%bd%e9%aa%8c%e8%af%81%e5%93%8d%e5%ba%94 class=header-mark></a>4.1.5 创建身份验证响应</h4><p><figure><a class=lightgallery href=/zh-cn/usecases/101112.png title=image data-thumbnail=/zh-cn/usecases/101112.png><img loading=lazy src=/zh-cn/usecases/101112.png srcset="/zh-cn/usecases/101112.png, /zh-cn/usecases/101112.png 1.5x, /zh-cn/usecases/101112.png 2x" sizes=auto alt=image height=360 width=1383></a></figure>10.如果身份验证请求被验证为合法，钱包将生成一个身份验证响应，并在步骤5中Marketplace指定的redirect_uri中发布。该响应中会包含一个可验证凭证（VC），用来表明员工的身份和权限。</p><p>关键点：这个可验证凭证由包裹递送公司签发，证明该员工确实是公司的一员，并且拥有相应的访问权限。</p><p>11.钱包将身份验证响应发送到市场的SIOP会话接口。市场会根据接收到的响应来决定是否授予员工访问权限。</p><p>SIOP使用“application/x-www-form-urlencoded”编码的HTTP POST请求将身份验证响应 发送到 redirect_uri身份验证请求参数 中传递的端点。响应包含一个ID token和一个VP（可验证表示）token，如OpenID中为可验证表示定义的那样。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-JSON data-lang=JSON><span class=line><span class=cl><span class=err>POST</span> <span class=err>/siop_sessions</span> <span class=err>HTTP/</span><span class=mf>1.1</span>
+</span></span><span class=line><span class=cl><span class=err>Host:</span> <span class=err>marketplace.fiware.io</span>
+</span></span><span class=line><span class=cl><span class=err>Content-Type:</span> <span class=err>application/x-www-form-urlencoded</span>
+</span></span><span class=line><span class=cl><span class=err>id_token=eyJ</span><span class=mi>0</span> <span class=err>...</span> <span class=err>NiJ</span><span class=mi>9</span><span class=err>.eyJ</span><span class=mi>1</span><span class=err>c</span> <span class=err>...</span> <span class=err>I</span><span class=mi>6</span><span class=err>IjIifX</span><span class=mi>0</span><span class=err>.DeWt</span><span class=mi>4</span><span class=err>Qu</span> <span class=err>...</span> <span class=err>ZXso</span>
+</span></span><span class=line><span class=cl><span class=err>&amp;vp_token=...</span>
+</span></span><span class=line><span class=cl><span class=err>&amp;state=af</span><span class=mi>0</span><span class=err>ifjsldkj</span>
+</span></span></code></pre></td></tr></table></div></div><p>解码后的id_token：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-JSON data-lang=JSON><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=nt>&#34;iss&#34;</span><span class=p>:</span> <span class=s2>&#34;https://self-issued.me/v2&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl> <span class=nt>&#34;aud&#34;</span><span class=p>:</span> <span class=s2>&#34;did:elsi:EU.EORI.NLMARKETPLA&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl> <span class=nt>&#34;iat&#34;</span><span class=p>:</span> <span class=mi>1615910538</span><span class=p>,</span>
+</span></span><span class=line><span class=cl> <span class=nt>&#34;exp&#34;</span><span class=p>:</span> <span class=mi>1615911138</span><span class=p>,</span>
+</span></span><span class=line><span class=cl> <span class=nt>&#34;sub&#34;</span><span class=p>:</span> <span class=s2>&#34;did:peer:99ab5bca41bb45b78d242a46f0157b7d&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl> <span class=nt>&#34;auth_time&#34;</span><span class=p>:</span> <span class=mi>1615910535</span><span class=p>,</span>
+</span></span><span class=line><span class=cl> <span class=nt>&#34;nonce&#34;</span><span class=p>:</span> <span class=s2>&#34;n-0S6_WzA2Mj&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>其中，&ldquo;sub&rdquo;: &ldquo;did:peer:99ab5bca41bb45b78d242a46f0157b7d"是用户本身的DID，处于隐私考虑，并没有注册在区块链或者任意一个集中存储库中。它必须与可验证凭证中包含的DID相同，可验证凭证是在员工入职时由包交付公司颁发的，并在身份验证响应中传播。
+vp_token包括可验证的表示，它可以有两种格式：jwt_vp （JWT编码）或ldp_vp （JSON-LD编码）。下面的例子是使用JWT编码：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>{
+</span></span><span class=line><span class=cl> &#34;format&#34;: &#34;jwt_vp&#34;,
+</span></span><span class=line><span class=cl> &#34;presentation&#34;:
+</span></span><span class=line><span class=cl> &#34;eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImRpZDpleGFtcGxlOmFiZmUxM2Y3MTIxMjA0
+</span></span><span class=line><span class=cl> MzFjMjc2ZTEyZWNhYiNrZXlzLTEifQ.eyJzdWIiOiJkaWQ6ZXhhbXBsZTplYmZlYjFmNzEyZWJjNmYxY
+</span></span><span class=line><span class=cl> zI3NmUxMmVjMjEiLCJqdGkiOiJodHRwOi8vZXhhbXBsZS5lZHUvY3JlZGVudGlhbHMvMzczMiIsImlzc
+</span></span><span class=line><span class=cl> yI6Imh0dHBzOi8vZXhhbXBsZS5jb20va2V5cy9mb28uandrIiwibmJmIjoxNTQxNDkzNzI0LCJpYXQiO
+</span></span><span class=line><span class=cl> jE1NDE0OTM3MjQsImV4cCI6MTU3MzAyOTcyMywibm9uY2UiOiI2NjAhNjM0NUZTZXIiLCJ2YyI6eyJAY
+</span></span><span class=line><span class=cl> 29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vd
+</span></span><span class=line><span class=cl> 3d3LnczLm9yZy8yMDE4L2NyZWRlbnRpYWxzL2V4YW1wbGVzL3YxIl0sInR5cGUiOlsiVmVyaWZpYWJsZ
+</span></span><span class=line><span class=cl> UNyZWRlbnRpYWwiLCJVbml2ZXJzaXR5RGVncmVlQ3JlZGVudGlhbCJdLCJjcmVkZW50aWFsU3ViamVjd
+</span></span><span class=line><span class=cl> CI6eyJkZWdyZWUiOnsidHlwZSI6IkJhY2hlbG9yRGVncmVlIiwibmFtZSI6IjxzcGFuIGxhbmc9J2ZyL
+</span></span><span class=line><span class=cl> UNBJz5CYWNjYWxhdXLDqWF0IGVuIG11c2lxdWVzIG51bcOpcmlxdWVzPC9zcGFuPiJ9fX19.KLJo5GAy
+</span></span><span class=line><span class=cl> BND3LDTn9H7FQokEsUEi8jKwXhGvoN3JtRa51xrNDgXDb0cq1UTYB-rK4Ft9YVmR1NI_ZOF8oGc_7wAp
+</span></span><span class=line><span class=cl> 8PHbF2HaWodQIoOBxxT-4WNqAxft7ET6lkH-4S6Ux3rSGAmczMohEEf8eCeN-jC8WekdPl6zKZQj0YPB
+</span></span><span class=line><span class=cl> 1rx6X0-xlFBs7cl6Wt8rfBP_tZ9YgVWrQmUWypSioc0MUyiphmyEbLZagTyPlUyflGlEdqrZAv6eSe6R
+</span></span><span class=line><span class=cl> txJy6M1-lD7a5HTzanYTWBPAUHDZGyGKXdJw-W_x0IWChBzI8t3kpG253fg6V3tPgHeKXE94fz_QpYfg
+</span></span><span class=line><span class=cl> --7kLsyBAfQGbg&#34;
+</span></span><span class=line><span class=cl>}
+</span></span></code></pre></td></tr></table></div></div><p>解码后是：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-JSON data-lang=JSON><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;@context&#34;</span><span class=p>:</span> <span class=p>[</span><span class=s2>&#34;https://www.w3.org/2018/credentials/v1&#34;</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;type&#34;</span><span class=p>:</span> <span class=p>[</span><span class=s2>&#34;VerifiablePresentation&#34;</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;verifiableCredential&#34;</span><span class=p>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;@context&#34;</span><span class=p>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;https://www.w3.org/2018/credentials/v1&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;https://marketplace.fiware.io/2022/credentials/employee/v1&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=p>],</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;id&#34;</span><span class=p>:</span> <span class=s2>&#34;https://pdc.fiware.io/credentials/6e14b8b8-87fa0014fe2a&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;type&#34;</span><span class=p>:</span> <span class=p>[</span><span class=s2>&#34;VerifiableCredential&#34;</span><span class=p>,</span> <span class=s2>&#34;EmployeeCredential&#34;</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;issuer&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;id&#34;</span><span class=p>:</span> <span class=s2>&#34;did:elsi:EU.EORI.NLPACKETDEL&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;issuanceDate&#34;</span><span class=p>:</span> <span class=s2>&#34;2022-03-22T14:00:00Z&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;validFrom&#34;</span><span class=p>:</span> <span class=s2>&#34;2022-03-22T14:00:00Z&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;expirationDate&#34;</span><span class=p>:</span> <span class=s2>&#34;2023-03-22T14:00:00Z&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;credentialSubject&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;id&#34;</span><span class=p>:</span> <span class=s2>&#34;did:peer:99ab5bca41bb45b78d242a46f0157b7d&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;verificationMethod&#34;</span><span class=p>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;id&#34;</span><span class=p>:</span> <span class=s2>&#34;did:peer:99ab5bca41bb45b78d242a46f0157b7d#key1&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;type&#34;</span><span class=p>:</span> <span class=s2>&#34;JwsVerificationKey2020&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;controller&#34;</span><span class=p>:</span> <span class=s2>&#34;did:peer:99ab5bca41bb45b78d242a46f0157b7d&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;publicKeyJwk&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;kid&#34;</span><span class=p>:</span> <span class=s2>&#34;key1&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;kty&#34;</span><span class=p>:</span> <span class=s2>&#34;EC&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;crv&#34;</span><span class=p>:</span> <span class=s2>&#34;P-256&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;x&#34;</span><span class=p>:</span> <span class=s2>&#34;lJtvoA5_XptBvcfcrvtGCvXd9bLymmfBSSdNJf5mogo&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;y&#34;</span><span class=p>:</span> <span class=s2>&#34;fSc4gZX2R3QKKfHvS3m2vGSVSN8Xc04qsquyfEM55Z0&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=p>],</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;roles&#34;</span><span class=p>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;target&#34;</span><span class=p>:</span> <span class=s2>&#34;did:elsi:EU.EORI.NLMARKETPLA&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;names&#34;</span><span class=p>:</span> <span class=p>[</span><span class=s2>&#34;seller&#34;</span><span class=p>,</span> <span class=s2>&#34;buyer&#34;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=p>],</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;name&#34;</span><span class=p>:</span> <span class=s2>&#34;Jane Doe&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;given_name&#34;</span><span class=p>:</span> <span class=s2>&#34;Jane&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;family_name&#34;</span><span class=p>:</span> <span class=s2>&#34;Doe&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;preferred_username&#34;</span><span class=p>:</span> <span class=s2>&#34;j.doe&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;email&#34;</span><span class=p>:</span> <span class=s2>&#34;janedoe@packetdelivery.com&#34;</span>
+</span></span><span class=line><span class=cl>     <span class=p>}</span>
+</span></span><span class=line><span class=cl>     <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>12.市场通过通用解析器（Universal Resolver）解析包裹递送公司的DID文档，验证该公司的身份和公钥信息。这一步骤确保市场与一个合法的公司实体进行交互。该DID位于可验证演示中收到的可验证凭据内。这个DID可以在上面的“verifiableCredential”结构的“issuer”字段中找到。解析是通过向通用解析器发送GET请求来执行的：/api/did/v1/identifiers/did:elsi:EU.EORI。NLPACKETDEL市场可以使用由不同实体操作的通用解析器，但与使用直接连接到区块链网络的自己的服务器相比，这会降低信任水平。</p><h4 id=416-验证身份响应 class=headerLink><a href=#416-%e9%aa%8c%e8%af%81%e8%ba%ab%e4%bb%bd%e5%93%8d%e5%ba%94 class=header-mark></a>4.1.6 验证身份响应</h4><p><figure><a class=lightgallery href=/zh-cn/usecases/1314.png title=image data-thumbnail=/zh-cn/usecases/1314.png><img loading=lazy src=/zh-cn/usecases/1314.png srcset="/zh-cn/usecases/1314.png, /zh-cn/usecases/1314.png 1.5x, /zh-cn/usecases/1314.png 2x" sizes=auto alt=image height=139 width=1345></a></figure>13.市场获取包裹递送公司的DID文档，其中包含了公司的公钥和其他必要信息，用于后续的验证过程。</p><p>公司公钥与公司用于对员工刚刚展示的可验证凭证进行数字签名的私钥有关，作为身份验证流程的一部分。使用公钥和DID文档中的DID，它可以验证可验证凭证的签名，以及包交付公司是生态系统中的可信实体，并且它是活跃的。</p><p>14.市场使用包裹递送公司的公钥来验证身份响应的数字签名，确保身份响应确实是由合法的公司生成的。</p><p>以上内容仅用于验证可验证证书。此外，Marketplace还可以验证包含可验证凭据的可验证演示文稿是由员工发送的，而不是由恶意代理发送的。为此，它在“credentialSubject”结构的“verificationMethod”中使用员工的公钥。在Packet Delivery Co与其员工一起执行的入职过程中，该公钥以加密方式绑定到员工DID。</p><h4 id=417-创建获取访问token class=headerLink><a href=#417-%e5%88%9b%e5%bb%ba%e8%8e%b7%e5%8f%96%e8%ae%bf%e9%97%aetoken class=header-mark></a>4.1.7 创建、获取访问token</h4><p><figure><a class=lightgallery href=/zh-cn/usecases/151617.png title=image data-thumbnail=/zh-cn/usecases/151617.png><img loading=lazy src=/zh-cn/usecases/151617.png srcset="/zh-cn/usecases/151617.png, /zh-cn/usecases/151617.png 1.5x, /zh-cn/usecases/151617.png 2x" sizes=auto alt=image height=292 width=1102></a></figure>15.完成所有验证后，Marketplace为员工创建一个访问令牌，以便她将来可以使用它访问Marketplace服务器中的服务。</p><p>16.市场确认身份验证成功，向钱包返回HTTP 200状态码，并包含生成的访问令牌。</p><p>17.员工的钱包显示确认信息，表明身份验证和令牌获取过程顺利完成。</p><p>18.门户页面刷新后，员工可以看到新的服务选项，基于其身份和权限访问相关内容。</p><h4 id=418-请求订单创建服务 class=headerLink><a href=#418-%e8%af%b7%e6%b1%82%e8%ae%a2%e5%8d%95%e5%88%9b%e5%bb%ba%e6%9c%8d%e5%8a%a1 class=header-mark></a>4.1.8 请求订单创建服务</h4><p>此时，Packet Delivery Co员工已登录到Marketplace应用程序。用户现在可以创建目录、产品和产品。</p><p>这时候，市场了解到的信息：</p><ul><li>该Packet Delivery Co属于数据空间，并且可以颁发EmployeeCredential类型的凭据，因为它包含在可信发行者列表中并且是活动的，因为该信息在步骤13中检索的DID文档中。</li><li>那个Packet Delivery Co说用户是它的雇员之一。此信息位于可验证凭据内，该凭据由Packet Delivery Co进行数字签名。</li></ul><p>从这一点开始，Marketplace可以向用户显示可用的服务，并在用户有权这样做的情况下执行这些服务。Marketplace可以使用凭据中的所有声明来执行RBAC/ABAC访问控制和策略实施。<figure><a class=lightgallery href=/zh-cn/usecases/19_24.png title=image data-thumbnail=/zh-cn/usecases/19_24.png><img loading=lazy src=/zh-cn/usecases/19_24.png srcset="/zh-cn/usecases/19_24.png, /zh-cn/usecases/19_24.png 1.5x, /zh-cn/usecases/19_24.png 2x" sizes=auto alt=image height=439 width=1159></a></figure>19.展示可提供的服务。</p><p>21.请求创建服务。</p><p>22.市场提供offer细节。</p><p>23.Offer可提供为Standard, Gold。用户进行选择。</p><p>24.创建成功，市场向钱包发送200 OK 信息。</p><h3 id=42-获得权力激活 class=headerLink><a href=#42-%e8%8e%b7%e5%be%97%e6%9d%83%e5%8a%9b%e6%bf%80%e6%b4%bb class=header-mark></a>4.2 获得权力/激活</h3><p>流程展示了Happy Pets员工如何通过使用去中心化标识符（DID）和可验证凭证（VC），在Marketplace上获得特定服务的访问权限。整个流程旨在确保员工身份的安全验证，并提供透明的访问控制。</p><p>本流程与<a href=#41-%e8%ae%a2%e5%8d%95%e5%88%9b%e5%bb%ba rel>4.1</a>的验证流程完全相同。不同之处是，Happy Pets或No cheap员工在Marketplace上的初始身份验证是使用由这些公司颁发给其员工的可验证凭证进行的，仅需将涉及的名称修改即可。在此不过多赘述。</p><h3 id=43-访问数据服务 class=headerLink><a href=#43-%e8%ae%bf%e9%97%ae%e6%95%b0%e6%8d%ae%e6%9c%8d%e5%8a%a1 class=header-mark></a>4.3 访问数据服务</h3><p>以下详细描述了Happy Pets客户在使用可验证凭据时更改PTA属性的过程。</p><p>参与方：Happy Pets(Authorisation Registry, Identity Provider), User(Customer SLOP), Packet Delivery(Portal, Proxy, Authorisation Registry, Blockchain Node)<figure><a class=lightgallery href=/zh-cn/usecases/pets_1.png title=image data-thumbnail=/zh-cn/usecases/pets_1.png><img loading=lazy src=/zh-cn/usecases/pets_1.png srcset="/zh-cn/usecases/pets_1.png, /zh-cn/usecases/pets_1.png 1.5x, /zh-cn/usecases/pets_1.png 2x" sizes=auto alt=image height=634 width=1360></a></figure>1.Happy Pets的客户可以访问快递公司门户网站或在智能手机上启动快递公司应用程序登录。</p><p>2.Happy Pets客户被转发到一个页面，用于选择所需的身份提供者进行登录。其中一个登录选项是“可验证凭据”或类似的东西。</p><p>3.Happy Pets客户选择“可验证凭据”登录方式，这将导致Packet Delivery Co.门户生成一个QR，其中包含包交付公司IDP的/身份验证请求端点的URL，发送给顾客的钱包。</p><p>4.客户用她的手机扫描QR，手机发送/authentication-requests请求端点。</p><p>5.Packet Delivery门户在收到钱包发送的认证请求后，开启一个标准的SIOP流程，生成一个请求令牌（Request Token），并将其返回给客户的钱包。这个令牌不仅包含了Packet Delivery的DID（去中心化标识符），还包括了一些其他关键信息。这个令牌的生成相当于给客户的钱包发放了一张临时通行证，钱包会使用它来继续后续的验证操作。请求令牌确保了接下来的验证步骤具有唯一性和安全性。</p><p>6.身份验证请求作为SIOP返回给客户钱包。SIOP流使用一个新的响应模式post，该post用于请求SIOP将身份验证过程的结果传递到某个端点。参数<strong>response_mode</strong>用于携带该值。SIOP交付身份验证结果的端点在标准参数<strong>redirect_uri</strong>中定义。</p><p>返回 URI+Request Token，Request Token包含一个Packet Delivery的DID。</p><p>7.在此步骤中，客户的钱包使用Universal Resolver来解析Packet Delivery公司的DID。解析在身份验证请求的client_id参数中接收到的Packet Delivery公司的DID，验证数据包交付公司是属于生态系统的受信任实体。<figure><a class=lightgallery href=/zh-cn/usecases/pets_2.png title=image data-thumbnail=/zh-cn/usecases/pets_2.png><img loading=lazy src=/zh-cn/usecases/pets_2.png srcset="/zh-cn/usecases/pets_2.png, /zh-cn/usecases/pets_2.png 1.5x, /zh-cn/usecases/pets_2.png 2x" sizes=auto alt=image height=706 width=1294></a></figure>8.Universal Resolver返回Packet Delivery公司的DID文档，该文档不仅包含了Packet Delivery的公钥，还包含了它在信任网络中的状态信息。这些信息帮助客户的钱包确认Packet Delivery公司是一个可信的实体，并且它在整个数据生态系统中扮演着可靠的角色。通过检查DID文档中的信息，钱包可以进一步确认即将发送和接收的数据不会被篡改或伪造。</p><p>9.客户的钱包使用从DID文档中获得的信息来验证Packet Delivery门户的认证请求。首先，钱包会检查认证请求的数字签名，以确认请求确实是由Packet Delivery公司签署的。这一步就像是检查护照上的签名是否与持有者的签名一致，以确保请求的真实性和完整性。接下来，钱包会核对认证请求中的DID与之前解析的DID文档中的信息是否匹配，从而确保请求没有被篡改，并且确实来自于真正的Packet Delivery公司。</p><p>10.客户钱包创建一个身份验证响应(URI+id_token)，将在第5步中由Packet Delivery公司指定的redirect_uri中发布。id_token需要包含客户DID，以及VC作为另外声明，顾客的VC由Happy Pets授予。</p><p>11.客户的钱包将生成的认证响应提交给Packet Delivery门户的特定API端点（如<code>/siop-sessions</code>），这相当于在安检口提交了你的通行证。Packet Delivery门户会检查这一响应，验证客户的身份以及与之关联的可验证凭证，以确保客户有权访问相应的服务。这一步验证了客户的数字身份和凭证的完整性，确保信息在传输过程中没有被篡改或伪造。</p><p>12.Packet Delivery门户通过Universal Resolver解析Happy Pets的DID。该DID位于可验证演示中收到的可验证凭据内。这个DID可以在上面的“verifiableCredential”结构的“issuer”字段中找到。</p><p>13.Packet Delivery接收Happy Pets的DID文档，其中包含有关公司的可信信息，包括与Happy Pets用于对客户刚刚在可验证表示中发送的可验证凭证进行数字签名的私钥相关联的公钥，作为身份验证流的一部分。使用公钥和DID文档中的DID，它可以验证可验证凭证的签名，并且Happy Pets是生态系统中的可信实体。</p><p>14.以上内容仅用于验证可验证证书。此外，包交付公司还可以验证包含可验证凭据的可验证表示是由客户发送的，而不是由恶意代理发送的。为此，它在“credentialSubject”结构的“verificationMethod”中使用客户的公钥。在Happy Pets与客户一起执行的入职过程中，该公钥以加密方式绑定到客户DID<figure><a class=lightgallery href=/zh-cn/usecases/pets_3.png title=image data-thumbnail=/zh-cn/usecases/pets_3.png><img loading=lazy src=/zh-cn/usecases/pets_3.png srcset="/zh-cn/usecases/pets_3.png, /zh-cn/usecases/pets_3.png 1.5x, /zh-cn/usecases/pets_3.png 2x" sizes=auto alt=image height=288 width=1372></a></figure>15.完成所有验证后，Packet Delivery company为客户创建一个访问令牌，以便她将来可以使用它访问Packet Delivery company中的服务。</p><p>16.钱包（SIOP）收到对POST请求的成功回复。</p><p>17.Packet Delivery公司代理通知Packet Delivery门户客户已成功通过身份验证，门户可以显示该客户可用的服务。用户的浏览器接收到由分组交付（Packet Delivery）创建的访问令牌（Access Token），使其无需经过前面的认证过程就可以请求服务。访问令牌是一个标准的OAuth访问令牌，它包含了数据包交付访问其服务所需的信息。</p><p>此时，Happy Pets客户已登录到包裹递送公司门户/应用程序，并看到可能提供的服务，包括更改其递送订单的PTA的选项。<figure><a class=lightgallery href=/zh-cn/usecases/pets_4.png title=image data-thumbnail=/zh-cn/usecases/pets_4.png><img loading=lazy src=/zh-cn/usecases/pets_4.png srcset="/zh-cn/usecases/pets_4.png, /zh-cn/usecases/pets_4.png 1.5x, /zh-cn/usecases/pets_4.png 2x" sizes=auto alt=image height=481 width=1356></a></figure>18.Happy Pets客户将看到Packet Delivery提供的可能服务，包括更改其交付订单的PTA的选项。</p><p>19.Happy Pets客户搜索他的包裹递送订单，并显示其详细信息。他现在要求在包交付公司门户/应用程序上更改此订单的PTA。</p><p>20.Packet Delivery Portal/APP向Packet Delivery Proxy发送请求，以更改交付订单的PTA。请求包含步骤15中生成的Access Token，以及要从中检索策略的授权注册中心的信息。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-JSON data-lang=JSON><span class=line><span class=cl><span class=err>&gt;</span> <span class=err>Authorization:</span> <span class=err>Bearer</span> <span class=err>IIeD...NIQ</span> <span class=c1>// Bearer JWT
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=err>&gt;</span> <span class=err>Content-Type:</span> <span class=err>application/json</span>
+</span></span><span class=line><span class=cl><span class=err>PATCH</span> <span class=err>https:</span><span class=c1>//umbrella.fiware.io/ngsi-ld/v1/entities/urn:ngsild:DELIVERYORDER:001/attrs/pta
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=err>&gt;</span> <span class=err>Payload</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=nt>&#34;value&#34;</span><span class=p>:</span> <span class=s2>&#34;&lt;new PTA&gt;&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl> <span class=nt>&#34;type&#34;</span><span class=p>:</span> <span class=s2>&#34;Property&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=err>Decoded</span> <span class=err>Bearer</span> <span class=err>JWT</span> <span class=err>payload:</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;iss&#34;</span><span class=p>:</span> <span class=s2>&#34;EU.EORI.NLHAPPYPETS&#34;</span><span class=p>,</span> <span class=c1>// Issuer: Happy Pets
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nt>&#34;sub&#34;</span><span class=p>:</span> <span class=s2>&#34;419404e1-07ce-4d80-9e8a-eca94vde0003de&#34;</span><span class=p>,</span> <span class=c1>// Customer pseudonym
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nt>&#34;jti&#34;</span><span class=p>:</span> <span class=s2>&#34;d8a7fd7465754a4a9117ee28f5b7fb60&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;iat&#34;</span><span class=p>:</span> <span class=mi>1591966224</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;exp&#34;</span><span class=p>:</span> <span class=mi>1591966254</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;aud&#34;</span><span class=p>:</span> <span class=s2>&#34;EU.EORI.NLHAPPYPETS&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;authorisationRegistry&#34;</span><span class=p>:</span> <span class=p>{</span> <span class=c1>// AR to retrieve policies from
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=nt>&#34;url&#34;</span><span class=p>:</span> <span class=s2>&#34;https://ar.packetdelivery.com&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;identifier&#34;</span><span class=p>:</span> <span class=s2>&#34;EU.EORI.NLHAPPYPETS&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;delegation_endpoint&#34;</span><span class=p>:</span> <span class=s2>&#34;https://ar.packetdelivery.com/delegation&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>21.Packet Delivery Co. Proxy收到了步骤19更改交付订单的PTA的请求。从客户接收到的access token确保为她分配了带有更新此特定交付订单的PTA属性的策略的委托证据（在用户级别称为发布）。此外，由于在此场景中所需的客户策略是由第三方（Happy Pets）发布的，代理必须检查Happy Pets本身是否允许委托此策略。一般来说，规则是代理需要通过<strong>发行者链</strong>检查有效策略的存在，直到它自己（在本例中是包交付公司）成为发行者。在此场景中，代理将在两个不同的级别检查策略：组织层面（从Packet Delivery company到Happy Pets）和用户层面（从Happy Pets到客户）。可验证凭据负责用户级策略。</p><p>22.为了检查Happy Pets是否允许将策略委托给其客户，procy将在Packet Delivery Authorization Registry检查该策略是否存在。Proxy将请求发送到Packet Delivery Authorization Registry的端点。</p><p>23.Proxy接收Packet Delivery发给Happy Pets的委托证据策略。</p><p>24.收到来自Packet Delivery company Authorization Registry的委托信息后，Proxy（或者更准确地说，PDP）现在可以评估所包含的组织策略是否允许更新PTA属性，从而评估是否允许Happy Pets将访问委托给其客户。如果Proxy接收到有效的策略，则将在组织级别授予访问权限。</p><p>如果无法找到请求的委托证据，或者返回的策略包含Deny规则，则PTA的更改将被Packet Delivery company代理拒绝，并将错误返回给Packet Delivery company门户/应用程序，同时显示给Happy Pets客户。以下步骤可以省略。</p><p>25.如前面步骤中所述，PDP评估了在组织级别和用户级别上授予特定交付订单的PTA的更改。因此，更改PTA的请求由Proxy转发给上下文代理，后者保存包交付订单的信息。包裹递送顺序的PTA被更改，上下文代理返回一个HTTP代码204的成功响应。上下文代理响应返回到Portal，以响应步骤26的请求。</p><p>26.将成功的PTA变更呈现给Happy Pets客户。</p><h3 id=44-无权限 class=headerLink><a href=#44-%e6%97%a0%e6%9d%83%e9%99%90 class=header-mark></a>4.4 无权限</h3><p>本节描述上述步骤在No cheaper客户场景中的变化。</p><p>基本上步骤顺序与Happy Pets相同。与Happy Pets相反，在<a href=#42-%e8%8e%b7%e5%be%97%e6%9d%83%e5%8a%9b%e6%bf%80%e6%b4%bb rel>权利获取/激活</a>中描述的权利获取过程中，No cheaper只是获取标准服务，因此其客户只能读取交付订单的属性。这意味着在包交付授权注册中心，只创建了一个策略，允许No cheaper只将GET访问权委托给交付订单。</p><p>此场景可分为两种情况，以演示基于组织级别和用户级别的不同策略拒绝访问。</p><ol><li><p>在No cheaper授权注册中心，向No cheaper客户颁发可验证凭据，仅允许向包交付服务（代表p.f info . standard角色）发出GET请求。当执行更改交付订单的PTA值的步骤时（如前一节所述），流程将在步骤19处停止，此时将拒绝访问，因为没有在用户级别为No cheap客户分配必要的策略。</p></li><li><p>在No cheaper授权注册中心，向No cheaper客户颁发可验证凭据，允许向包交付服务（代表p.f info . gold角色）发出GET和PATCH请求。当执行更改交付订单的PTA值的步骤时，如前一节所述，流程将在步骤23处停止，此时访问将被拒绝，因为在包交付公司授权注册中心没有为No cheap分配必要的策略来将高级访问委托给其客户。</p></li></ol><p>因此，将在组织级别拒绝访问。这是为了表明，即使No cheap组织在其自己的Authorization Registry中向其客户颁发对高级服务的访问权，访问仍然会被拒绝。</p><p>一般来说，对于这两种情况，改变PTA的要求都应予以拒绝。但是，可以显示No cheaper客户能够查看其交付订单的属性。</p><h3 id=45-为connectors--application-context发布token class=headerLink><a href=#45-%e4%b8%baconnectors--application-context%e5%8f%91%e5%b8%83token class=header-mark></a>4.5 为Connectors / application context发布token</h3></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2024-11-21&nbsp;<a class=git-hash href=https://github.com/zjzjy/commit/d758cd66ca41fc8dd8ff80f2beabd5153542e022 target=_blank title="commit by 郑钧尹(Zheng Junyin)(108924030+zjzjy@users.noreply.github.com) d758cd66ca41fc8dd8ff80f2beabd5153542e022: update usecase" rel="noopener noreferrer">
+<i class="fas fa-hashtag fa-fw"></i>d758cd6</a></span></div><div class=post-info-license></div></div><div class=post-info-line><div class=post-info-md><span><a class=link-to-mardown href=/zh-cn/usecases/index.md target=_blank rel="noopener noreferrer">阅读原始文档</a>
+</span><span>|&nbsp;<a class=link-to-source href=https://github.com/zjzjy/zjzjy.github.io/blob/main/content/posts/Data_Space/DID/usecases/index.zh-cn.md target=_blank rel="noopener noreferrer">查看源代码</a>
+</span><span>|&nbsp;<a class=link-to-edit href=https://github.com/zjzjy/zjzjy.github.io/edit/main/content/posts/Data_Space/DID/usecases/index.zh-cn.md target=_blank rel="noopener noreferrer">编辑此页</a>
+</span><span>|&nbsp;<a class=link-to-report href="https://github.com/zjzjy/zjzjy.github.io/issues/new?title=[bug]%20Workflows+based+on+usecases&body=|Field|Value|%0A|-|-|%0A|Title|Workflows+based+on+usecases|%0A|Url|https://zjzjy.github.io/zh-cn/usecases/|%0A|Filename|https://github.com/yewentao256/yewentao256.github.io/blob/main/content/posts/Data_Space/DID/usecases/index.zh-cn.md|" target=_blank rel="noopener noreferrer">报告问题</a></span></div><div class=post-info-share><button title="分享到 Twitter" data-sharer=twitter data-url=https://zjzjy.github.io/zh-cn/usecases/ data-title="Workflows based on usecases"><span class="fab fa-twitter fa-fw"></span></button><button title="分享到 Facebook" data-sharer=facebook data-url=https://zjzjy.github.io/zh-cn/usecases/><span class="fab fa-facebook-square fa-fw"></span></button><button title="分享到 Hacker News" data-sharer=hackernews data-url=https://zjzjy.github.io/zh-cn/usecases/ data-title="Workflows based on usecases"><span class="fab fa-hacker-news fa-fw"></span></button><button title="分享到 Line" data-sharer=line data-url=https://zjzjy.github.io/zh-cn/usecases/ data-title="Workflows based on usecases"><span data-svg-src=/lib/simple-icons/icons/line.min.svg></span></button><button title="分享到 微博" data-sharer=weibo data-url=https://zjzjy.github.io/zh-cn/usecases/ data-title="Workflows based on usecases"><span class="fab fa-weibo fa-fw"></span></button></div></div></div><div class=post-info-more><section class=post-tags></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/zh-cn/>主页</a></span></section></div><div class=post-nav><a href=/zh-cn/iot/ class=prev rel=prev title=IoT><i class="fas fa-angle-left fa-fw"></i>IoT</a>
+<a href=/zh-cn/siop/ class=next rel=next title=SIOP>SIOP<i class="fas fa-angle-right fa-fw"></i></a></div></div><div id=comments><div id=giscus></div><noscript>Please enable JavaScript to view the comments powered by <a href=https://giscus.app/>giscus</a>.</noscript></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreferrer" title="Hugo 0.114.1">Hugo</a> 强力驱动&nbsp;|&nbsp;主题 - <a href=https://github.com/HEIGE-PCloud/DoIt target=_blank rel="noopener noreferrer" title="DoIt 0.4.0"><i class="far fa-edit fa-fw"></i> DoIt</a></div><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2024</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://zjzjy.github.io target=_blank rel="noopener noreferrer">Yewentao</a></span>&nbsp;|&nbsp;<span class=license><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span></div><div class=footer-line></div><div class=footer-line></div></div></footer></div><div id=fixed-buttons><a href=#back-to-top id=back-to-top-button class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw"></i></a></div><div id=cookieconsent-container></div><div class=assets><link rel=stylesheet href=/lib/katex/katex.min.css><link rel=preload as=style onload='this.onload=null,this.rel="stylesheet"' href=/lib/katex/copy-tex.min.css><noscript><link rel=stylesheet href=/lib/katex/copy-tex.min.css></noscript><link rel=stylesheet href=/lib/cookieconsent/cookieconsent.min.css><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:30},comment:{giscus:{darkTheme:"dark",dataCategory:"Announcements",dataCategoryId:"DIC_kwDOI3HpRc4CYIaq",dataEmitMetadata:"0",dataInputPosition:"bottom",dataLang:"zh-CN",dataMapping:"pathname",dataReactionsEnabled:"1",dataRepo:"zjzjy/zjzjy.github.io",dataRepoId:"R_kgDOI3HpRQ",dataStrict:"0",lightTheme:"light"}},cookieconsent:{content:{dismiss:"同意",link:"了解更多",message:"本网站使用 Cookies 来改善您的浏览体验."},enable:!0,palette:{button:{background:"#f0f0f0"},popup:{background:"#1aa3ff"}},theme:"edgeless"},math:{delimiters:[{display:!0,left:"$$",right:"$$"},{display:!0,left:"\\[",right:"\\]"},{display:!1,left:"$",right:"$"},{display:!1,left:"\\(",right:"\\)"}],strict:!1},search:{distance:100,findAllMatches:!1,fuseIndexURL:"/zh-cn/index.json",highlightTag:"em",ignoreFieldNorm:!1,ignoreLocation:!1,isCaseSensitive:!1,location:0,maxResultLength:10,minMatchCharLength:2,noResultsFound:"没有找到结果",snippetLength:50,threshold:.3,type:"fuse",useExtendedSearch:!1},sharerjs:!0,table:{sort:!0}}</script><script type=text/javascript src=/lib/tablesort/tablesort.min.js></script><script type=text/javascript src=/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=/lib/sharer/sharer.min.js></script><script type=text/javascript src=/lib/katex/katex.min.js defer></script><script type=text/javascript src=/lib/katex/auto-render.min.js defer></script><script type=text/javascript src=/lib/katex/copy-tex.min.js defer></script><script type=text/javascript src=/lib/katex/mhchem.min.js defer></script><script type=text/javascript src=/js/katex.min.js defer></script><script type=text/javascript src=/lib/cookieconsent/cookieconsent.min.js defer></script><script type=text/javascript src=/js/cookieconsent.min.js defer></script><script type=text/javascript src=/js/theme.min.js defer></script><script type=text/javascript src=/js/giscus.min.js defer></script></div></body></html>

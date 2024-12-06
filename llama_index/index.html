@@ -1,0 +1,955 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>Llama_index Source Code Analysis(1) - Zhengjunyin's Blog</title><meta name=Description content="zhengjunyin's blog"><meta property="og:title" content="Llama_index Source Code Analysis(1)"><meta property="og:description" content="This blog introduces the basic concepts of RAG and further demonstrates the RAG process based on the source code interpretation of llama_index, including data loader, transformation, index, query, etc. In addition, this paper also analyzes the performance of llama_index RAG process and gives corresponding optimization suggestions."><meta property="og:type" content="article"><meta property="og:url" content="https://zjzjy.github.io/llama_index/"><meta property="og:image" content="https://zjzjy.github.io/person-circle.svg"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-06-10T14:22:16+08:00"><meta property="article:modified_time" content="2024-07-06T10:14:45+08:00"><meta property="og:site_name" content="ZhengJunyin's blog"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://zjzjy.github.io/person-circle.svg"><meta name=twitter:title content="Llama_index Source Code Analysis(1)"><meta name=twitter:description content="This blog introduces the basic concepts of RAG and further demonstrates the RAG process based on the source code interpretation of llama_index, including data loader, transformation, index, query, etc. In addition, this paper also analyzes the performance of llama_index RAG process and gives corresponding optimization suggestions."><meta name=application-name content="Zhengjunyin's Blog"><meta name=apple-mobile-web-app-title content="Zhengjunyin's Blog"><meta name=theme-color content="#f8f8f8"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=canonical href=https://zjzjy.github.io/llama_index/><link rel=prev href=https://zjzjy.github.io/llama_index_2/><link rel=next href=https://zjzjy.github.io/llama_index_1/><link rel=stylesheet href=/css/main.css><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/color.css><link rel=stylesheet href=/css/style.min.css><link rel=preload as=style onload='this.onload=null,this.rel="stylesheet"' href=/lib/fontawesome-free/all.min.css><noscript><link rel=stylesheet href=/lib/fontawesome-free/all.min.css></noscript><link rel=preload as=style onload='this.onload=null,this.rel="stylesheet"' href=/lib/animate/animate.min.css><noscript><link rel=stylesheet href=/lib/animate/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Llama_index Source Code Analysis(1)","inLanguage":"en","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/zjzjy.github.io\/llama_index\/"},"genre":"posts","wordcount":3523,"url":"https:\/\/zjzjy.github.io\/llama_index\/","datePublished":"2024-06-10T14:22:16+08:00","dateModified":"2024-07-06T10:14:45+08:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"Yewentao"},"description":""}</script><script src=//instant.page/5.2.0 defer type=module integrity=sha384-jnZyxPjiipYXnSU0ygqeac2q7CVYMbh84q0uHVRRxEtvFPiQYbXWUorga2aqZJ0z></script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>function setTheme(e){document.body.setAttribute("theme",e),document.documentElement.style.setProperty("color-scheme",e==="light"?"light":"dark"),window.theme=e,window.isDark=window.theme!=="light"}function saveTheme(e){window.localStorage&&localStorage.setItem("theme",e)}function getMeta(e){const t=document.getElementsByTagName("meta");for(let n=0;n<t.length;n++)if(t[n].getAttribute("name")===e)return t[n];return""}if(window.localStorage&&localStorage.getItem("theme")){let e=localStorage.getItem("theme");e==="light"||e==="dark"||e==="black"?setTheme(e):setTheme(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")}else"auto"==="light"||"auto"==="dark"||"auto"==="black"?(setTheme("auto"),saveTheme("auto")):(saveTheme("auto"),setTheme(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"));let metaColors={light:"#f8f8f8",dark:"#252627",black:"#000000"};getMeta("theme-color").content=metaColors[document.body.getAttribute("theme")],window.switchThemeEventSet=new Set</script><div id=back-to-top></div><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title="Zhengjunyin's Blog">Home</a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>Posts </a><a class=menu-item href=/categories/>Categories </a><a class=menu-item href=/about/>About </a><a class=menu-item href=https://github.com/zjzjy title=GitHub rel="noopener noreferrer" target=_blank><i class='fab fa-github fa-fw' aria-hidden=true></i> </a><span class="menu-item delimiter"></span><a href=javascript:void(0); class="menu-item language" title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
+<select class=language-select title="Select Language" id=language-select-desktop onchange="location=this.value"><option value=/llama_index/ selected>English</option><option value=/zh-cn/llama_index/>简体中文</option></select>
+</a><span class="menu-item search" id=search-desktop><input type=text placeholder="Search titles or contents..." id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=Search><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=Clear><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin"></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title="Switch Theme"><i class="fas fa-adjust fa-fw"></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title="Zhengjunyin's Blog">Home</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder="Search titles or contents..." id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=Search><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=Clear><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin"></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>Cancel</a></div><a class=menu-item href=/posts/ title>Posts</a><a class=menu-item href=/categories/ title>Categories</a><a class=menu-item href=/about/ title>About</a><a class=menu-item href=https://github.com/zjzjy title=GitHub rel="noopener noreferrer" target=_blank><i class='fab fa-github fa-fw' aria-hidden=true></i></a><a href=javascript:void(0); class="menu-item theme-switch" title="Switch Theme">
+<i class="fas fa-adjust fa-fw"></i>
+</a><a href=javascript:void(0); class=menu-item title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
+<select class=language-select title="Select Language" onchange="location=this.value"><option value=/llama_index/ selected>English</option><option value=/zh-cn/llama_index/>简体中文</option></select></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>Contents</h2><div class=toc-content id=toc-content-auto><nav id=TableOfContents><ul><li><a href=#summary>Summary</a></li><li><a href=#1-introduction>1. Introduction</a></li><li><a href=#2-rag-high-level-concepts>2. RAG High Level Concepts</a></li><li><a href=#3-llama-index-usage-example>3. Llama index Usage Example</a></li><li><a href=#4-llama-index-source-code-analysis>4. Llama index Source Code Analysis</a><ul><li><a href=#41-loading>4.1 Loading</a><ul><li><a href=#411-simpledirectoryreader>4.1.1 SimpleDirectoryReader</a></li><li><a href=#412-databasereader>4.1.2 DatabaseReader</a></li></ul></li><li><a href=#42-transformation>4.2 Transformation</a><ul><li><a href=#421-nodeparser>4.2.1 NodeParser</a></li><li><a href=#422-high-level-apivectorstoreindex>4.2.2 High level api：VectorStoreIndex</a></li><li><a href=#423-low-level-apiingestionpipeline>4.2.3 Low level api：IngestionPipeline</a></li></ul></li><li><a href=#43-indexing--embedding>4.3 Indexing & Embedding</a><ul><li><a href=#431-basic-concepts>4.3.1 Basic Concepts</a></li><li><a href=#432-process-of-building-index>4.3.2 Process of building index</a></li></ul></li></ul></li></ul></nav></div></div><script>document.getElementsByTagName("main")[0].setAttribute("autoTOC","true")</script><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Llama_index Source Code Analysis(1)</h1><div class=post-meta><div class=post-meta-line><span class=post-author><span class="author fas fa-user-circle fa-fw"></span><a href=https://zjzjy.github.io title=Author target=_blank rel="noopener noreferrer author" class=author>Yewentao</a>
+</span>&nbsp;<span class=post-category>included in </span>&nbsp;<span class=post-category>category <a href=/categories/llm/><i class="far fa-folder fa-fw"></i>llm</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2024-06-10>2024-06-10</time>&nbsp;<i class="far fa-edit fa-fw"></i>&nbsp;<time datetime=2024-07-06>2024-07-06</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;3523 words&nbsp;<i class="far fa-clock fa-fw"></i>&nbsp;17 minutes&nbsp;</div></div><div class="details toc" id=toc-static kept><div class="details-summary toc-title"><span>Contents</span>
+<span><i class="details-icon fas fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#summary>Summary</a></li><li><a href=#1-introduction>1. Introduction</a></li><li><a href=#2-rag-high-level-concepts>2. RAG High Level Concepts</a></li><li><a href=#3-llama-index-usage-example>3. Llama index Usage Example</a></li><li><a href=#4-llama-index-source-code-analysis>4. Llama index Source Code Analysis</a><ul><li><a href=#41-loading>4.1 Loading</a><ul><li><a href=#411-simpledirectoryreader>4.1.1 SimpleDirectoryReader</a></li><li><a href=#412-databasereader>4.1.2 DatabaseReader</a></li></ul></li><li><a href=#42-transformation>4.2 Transformation</a><ul><li><a href=#421-nodeparser>4.2.1 NodeParser</a></li><li><a href=#422-high-level-apivectorstoreindex>4.2.2 High level api：VectorStoreIndex</a></li><li><a href=#423-low-level-apiingestionpipeline>4.2.3 Low level api：IngestionPipeline</a></li></ul></li><li><a href=#43-indexing--embedding>4.3 Indexing & Embedding</a><ul><li><a href=#431-basic-concepts>4.3.1 Basic Concepts</a></li><li><a href=#432-process-of-building-index>4.3.2 Process of building index</a></li></ul></li></ul></li></ul></nav></div></div><div class=content id=content><h2 id=summary class=headerLink><a href=#summary class=header-mark></a>Summary</h2><p>This blog introduces the basic concepts of <strong>RAG</strong> and further demonstrates the RAG process based on the source code interpretation of <strong>llama_index</strong>, including data loader, transformation, index, query, etc. In addition, this paper also analyzes the <strong>performance</strong> of llama_index RAG process and gives corresponding optimization suggestions.</p><h2 id=1-introduction class=headerLink><a href=#1-introduction class=header-mark></a>1. Introduction</h2><p>Llama_index is a framework designed to build context-enhanced large model applications. It leverages private user data to improve model performance in specific domains.</p><p>Llama_index primarily offers the following tools:</p><ul><li><strong>Data Connector</strong>: Connects to private user data, APIs, databases, etc.</li><li><strong>Data Indexes</strong>: Structures data in a format conducive to large language models (LLMs).</li><li><strong>Engines</strong>: Provides natural language access methods:<ul><li>Query Engine: Interfaces for question-answering, such as knowledge base queries.</li><li>Chat Engine: Interfaces for multi-turn dialogues, like GPT.</li></ul></li><li><strong>Agents</strong>: Services based on LLMs, such as task automation, customer service, etc.</li><li><strong>Observability/Evaluation</strong>: Integrates tools for application evaluation and monitoring.</li></ul><p>This analysis is based on version <code>llama-index==0.10.40</code>.</p><h2 id=2-rag-high-level-concepts class=headerLink><a href=#2-rag-high-level-concepts class=header-mark></a>2. RAG High Level Concepts</h2><p>RAG stands for Retrieval-Augmented Generation.</p><p>Typically, large models are trained on public datasets, but they may perform suboptimally for specific tasks. RAG incorporates private user data into the accessible data for the model, feeding it as context along with the query. This process <strong>does not require fine-tuning or training the model</strong>.</p><p><figure><a class=lightgallery href=/llama_index/rag_process.png title=image data-thumbnail=/llama_index/rag_process.png><img loading=lazy src=/llama_index/rag_process.png srcset="/llama_index/rag_process.png, /llama_index/rag_process.png 1.5x, /llama_index/rag_process.png 2x" sizes=auto alt=image height=619 width=1280></a></figure></p><p>The general workflow:</p><ol><li><p>Data Loading and Indexing:</p><ul><li>Load Data: Load private data (e.g., documents (unstructured), databases (structured), APIs).</li><li>Create Index: Preprocess and index the loaded data for quick retrieval. The index is a structured intermediate representation that efficiently filters content relevant to queries.</li></ul></li><li><p>User Query:</p><ul><li>Query the pre-created index first.</li><li>Retrieval: Filter the most relevant content from the index.</li><li>The retrieved relevant content forms the context used to assist the LLM&rsquo;s generation process.</li></ul></li><li><p>Response Generation:</p><ul><li>Combine Context and Query: Pass the retrieved relevant content (context) along with the user query to the LLM.</li><li>Generate Response: The LLM uses this context to generate more accurate and relevant answers.</li></ul></li></ol><p><figure><a class=lightgallery href=/llama_index/rag_process_2.png title=image data-thumbnail=/llama_index/rag_process_2.png><img loading=lazy src=/llama_index/rag_process_2.png srcset="/llama_index/rag_process_2.png, /llama_index/rag_process_2.png 1.5x, /llama_index/rag_process_2.png 2x" sizes=auto alt=image height=179 width=1280></a></figure></p><p>Technically, there are five stages:</p><ul><li><p><strong>Loading</strong>:</p><ul><li><strong>Nodes and Documents</strong>: A <code>Document</code> is a container, encapsulating complete data source content, such as PDFs or APIs. A <code>Node</code> is the atomic data unit in LlamaIndex, representing a &ldquo;chunk&rdquo; or fragment of a source Document, with its own metadata to link it to the document and other nodes.</li><li><strong>Connectors</strong>: Also known as <code>Readers</code>, process and convert data sources into <code>Documents</code> and <code>Nodes</code>.</li></ul></li><li><p><strong>Indexing</strong>:</p><ul><li><strong>Indexes</strong>: Organized data indexes, e.g., stored as vector embeddings in a <code>VectorStore</code>. The index also contains necessary metadata.</li><li><strong>Embeddings</strong>: Numerical representations of data. These high-dimensional vectors capture semantic information, with semantically similar data being close in vector space, facilitating querying.</li></ul></li><li><p><strong>Storing</strong>: Storing the constructed indexes and other metadata to avoid repeated building.</p></li><li><p><strong>Querying</strong>:</p><ul><li><strong>Retrievers</strong>: Define how to efficiently retrieve relevant context from the index upon receiving a query. The retrieval strategy directly affects the relevance and efficiency of the retrieved data.</li><li><strong>Routers</strong>: Decide which retriever to use for retrieving relevant context from the knowledge base. Specifically, the <code>RouterRetriever</code> class selects one or more candidate retrievers to perform the query, with a <code>selector</code> deciding the best retriever based on metadata and query content.</li><li><strong>Node Postprocessors</strong>: Apply transformations, filtering, or reordering logic to a set of retrieved nodes.</li><li><strong>Response Synthesizers</strong>: Concatenate the user query with retrieved context and prompts, generating responses based on the large model.</li></ul></li><li><p><strong>Evaluation</strong>: Assess the accuracy of query strategies, pipelines, and results.</p></li></ul><h2 id=3-llama-index-usage-example class=headerLink><a href=#3-llama-index-usage-example class=header-mark></a>3. Llama index Usage Example</h2><p>We used <a href=https://docs.llamaindex.ai/en/stable/getting_started/starter_example_local/ target=_blank rel="noopener noreferrer"><strong>ollama</strong></a> to deploy a 7B llama3 in the could, with documents from a short <a href=https://raw.githubusercontent.com/run-llama/llama_index/main/docs/docs/examples/data/paul_graham/paul_graham_essay.txt target=_blank rel="noopener noreferrer">text</a> (78KB) and ran the following code on a Mac (Core i7 2.6 GHz).</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=kn>import</span> <span class=nn>time</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.core</span> <span class=kn>import</span> <span class=n>VectorStoreIndex</span><span class=p>,</span> <span class=n>SimpleDirectoryReader</span><span class=p>,</span> <span class=n>Settings</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.embeddings.huggingface</span> <span class=kn>import</span> <span class=n>HuggingFaceEmbedding</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.llms.ollama</span> <span class=kn>import</span> <span class=n>Ollama</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>start_time</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>load_start</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>documents</span> <span class=o>=</span> <span class=n>SimpleDirectoryReader</span><span class=p>(</span><span class=s2>&#34;data&#34;</span><span class=p>)</span><span class=o>.</span><span class=n>load_data</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>load_end</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>embed_start</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>Settings</span><span class=o>.</span><span class=n>embed_model</span> <span class=o>=</span> <span class=n>HuggingFaceEmbedding</span><span class=p>(</span><span class=n>model_name</span><span class=o>=</span><span class=s2>&#34;BAAI/bge-base-en-v1.5&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>embed_end</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>llm_start</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>Settings</span><span class=o>.</span><span class=n>llm</span> <span class=o>=</span> <span class=n>Ollama</span><span class=p>(</span><span class=n>model</span><span class=o>=</span><span class=s2>&#34;llama3&#34;</span><span class=p>,</span> <span class=n>request_timeout</span><span class=o>=</span><span class=mf>360.0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>llm_end</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>index_start</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>index</span> <span class=o>=</span> <span class=n>VectorStoreIndex</span><span class=o>.</span><span class=n>from_documents</span><span class=p>(</span><span class=n>documents</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>index_end</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>query_engine_start</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>query_engine</span> <span class=o>=</span> <span class=n>index</span><span class=o>.</span><span class=n>as_query_engine</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>query_engine_end</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>query_start</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>response</span> <span class=o>=</span> <span class=n>query_engine</span><span class=o>.</span><span class=n>query</span><span class=p>(</span><span class=s2>&#34;What did the author do growing up?&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>query_end</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>response</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Data loading time: </span><span class=si>{</span><span class=n>load_end</span> <span class=o>-</span> <span class=n>load_start</span><span class=si>}</span><span class=s2> seconds&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Embedding model setup time: </span><span class=si>{</span><span class=n>embed_end</span> <span class=o>-</span> <span class=n>embed_start</span><span class=si>}</span><span class=s2> seconds&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;LLM setup time: </span><span class=si>{</span><span class=n>llm_end</span> <span class=o>-</span> <span class=n>llm_start</span><span class=si>}</span><span class=s2> seconds&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Index creation time: </span><span class=si>{</span><span class=n>index_end</span> <span class=o>-</span> <span class=n>index_start</span><span class=si>}</span><span class=s2> seconds&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Query engine creation time: </span><span class=si>{</span><span class=n>query_engine_end</span> <span class=o>-</span> <span class=n>query_engine_start</span><span class=si>}</span><span class=s2> seconds&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Query execution time: </span><span class=si>{</span><span class=n>query_end</span> <span class=o>-</span> <span class=n>query_start</span><span class=si>}</span><span class=s2> seconds&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Total time: </span><span class=si>{</span><span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span> <span class=o>-</span> <span class=n>start_time</span><span class=si>}</span><span class=s2> seconds&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>输出：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>According to the provided context, before college, the author worked on writing and programming outside of school. Specifically, he wrote short stories in his teenage years and tried writing programs on an IBM <span class=m>1401</span> computer using an early version of Fortran in 9th grade <span class=o>(</span>when he was around <span class=m>13</span> or 14<span class=o>)</span>.
+</span></span><span class=line><span class=cl>Data loading time: 0.021808862686157227 seconds
+</span></span><span class=line><span class=cl>Embedding model setup time: 3.6557559967041016 seconds
+</span></span><span class=line><span class=cl>LLM setup time: 0.0005099773406982422 seconds
+</span></span><span class=line><span class=cl>Index creation time: 10.546114921569824 seconds
+</span></span><span class=line><span class=cl>Query engine creation time: 0.0671701431274414 seconds
+</span></span><span class=line><span class=cl>Query execution time: 1.3822910785675049 seconds
+</span></span><span class=line><span class=cl>Total time: 15.673884868621826 seconds
+</span></span></code></pre></td></tr></table></div></div><p>Even for a 78KB document, creating the index and querying took about 15 seconds, with over 10 seconds spent on index creation. We will analyze the reason for this time overhead in the following sections.</p><h2 id=4-llama-index-source-code-analysis class=headerLink><a href=#4-llama-index-source-code-analysis class=header-mark></a>4. Llama index Source Code Analysis</h2><h3 id=41-loading class=headerLink><a href=#41-loading class=header-mark></a>4.1 Loading</h3><p>Loading mainly has three modes: reading from files, reading from databases, and directly constructing document objects from text.</p><p>We will explain using <code>SimpleDirectoryReader</code> and <code>DatabaseReader</code> as examples.</p><p>It is worth noting that the <a href=https://llamahub.ai/ target=_blank rel="noopener noreferrer">llama_hub</a> ecosystem provides many reader options.</p><h4 id=411-simpledirectoryreader class=headerLink><a href=#411-simpledirectoryreader class=header-mark></a>4.1.1 SimpleDirectoryReader</h4><p>SimpleDirectoryReader reads from a directory, constructing a document for each file.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.core</span> <span class=kn>import</span> <span class=n>SimpleDirectoryReader</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>documents</span> <span class=o>=</span> <span class=n>SimpleDirectoryReader</span><span class=p>(</span><span class=s2>&#34;./data&#34;</span><span class=p>)</span><span class=o>.</span><span class=n>load_data</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p>Key path: <code>load_data()</code>, supports <code>num_workers</code> for multi-process reading (process pool).</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama-index-core/llama_index/core/readers/file/base.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>SimpleDirectoryReader</span><span class=p>(</span><span class=n>BaseReader</span><span class=p>,</span> <span class=n>ResourcesReaderMixin</span><span class=p>,</span> <span class=n>FileSystemReaderMixin</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>load_data</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=p>,</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>Document</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>num_workers</span> <span class=ow>and</span> <span class=n>num_workers</span> <span class=o>&gt;</span> <span class=mi>1</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=c1># multiprocessing ...</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=c1># ... </span>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=n>input_file</span> <span class=ow>in</span> <span class=n>files_to_process</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>documents</span><span class=o>.</span><span class=n>extend</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                    <span class=n>SimpleDirectoryReader</span><span class=o>.</span><span class=n>load_file</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>                    <span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_exclude_metadata</span><span class=p>(</span><span class=n>documents</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>In the <code>load_file()</code> method, there are two paths: for special files like <code>['.pdf', '.docx', '.pptx', '.png', '.mp3', '.mp4', '.csv', '.md', '.mbox', '.ipynb']</code>, there are default cls readers; otherwise, it directly uses <code>fs.open()</code> to read text.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama-index-core/llama_index/core/readers/file/base.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>SimpleDirectoryReader</span><span class=p>(</span><span class=n>BaseReader</span><span class=p>,</span> <span class=n>ResourcesReaderMixin</span><span class=p>,</span> <span class=n>FileSystemReaderMixin</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=nd>@staticmethod</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>load_file</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=n>input_file</span><span class=p>:</span> <span class=n>Path</span><span class=p>,</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>Document</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>file_suffix</span> <span class=ow>in</span> <span class=n>default_file_reader_suffix</span> <span class=ow>or</span> <span class=n>file_suffix</span> <span class=ow>in</span> <span class=n>file_extractor</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=c1># specific files ...</span>
+</span></span><span class=line><span class=cl>            <span class=n>documents</span><span class=o>.</span><span class=n>extend</span><span class=p>(</span><span class=n>docs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=c1># common text file ...</span>
+</span></span><span class=line><span class=cl>            <span class=k>with</span> <span class=n>fs</span><span class=o>.</span><span class=n>open</span><span class=p>(</span><span class=n>input_file</span><span class=p>,</span> <span class=n>errors</span><span class=o>=</span><span class=n>errors</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>encoding</span><span class=p>)</span> <span class=k>as</span> <span class=n>f</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>data</span> <span class=o>=</span> <span class=n>f</span><span class=o>.</span><span class=n>read</span><span class=p>()</span><span class=o>.</span><span class=n>decode</span><span class=p>(</span><span class=n>encoding</span><span class=p>,</span> <span class=n>errors</span><span class=o>=</span><span class=n>errors</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=n>doc</span> <span class=o>=</span> <span class=n>Document</span><span class=p>(</span><span class=n>text</span><span class=o>=</span><span class=n>data</span><span class=p>,</span> <span class=n>metadata</span><span class=o>=</span><span class=n>metadata</span> <span class=ow>or</span> <span class=p>{})</span>
+</span></span><span class=line><span class=cl>            <span class=n>documents</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>doc</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>documents</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=412-databasereader class=headerLink><a href=#412-databasereader class=header-mark></a>4.1.2 DatabaseReader</h4><p>DatabaseReader reads from a database, <strong>requiring users to write SQL</strong>. Additionally, this is actually a <a href=https://llamahub.ai/l/readers/llama-index-readers-database target=_blank rel="noopener noreferrer">plugin</a>.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.readers.database</span> <span class=kn>import</span> <span class=n>DatabaseReader</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>connection_uri</span> <span class=o>=</span> <span class=s2>&#34;sqlite:///example.db&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>reader</span> <span class=o>=</span> <span class=n>DatabaseReader</span><span class=p>(</span><span class=n>uri</span><span class=o>=</span><span class=n>connection_uri</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>query</span> <span class=o>=</span> <span class=s2>&#34;SELECT * FROM users&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>documents</span> <span class=o>=</span> <span class=n>reader</span><span class=o>.</span><span class=n>load_data</span><span class=p>(</span><span class=n>query</span><span class=o>=</span><span class=n>query</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># llama-index-readers-database/llama_index/readers/database/base.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>DatabaseReader</span><span class=p>(</span><span class=n>BaseReader</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>load_data</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>query</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>Document</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>        <span class=k>with</span> <span class=bp>self</span><span class=o>.</span><span class=n>sql_database</span><span class=o>.</span><span class=n>engine</span><span class=o>.</span><span class=n>connect</span><span class=p>()</span> <span class=k>as</span> <span class=n>connection</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>            <span class=n>result</span> <span class=o>=</span> <span class=n>connection</span><span class=o>.</span><span class=n>execute</span><span class=p>(</span><span class=n>text</span><span class=p>(</span><span class=n>query</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=n>item</span> <span class=ow>in</span> <span class=n>result</span><span class=o>.</span><span class=n>fetchall</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>                <span class=n>doc_str</span> <span class=o>=</span> <span class=s2>&#34;, &#34;</span><span class=o>.</span><span class=n>join</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                    <span class=p>[</span><span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=n>col</span><span class=si>}</span><span class=s2>: </span><span class=si>{</span><span class=n>entry</span><span class=si>}</span><span class=s2>&#34;</span> <span class=k>for</span> <span class=n>col</span><span class=p>,</span> <span class=n>entry</span> <span class=ow>in</span> <span class=nb>zip</span><span class=p>(</span><span class=n>result</span><span class=o>.</span><span class=n>keys</span><span class=p>(),</span> <span class=n>item</span><span class=p>)]</span>
+</span></span><span class=line><span class=cl>                <span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=n>documents</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>Document</span><span class=p>(</span><span class=n>text</span><span class=o>=</span><span class=n>doc_str</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>documents</span>
+</span></span></code></pre></td></tr></table></div></div><p>This reader directly uses the user query and <code>fetchall</code> to return all items, then encapsulates the text into <code>Document</code>.</p><h3 id=42-transformation class=headerLink><a href=#42-transformation class=header-mark></a>4.2 Transformation</h3><p>After reading data into documents, we need to perform transformations such as chunking, extracting metadata, embedding, etc. The input and output of transformations are <code>Nodes</code> (note that a document is a subclass of Node).</p><p>llama_index provides both high-level and low-level APIs, giving users a flexible range of options.</p><h4 id=421-nodeparser class=headerLink><a href=#421-nodeparser class=header-mark></a>4.2.1 NodeParser</h4><p>NodeParsers have three main types: File-Based Node Parsers, Text-Splitters, and Relation-Based Node Parsers. They take nodes as input (a document is also a node) and output processed nodes, commonly used for transformation.</p><p>For example, a file-based node parser might be used to transform nodes derived from file data.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.core.node_parser</span> <span class=kn>import</span> <span class=n>SimpleFileNodeParser</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.readers.file</span> <span class=kn>import</span> <span class=n>FlatReader</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>pathlib</span> <span class=kn>import</span> <span class=n>Path</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>md_docs</span> <span class=o>=</span> <span class=n>FlatReader</span><span class=p>()</span><span class=o>.</span><span class=n>load_data</span><span class=p>(</span><span class=n>Path</span><span class=p>(</span><span class=s2>&#34;./test.md&#34;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=n>parser</span> <span class=o>=</span> <span class=n>SimpleFileNodeParser</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>md_nodes</span> <span class=o>=</span> <span class=n>parser</span><span class=o>.</span><span class=n>get_nodes_from_documents</span><span class=p>(</span><span class=n>md_docs</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>Text-Splitters will be discussed in more detail later.</p><p>Relation-Based Node Parsers currently include only the <code>HierarchicalNodeParser</code>, which splits nodes into those with hierarchical relationships. For instance:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.core.schema</span> <span class=kn>import</span> <span class=n>Document</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.core.node_parser</span> <span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=n>HierarchicalNodeParser</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=n>get_leaf_nodes</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=n>get_root_nodes</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>doc_text</span> <span class=o>=</span> <span class=s2>&#34;&#34;&#34; ... &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>docs</span> <span class=o>=</span> <span class=p>[</span><span class=n>Document</span><span class=p>(</span><span class=n>text</span><span class=o>=</span><span class=n>doc_text</span><span class=p>)]</span>
+</span></span><span class=line><span class=cl><span class=c1># default chunk size [2048, 512, 128]</span>
+</span></span><span class=line><span class=cl><span class=n>node_parser</span> <span class=o>=</span> <span class=n>HierarchicalNodeParser</span><span class=o>.</span><span class=n>from_defaults</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>nodes</span> <span class=o>=</span> <span class=n>node_parser</span><span class=o>.</span><span class=n>get_nodes_from_documents</span><span class=p>(</span><span class=n>docs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Get specific kind of nodes</span>
+</span></span><span class=line><span class=cl><span class=n>leaf_nodes</span> <span class=o>=</span> <span class=n>get_leaf_nodes</span><span class=p>(</span><span class=n>nodes</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>root_nodes</span> <span class=o>=</span> <span class=n>get_root_nodes</span><span class=p>(</span><span class=n>nodes</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>level_nodes</span> <span class=o>=</span> <span class=n>get_deeper_nodes</span><span class=p>(</span><span class=n>nodes</span><span class=p>,</span> <span class=n>depth</span><span class=o>=</span><span class=mi>2</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>The root node instance:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=n>TextNode</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=n>id_</span><span class=o>=</span><span class=s1>&#39;6562f0e3-e0bf-47c3-a75f-df3f19b99e71&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=n>embedding</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=n>metadata</span><span class=o>=</span><span class=p>{},</span>
+</span></span><span class=line><span class=cl>    <span class=n>excluded_embed_metadata_keys</span><span class=o>=</span><span class=p>[],</span>
+</span></span><span class=line><span class=cl>    <span class=n>excluded_llm_metadata_keys</span><span class=o>=</span><span class=p>[],</span>
+</span></span><span class=line><span class=cl>    <span class=n>relationships</span><span class=o>=</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=o>&lt;</span><span class=n>NodeRelationship</span><span class=o>.</span><span class=n>SOURCE</span><span class=p>:</span> <span class=s1>&#39;1&#39;</span><span class=o>&gt;</span><span class=p>:</span> <span class=n>RelatedNodeInfo</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=n>node_id</span><span class=o>=</span><span class=s1>&#39;8001ac4d-f9b0-4b51-b3e4-1f61aa44449a&#39;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>            <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=p>),</span>
+</span></span><span class=line><span class=cl>        <span class=o>&lt;</span><span class=n>NodeRelationship</span><span class=o>.</span><span class=n>CHILD</span><span class=p>:</span> <span class=s1>&#39;5&#39;</span><span class=o>&gt;</span><span class=p>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>            <span class=n>RelatedNodeInfo</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                <span class=n>node_id</span><span class=o>=</span><span class=s1>&#39;921ce06b-7880-483c-bf00-3ebf4746dc83&#39;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>            <span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span>
+</span></span><span class=line><span class=cl>    <span class=n>text</span><span class=o>=</span><span class=s1>&#39;...&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=c1># ...</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>And a leaf node instance:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=n>TextNode</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=n>id_</span><span class=o>=</span><span class=s1>&#39;2ab92648-63d2-4197-98e5-b9afb892538d&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=n>relationships</span><span class=o>=</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=o>&lt;</span><span class=n>NodeRelationship</span><span class=o>.</span><span class=n>SOURCE</span><span class=p>:</span> <span class=s1>&#39;1&#39;</span><span class=o>&gt;</span><span class=p>:</span> <span class=n>RelatedNodeInfo</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=n>node_id</span><span class=o>=</span><span class=s1>&#39;921ce06b-7880-483c-bf00-3ebf4746dc83&#39;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>            <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=p>),</span> 
+</span></span><span class=line><span class=cl>        <span class=o>&lt;</span><span class=n>NodeRelationship</span><span class=o>.</span><span class=n>PARENT</span><span class=p>:</span> <span class=s1>&#39;4&#39;</span><span class=o>&gt;</span><span class=p>:</span> <span class=n>RelatedNodeInfo</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=n>node_id</span><span class=o>=</span><span class=s1>&#39;921ce06b-7880-483c-bf00-3ebf4746dc83&#39;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>            <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span> 
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>To access nodes at a specific level after splitting nodes with inheritance relationships, llama_index uses a traversal strategy, <strong>which is not so efficient</strong>.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama-index-core/llama_index/core/node_parser/relational/hierarchical.py</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>get_deeper_nodes</span><span class=p>(</span><span class=n>nodes</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>BaseNode</span><span class=p>],</span> <span class=n>depth</span><span class=p>:</span> <span class=nb>int</span> <span class=o>=</span> <span class=mi>1</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>BaseNode</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;Get children of root nodes in given nodes that have given depth.&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=n>root_nodes</span> <span class=o>=</span> <span class=n>get_root_nodes</span><span class=p>(</span><span class=n>nodes</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>deeper_nodes</span> <span class=o>=</span> <span class=n>root_nodes</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>_</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=n>depth</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=n>deeper_nodes</span> <span class=o>=</span> <span class=n>get_child_nodes</span><span class=p>(</span><span class=n>deeper_nodes</span><span class=p>,</span> <span class=n>nodes</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>deeper_nodes</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl> <span class=k>def</span> <span class=nf>get_root_nodes</span><span class=p>(</span><span class=n>nodes</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>BaseNode</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>BaseNode</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>    <span class=n>root_nodes</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>node</span> <span class=ow>in</span> <span class=n>nodes</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>NodeRelationship</span><span class=o>.</span><span class=n>PARENT</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>node</span><span class=o>.</span><span class=n>relationships</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>root_nodes</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>node</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>root_nodes</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>get_child_nodes</span><span class=p>(</span><span class=n>nodes</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>BaseNode</span><span class=p>],</span> <span class=n>all_nodes</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>BaseNode</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>BaseNode</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>    <span class=n>children_ids</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>node</span> <span class=ow>in</span> <span class=n>nodes</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>NodeRelationship</span><span class=o>.</span><span class=n>CHILD</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>node</span><span class=o>.</span><span class=n>relationships</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>continue</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>children_ids</span><span class=o>.</span><span class=n>extend</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=p>[</span><span class=n>r</span><span class=o>.</span><span class=n>node_id</span> <span class=k>for</span> <span class=n>r</span> <span class=ow>in</span> <span class=n>node</span><span class=o>.</span><span class=n>relationships</span><span class=p>[</span><span class=n>NodeRelationship</span><span class=o>.</span><span class=n>CHILD</span><span class=p>]]</span>
+</span></span><span class=line><span class=cl>        <span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>child_nodes</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>candidate_node</span> <span class=ow>in</span> <span class=n>all_nodes</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>candidate_node</span><span class=o>.</span><span class=n>node_id</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>children_ids</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>continue</span>
+</span></span><span class=line><span class=cl>        <span class=n>child_nodes</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>candidate_node</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>child_nodes</span>
+</span></span></code></pre></td></tr></table></div></div><p>Due to the fact that HierarchicalNodeParser returns all nodes in a single list, <strong>we must retrieve nodes from a specific layer (using <code>get_deeper_nodes</code>) before constructing the index and executing embedding</strong>. Otherwise, the nodes will contain a lot of redundant content, significantly reducing the overall efficiency of RAG.</p><p>This inheritance relationship information can be used with the <code>AutoMergingRetriever</code>, as shown in <a href=https://docs.llamaindex.ai/en/stable/examples/retrievers/auto_merging_retriever/ target=_blank rel="noopener noreferrer">auto_merger</a>.</p><p>This involves sending leaf nodes into the index construction process but merging leaf nodes automatically to obtain richer context, leading to higher final scores.</p><table><thead><tr><th>Names</th><th>Correctness</th><th>Relevancy</th><th>Faithfulness</th><th>Semantic Similarity</th></tr></thead><tbody><tr><td>Auto Merging Retriever</td><td>4.266667</td><td>0.916667</td><td>0.95</td><td>0.962196</td></tr><tr><td>Base Retriever</td><td>4.208333</td><td>0.916667</td><td>0.95</td><td>0.960602</td></tr></tbody></table><h4 id=422-high-level-apivectorstoreindex class=headerLink><a href=#422-high-level-apivectorstoreindex class=header-mark></a>4.2.2 High level api：VectorStoreIndex</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.core</span> <span class=kn>import</span> <span class=n>VectorStoreIndex</span><span class=p>,</span> <span class=n>SimpleDirectoryReader</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>documents</span> <span class=o>=</span> <span class=n>SimpleDirectoryReader</span><span class=p>(</span><span class=s2>&#34;./data&#34;</span><span class=p>)</span><span class=o>.</span><span class=n>load_data</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>vector_index</span> <span class=o>=</span> <span class=n>VectorStoreIndex</span><span class=o>.</span><span class=n>from_documents</span><span class=p>(</span><span class=n>documents</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>vector_index</span><span class=o>.</span><span class=n>as_query_engine</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p>We build index from documents:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/indices/base.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>BaseIndex</span><span class=p>(</span><span class=n>Generic</span><span class=p>[</span><span class=n>IS</span><span class=p>],</span> <span class=n>ABC</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=nd>@classmethod</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>from_documents</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>cls</span><span class=p>:</span> <span class=n>Type</span><span class=p>[</span><span class=n>IndexType</span><span class=p>],</span> <span class=n>documents</span><span class=p>:</span> <span class=n>Sequence</span><span class=p>[</span><span class=n>Document</span><span class=p>],</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>IndexType</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=n>nodes</span> <span class=o>=</span> <span class=n>run_transformations</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=n>documents</span><span class=p>,</span>  <span class=c1># type: ignore</span>
+</span></span><span class=line><span class=cl>            <span class=n>transformations</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>cls</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=n>nodes</span><span class=o>=</span><span class=n>nodes</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># llama_index/core/ingestion/pipeline.py</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>run_transformations</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=n>nodes</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>BaseNode</span><span class=p>],</span> <span class=n>transformations</span><span class=p>:</span> <span class=n>Sequence</span><span class=p>[</span><span class=n>TransformComponent</span><span class=p>],</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>BaseNode</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=ow>not</span> <span class=n>in_place</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>nodes</span> <span class=o>=</span> <span class=nb>list</span><span class=p>(</span><span class=n>nodes</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>transform</span> <span class=ow>in</span> <span class=n>transformations</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>cache</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=nb>hash</span> <span class=o>=</span> <span class=n>get_transformation_hash</span><span class=p>(</span><span class=n>nodes</span><span class=p>,</span> <span class=n>transform</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>cached_nodes</span> <span class=o>=</span> <span class=n>cache</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=nb>hash</span><span class=p>,</span> <span class=n>collection</span><span class=o>=</span><span class=n>cache_collection</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>cached_nodes</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>nodes</span> <span class=o>=</span> <span class=n>cached_nodes</span>
+</span></span><span class=line><span class=cl>            <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>nodes</span> <span class=o>=</span> <span class=n>transform</span><span class=p>(</span><span class=n>nodes</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=n>cache</span><span class=o>.</span><span class=n>put</span><span class=p>(</span><span class=nb>hash</span><span class=p>,</span> <span class=n>nodes</span><span class=p>,</span> <span class=n>collection</span><span class=o>=</span><span class=n>cache_collection</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>nodes</span> <span class=o>=</span> <span class=n>transform</span><span class=p>(</span><span class=n>nodes</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>nodes</span>
+</span></span></code></pre></td></tr></table></div></div><p>If the user does not explicitly pass them in, the default transformation is <code>SentenceSplitter</code>, which has a long subclass inheritance chain:</p><p><code>Representation</code> -> <code>BaseModel</code> -> <code>BaseComponent</code> -> <code>TransformComponent</code> -> <code>NodeParser</code> -> <code>TextSplitter</code> -> <code>MetadataAwareTextSplitter</code> -> <code>SentenceSplitter</code></p><p>Calling <code>transform()</code> leads to the base class&rsquo;s <code>__call__</code> method, which processes down to:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/node_parser/text/sentence.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>SentenceSplitter</span><span class=p>(</span><span class=n>MetadataAwareTextSplitter</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>_split_text</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>text</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>chunk_size</span><span class=p>:</span> <span class=nb>int</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=n>splits</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_split</span><span class=p>(</span><span class=n>text</span><span class=p>,</span> <span class=n>chunk_size</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>chunks</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_merge</span><span class=p>(</span><span class=n>splits</span><span class=p>,</span> <span class=n>chunk_size</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>chunks</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>_split</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>text</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>chunk_size</span><span class=p>:</span> <span class=nb>int</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>_Split</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>        <span class=n>token_size</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_token_size</span><span class=p>(</span><span class=n>text</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>token_size</span> <span class=o>&lt;=</span> <span class=n>chunk_size</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=p>[</span><span class=n>_Split</span><span class=p>(</span><span class=n>text</span><span class=p>,</span> <span class=n>is_sentence</span><span class=o>=</span><span class=kc>True</span><span class=p>,</span> <span class=n>token_size</span><span class=o>=</span><span class=n>token_size</span><span class=p>)]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>text_splits_by_fns</span><span class=p>,</span> <span class=n>is_sentence</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_splits_by_fns</span><span class=p>(</span><span class=n>text</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>text_splits</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=n>text_split_by_fns</span> <span class=ow>in</span> <span class=n>text_splits_by_fns</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>token_size</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_token_size</span><span class=p>(</span><span class=n>text_split_by_fns</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>token_size</span> <span class=o>&lt;=</span> <span class=n>chunk_size</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>text_splits</span><span class=o>.</span><span class=n>append</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                    <span class=n>_Split</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                        <span class=n>text_split_by_fns</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                        <span class=n>is_sentence</span><span class=o>=</span><span class=n>is_sentence</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                        <span class=n>token_size</span><span class=o>=</span><span class=n>token_size</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>recursive_text_splits</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_split</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                    <span class=n>text_split_by_fns</span><span class=p>,</span> <span class=n>chunk_size</span><span class=o>=</span><span class=n>chunk_size</span>
+</span></span><span class=line><span class=cl>                <span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=n>text_splits</span><span class=o>.</span><span class=n>extend</span><span class=p>(</span><span class=n>recursive_text_splits</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>text_splits</span>
+</span></span></code></pre></td></tr></table></div></div><p>Here, <code>_split</code> splits the text into multiple <code>_Split</code> blocks. The splitting strategy follows this sequence:</p><ol><li>Split by paragraphs (<code>'\n\n\n'</code>).</li><li>Split by the NLTK sentence tokenizer (a pip package based on the Punkt model).</li><li>Split using a regex <code>[^,\.;]+[,\.;]?</code> (a regular expression that captures strings + punctuation (comma, period, semicolon)).</li><li>Split by <code>" "</code> (space).</li><li>Split by character(Nearly never used).</li></ol><p>If the chunk size is satisfied, it returns early without further splitting. Note the recursive logic <code>recursive_text_splits</code>.</p><p>For example, our sample text, with 75,000 characters, will be split into a list with <code>len(splits)=759</code>.</p><p><code>_merge</code> then merges the splits into formal chunks.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/node_parser/text/sentence.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>SentenceSplitter</span><span class=p>(</span><span class=n>MetadataAwareTextSplitter</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>_merge</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>splits</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>_Split</span><span class=p>],</span> <span class=n>chunk_size</span><span class=p>:</span> <span class=nb>int</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=k>def</span> <span class=nf>close_chunk</span><span class=p>()</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=c1># finish a chunk and then create a new one</span>
+</span></span><span class=line><span class=cl>            <span class=k>pass</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>while</span> <span class=nb>len</span><span class=p>(</span><span class=n>splits</span><span class=p>)</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>cur_split</span> <span class=o>=</span> <span class=n>splits</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>cur_split</span><span class=o>.</span><span class=n>token_size</span> <span class=o>&gt;</span> <span class=n>chunk_size</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=k>raise</span> <span class=ne>ValueError</span><span class=p>(</span><span class=s2>&#34;Single token exceeded chunk size&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>cur_chunk_len</span> <span class=o>+</span> <span class=n>cur_split</span><span class=o>.</span><span class=n>token_size</span> <span class=o>&gt;</span> <span class=n>chunk_size</span> <span class=ow>and</span> <span class=ow>not</span> <span class=n>new_chunk</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=c1># if adding split to current chunk exceeds chunk size</span>
+</span></span><span class=line><span class=cl>                <span class=n>close_chunk</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>            <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=k>if</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>                    <span class=n>cur_split</span><span class=o>.</span><span class=n>is_sentence</span>
+</span></span><span class=line><span class=cl>                    <span class=ow>or</span> <span class=n>cur_chunk_len</span> <span class=o>+</span> <span class=n>cur_split</span><span class=o>.</span><span class=n>token_size</span> <span class=o>&lt;=</span> <span class=n>chunk_size</span>
+</span></span><span class=line><span class=cl>                    <span class=ow>or</span> <span class=n>new_chunk</span>  <span class=c1># new chunk, always add at least one split</span>
+</span></span><span class=line><span class=cl>                <span class=p>):</span>
+</span></span><span class=line><span class=cl>                    <span class=c1># add split to chunk</span>
+</span></span><span class=line><span class=cl>                    <span class=n>cur_chunk_len</span> <span class=o>+=</span> <span class=n>cur_split</span><span class=o>.</span><span class=n>token_size</span>
+</span></span><span class=line><span class=cl>                    <span class=n>cur_chunk</span><span class=o>.</span><span class=n>append</span><span class=p>((</span><span class=n>cur_split</span><span class=o>.</span><span class=n>text</span><span class=p>,</span> <span class=n>cur_split</span><span class=o>.</span><span class=n>token_size</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>                    <span class=n>splits</span><span class=o>.</span><span class=n>pop</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                    <span class=n>new_chunk</span> <span class=o>=</span> <span class=kc>False</span>
+</span></span><span class=line><span class=cl>                <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=c1># close out chunk</span>
+</span></span><span class=line><span class=cl>                    <span class=n>close_chunk</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># handle the last chunk</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=ow>not</span> <span class=n>new_chunk</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>chunk</span> <span class=o>=</span> <span class=s2>&#34;&#34;</span><span class=o>.</span><span class=n>join</span><span class=p>([</span><span class=n>text</span> <span class=k>for</span> <span class=n>text</span><span class=p>,</span> <span class=n>length</span> <span class=ow>in</span> <span class=n>cur_chunk</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>            <span class=n>chunks</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>chunk</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># run postprocessing to remove blank spaces</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_postprocess_chunks</span><span class=p>(</span><span class=n>chunks</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>If the chunk size condition is met, it merges as many splits as possible into one chunk. Note there is <strong>chunk overlap</strong>, where adjacent chunks overlap some text (default 200 tokens), providing better contextual continuity.</p><p>For our example document, after merging into chunks, <code>len(chunks)=22</code>.</p><p>After <code>_split</code> and <code>_merge</code>, chunks are encapsulated into nodes and returned.</p><p><strong>Performance-wise</strong>, this part involves complex Python processing, with <strong>O(N) linear growth</strong>, which could be optimized using C++/parallelism (available in the low-level API). Additionally, logical optimization is possible (splits are too fine and chunks merged with many cycles, as well as meaningless <code>pop(0)</code>). There&rsquo;s also overhead in initializing the tokenizer and making multiple <code>tokenize()</code> calls</p><h4 id=423-low-level-apiingestionpipeline class=headerLink><a href=#423-low-level-apiingestionpipeline class=header-mark></a>4.2.3 Low level api：IngestionPipeline</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.core</span> <span class=kn>import</span> <span class=n>SimpleDirectoryReader</span><span class=p>,</span> <span class=n>VectorStoreIndex</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.core.ingestion</span> <span class=kn>import</span> <span class=n>IngestionPipeline</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.core.node_parser</span> <span class=kn>import</span> <span class=n>TokenTextSplitter</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>documents</span> <span class=o>=</span> <span class=n>SimpleDirectoryReader</span><span class=p>(</span><span class=s2>&#34;./data&#34;</span><span class=p>)</span><span class=o>.</span><span class=n>load_data</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>pipeline</span> <span class=o>=</span> <span class=n>IngestionPipeline</span><span class=p>(</span><span class=n>transformations</span><span class=o>=</span><span class=p>[</span><span class=n>TokenTextSplitter</span><span class=p>(),</span> <span class=n>embed_model</span><span class=p>,</span> <span class=o>...</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>nodes</span> <span class=o>=</span> <span class=n>pipeline</span><span class=o>.</span><span class=n>run</span><span class=p>(</span><span class=n>documents</span><span class=o>=</span><span class=n>documents</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>index</span> <span class=o>=</span> <span class=n>VectorStoreIndex</span><span class=p>(</span><span class=n>nodes</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>The pipeline&rsquo;s <code>run</code> method <strong>supports parallelism and caching</strong>.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/ingestion/pipeline.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>IngestionPipeline</span><span class=p>(</span><span class=n>BaseModel</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>run</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=p>,</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Sequence</span><span class=p>[</span><span class=n>BaseNode</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>        <span class=n>input_nodes</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_prepare_inputs</span><span class=p>(</span><span class=n>documents</span><span class=p>,</span> <span class=n>nodes</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>num_workers</span> <span class=ow>and</span> <span class=n>num_workers</span> <span class=o>&gt;</span> <span class=mi>1</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=c1># multiprocessing ...</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>nodes</span> <span class=o>=</span> <span class=n>run_transformations</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                <span class=n>nodes_to_run</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=bp>self</span><span class=o>.</span><span class=n>transformations</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=n>cache</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>cache</span> <span class=k>if</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>disable_cache</span> <span class=k>else</span> <span class=kc>None</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>            <span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>vector_store</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=bp>self</span><span class=o>.</span><span class=n>vector_store</span><span class=o>.</span><span class=n>add</span><span class=p>([</span><span class=n>n</span> <span class=k>for</span> <span class=n>n</span> <span class=ow>in</span> <span class=n>nodes</span> <span class=k>if</span> <span class=n>n</span><span class=o>.</span><span class=n>embedding</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>nodes</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>cache</code> is applied during <code>run_transformations</code>, using <code>nodes</code> and <code>transform hash</code> values as keys for storage, avoiding repeated computations in the pipeline for repetitive tasks.</p><p>For <code>IngestionCache</code>, the applied cache is essentially <code>SimpleCache</code> (an <strong>in-memory</strong> cache).</p><p>llama_index also supports other DB caches, such as those based on <code>sqlalchemy</code> for database integration.</p><h3 id=43-indexing--embedding class=headerLink><a href=#43-indexing--embedding class=header-mark></a>4.3 Indexing & Embedding</h3><h4 id=431-basic-concepts class=headerLink><a href=#431-basic-concepts class=header-mark></a>4.3.1 Basic Concepts</h4><p>After constructing nodes through transformation, we need to process these nodes into an index (a data structure for querying). This step is also where document processing consumes the most time. We will illustrate this using <code>VectorStoreIndex</code> as an example.</p><p><code>VectorStoreIndex</code> creates a <code>vector embedding</code> for each node. An embedding is a numerical representation of text data, where semantically similar texts have similar embeddings. This allows for semantic search instead of simple keyword matching for queries.</p><p>For example, two sentences with the same meaning will have a high cosine similarity (essentially, the cosine of the angle between the vectors, where 1 indicates the same direction).</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>Embedding <span class=k>for</span> <span class=s1>&#39;The cat is on the mat.&#39;</span>:
+</span></span><span class=line><span class=cl> <span class=o>[</span> 0.021,  0.012, -0.034,  0.045,  0.038, -0.026,  0.056, -0.024,  0.013, -0.017<span class=o>]</span>
+</span></span><span class=line><span class=cl>Embedding <span class=k>for</span> <span class=s1>&#39;The feline is on the rug.&#39;</span>:
+</span></span><span class=line><span class=cl> <span class=o>[</span> 0.023,  0.010, -0.032,  0.046,  0.036, -0.025,  0.057, -0.022,  0.011, -0.018<span class=o>]</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>Cosine Similarity（余弦相似度）: 0.995
+</span></span></code></pre></td></tr></table></div></div><p>During querying, the query is also converted to an embedding, and then a similarity calculation is performed with all nodes. The top-k most similar embeddings are returned.</p><p>Other types of indexes include:</p><ul><li><p><strong>SummaryIndex</strong>(formerly List Index)</p><p><figure><a class=lightgallery href=/llama_index/summary_index.png title=image data-thumbnail=/llama_index/summary_index.png><img loading=lazy src=/llama_index/summary_index.png srcset="/llama_index/summary_index.png, /llama_index/summary_index.png 1.5x, /llama_index/summary_index.png 2x" sizes=auto alt=image height=736 width=1576></a></figure></p></li><li><p><strong>TreeIndex</strong>: Nodes have a tree-like storage structure (inheritance relationship)</p><p><figure><a class=lightgallery href=/llama_index/tree_index.png title=image data-thumbnail=/llama_index/tree_index.png><img loading=lazy src=/llama_index/tree_index.png srcset="/llama_index/tree_index.png, /llama_index/tree_index.png 1.5x, /llama_index/tree_index.png 2x" sizes=auto alt=image height=1248 width=1481></a></figure>Tree nodes facilitate the retrieval of nodes with inheritance relationships, starting from the root and querying down to the leaf node.</p></li><li><p><strong>Keyword Table Index</strong></p><p><figure><a class=lightgallery href=/llama_index/keyword_index.png title=image data-thumbnail=/llama_index/keyword_index.png><img loading=lazy src=/llama_index/keyword_index.png srcset="/llama_index/keyword_index.png, /llama_index/keyword_index.png 1.5x, /llama_index/keyword_index.png 2x" sizes=auto alt=image height=992 width=1688></a></figure></p></li><li><p><strong>property graph index</strong>: for instance</p></li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>        +---------+              +---------+
+</span></span><span class=line><span class=cl>        <span class=p>|</span>         <span class=p>|</span> WorksAt      <span class=p>|</span>         <span class=p>|</span>
+</span></span><span class=line><span class=cl>        <span class=p>|</span>  Alice  +-------------&gt;<span class=p>|</span>  OpenAI <span class=p>|</span>
+</span></span><span class=line><span class=cl>        <span class=p>|</span>         <span class=p>|</span>              <span class=p>|</span>         <span class=p>|</span>
+</span></span><span class=line><span class=cl>        +----+----+              +---------+
+</span></span><span class=line><span class=cl>             <span class=p>|</span>
+</span></span><span class=line><span class=cl>             <span class=p>|</span> Knows
+</span></span><span class=line><span class=cl>             <span class=p>|</span>
+</span></span><span class=line><span class=cl>        +----v----+
+</span></span><span class=line><span class=cl>        <span class=p>|</span>         <span class=p>|</span>
+</span></span><span class=line><span class=cl>        <span class=p>|</span>   Bob   <span class=p>|</span>
+</span></span><span class=line><span class=cl>        <span class=p>|</span>         <span class=p>|</span>
+</span></span><span class=line><span class=cl>        +----+----+
+</span></span><span class=line><span class=cl>             <span class=p>|</span>
+</span></span><span class=line><span class=cl>             <span class=p>|</span> WorksAt
+</span></span><span class=line><span class=cl>             <span class=p>|</span>
+</span></span><span class=line><span class=cl>        +----v----+
+</span></span><span class=line><span class=cl>        <span class=p>|</span>         <span class=p>|</span>
+</span></span><span class=line><span class=cl>        <span class=p>|</span>Microsoft<span class=p>|</span>
+</span></span><span class=line><span class=cl>        <span class=p>|</span>         <span class=p>|</span>
+</span></span><span class=line><span class=cl>        +---------+
+</span></span></code></pre></td></tr></table></div></div><h4 id=432-process-of-building-index class=headerLink><a href=#432-process-of-building-index class=header-mark></a>4.3.2 Process of building index</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/indices/vector_store/base.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>VectorStoreIndex</span><span class=p>(</span><span class=n>BaseIndex</span><span class=p>[</span><span class=n>IndexDict</span><span class=p>]):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=p>,</span> <span class=n>nodes</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>Sequence</span><span class=p>[</span><span class=n>BaseNode</span><span class=p>]]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=n>nodes</span><span class=o>=</span><span class=n>nodes</span><span class=p>,</span> <span class=n>index_struct</span><span class=o>=</span><span class=n>index_struct</span><span class=p>,</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=p>)</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl><span class=c1># llama_index/core/indices/base.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>BaseIndex</span><span class=p>(</span><span class=n>Generic</span><span class=p>[</span><span class=n>IS</span><span class=p>],</span> <span class=n>ABC</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=p>,</span> <span class=n>nodes</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>Sequence</span><span class=p>[</span><span class=n>BaseNode</span><span class=p>]]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>index_struct</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>nodes</span> <span class=o>=</span> <span class=n>nodes</span> <span class=ow>or</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>            <span class=n>index_struct</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>build_index_from_nodes</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                <span class=n>nodes</span> <span class=o>+</span> <span class=n>objects</span>  <span class=c1># type: ignore</span>
+</span></span><span class=line><span class=cl>            <span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>_index_struct</span> <span class=o>=</span> <span class=n>index_struct</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>_storage_context</span><span class=o>.</span><span class=n>index_store</span><span class=o>.</span><span class=n>add_index_struct</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_index_struct</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>_transformations</span> <span class=o>=</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=n>transformations</span>
+</span></span><span class=line><span class=cl>            <span class=ow>or</span> <span class=n>transformations_from_settings_or_context</span><span class=p>(</span><span class=n>Settings</span><span class=p>,</span> <span class=n>service_context</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>During base class initialization, <code>build_index_from_nodes</code> is called, which eventually calls <code>_add_nodes_to_index</code>, and then processes each node through <code>get_text_embedding_batch</code>.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/indices/vector_store/base.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>VectorStoreIndex</span><span class=p>(</span><span class=n>BaseIndex</span><span class=p>[</span><span class=n>IndexDict</span><span class=p>]):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>_add_nodes_to_index</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=p>,</span> <span class=n>index_struct</span><span class=p>:</span> <span class=n>IndexDict</span><span class=p>,</span> <span class=n>nodes</span><span class=p>:</span> <span class=n>Sequence</span><span class=p>[</span><span class=n>BaseNode</span><span class=p>],</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=n>nodes_batch</span> <span class=ow>in</span> <span class=n>iter_batch</span><span class=p>(</span><span class=n>nodes</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>_insert_batch_size</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=n>nodes_batch</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_node_with_embedding</span><span class=p>(</span><span class=n>nodes_batch</span><span class=p>,</span> <span class=n>show_progress</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>new_ids</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_vector_store</span><span class=o>.</span><span class=n>add</span><span class=p>(</span><span class=n>nodes_batch</span><span class=p>,</span> <span class=o>**</span><span class=n>insert_kwargs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>_vector_store</span><span class=o>.</span><span class=n>stores_text</span> <span class=ow>or</span> <span class=bp>self</span><span class=o>.</span><span class=n>_store_nodes_override</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=k>for</span> <span class=n>node</span><span class=p>,</span> <span class=n>new_id</span> <span class=ow>in</span> <span class=nb>zip</span><span class=p>(</span><span class=n>nodes_batch</span><span class=p>,</span> <span class=n>new_ids</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>                    <span class=c1># NOTE: remove embedding from node to avoid duplication</span>
+</span></span><span class=line><span class=cl>                    <span class=n>node_without_embedding</span> <span class=o>=</span> <span class=n>node</span><span class=o>.</span><span class=n>copy</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>                    <span class=n>node_without_embedding</span><span class=o>.</span><span class=n>embedding</span> <span class=o>=</span> <span class=kc>None</span>
+</span></span><span class=line><span class=cl>                    <span class=n>index_struct</span><span class=o>.</span><span class=n>add_node</span><span class=p>(</span><span class=n>node_without_embedding</span><span class=p>,</span> <span class=n>text_id</span><span class=o>=</span><span class=n>new_id</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                    <span class=bp>self</span><span class=o>.</span><span class=n>_docstore</span><span class=o>.</span><span class=n>add_documents</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                        <span class=p>[</span><span class=n>node_without_embedding</span><span class=p>],</span> <span class=n>allow_update</span><span class=o>=</span><span class=kc>True</span>
+</span></span><span class=line><span class=cl>                    <span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=c1># image embedding ...</span>
+</span></span><span class=line><span class=cl>                        
+</span></span><span class=line><span class=cl><span class=c1># llama_index/core/indices/utils.py        </span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>embed_nodes</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=n>nodes</span><span class=p>:</span> <span class=n>Sequence</span><span class=p>[</span><span class=n>BaseNode</span><span class=p>],</span> <span class=n>embed_model</span><span class=p>:</span> <span class=n>BaseEmbedding</span><span class=p>,</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>List</span><span class=p>[</span><span class=nb>float</span><span class=p>]]:</span>
+</span></span><span class=line><span class=cl>    <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=n>new_embeddings</span> <span class=o>=</span> <span class=n>embed_model</span><span class=o>.</span><span class=n>get_text_embedding_batch</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=n>texts_to_embed</span><span class=p>,</span> <span class=n>show_progress</span><span class=o>=</span><span class=n>show_progress</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>new_id</span><span class=p>,</span> <span class=n>text_embedding</span> <span class=ow>in</span> <span class=nb>zip</span><span class=p>(</span><span class=n>ids_to_embed</span><span class=p>,</span> <span class=n>new_embeddings</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=n>id_to_embed_map</span><span class=p>[</span><span class=n>new_id</span><span class=p>]</span> <span class=o>=</span> <span class=n>text_embedding</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>id_to_embed_map</span>
+</span></span></code></pre></td></tr></table></div></div><p>Within this call chain, we find a function wrapper mechanism <code>@dispatcher.span</code>. By inserting <code>span</code> before and after function calls, it captures and records each function&rsquo;s execution time, inputs, outputs, and errors.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/base/embeddings/base.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>BaseEmbedding</span><span class=p>(</span><span class=n>TransformComponent</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=nd>@dispatcher.span</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>get_text_embedding_batch</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=p>,</span> <span class=n>texts</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>Embedding</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=n>model_dict</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>to_dict</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=n>idx</span><span class=p>,</span> <span class=n>text</span> <span class=ow>in</span> <span class=n>queue_with_progress</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>cur_batch</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>text</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>idx</span> <span class=o>==</span> <span class=nb>len</span><span class=p>(</span><span class=n>texts</span><span class=p>)</span> <span class=o>-</span> <span class=mi>1</span> <span class=ow>or</span> <span class=nb>len</span><span class=p>(</span><span class=n>cur_batch</span><span class=p>)</span> <span class=o>==</span> <span class=bp>self</span><span class=o>.</span><span class=n>embed_batch_size</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>                <span class=n>embeddings</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_text_embeddings</span><span class=p>(</span><span class=n>cur_batch</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=n>result_embeddings</span><span class=o>.</span><span class=n>extend</span><span class=p>(</span><span class=n>embeddings</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>                <span class=n>cur_batch</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>result_embeddings</span>
+</span></span></code></pre></td></tr></table></div></div><p>There is a batch logic here, accumulating (default 10) texts before sending them for embedding.</p><p>Finally, it calls the model&rsquo;s encode interface, such as the <code>BAAI/bge-base-en-v1.5</code> embedding model, reaching the hugging face model embedding.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/embeddings/huggingface/base.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>HuggingFaceEmbedding</span><span class=p>(</span><span class=n>BaseEmbedding</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>_embed</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=p>,</span> <span class=n>sentences</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span> <span class=n>prompt_name</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>List</span><span class=p>[</span><span class=nb>float</span><span class=p>]]:</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_model</span><span class=o>.</span><span class=n>encode</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=n>sentences</span><span class=p>,</span> <span class=n>batch_size</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>embed_batch_size</span><span class=p>,</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=p>)</span><span class=o>.</span><span class=n>tolist</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p>Further calls lead to the <code>encode</code> interface of <code>sentence_transformers/SentenceTransformer.py</code>, which we won&rsquo;t expand on here.</p><p>Returning along the call chain, nodes are added to <code>index_struct</code>, and <code>node_without_embedding</code> is added to <code>self._docstore</code>. This completes the indexing construction.</p><p>From a performance perspective, a simple time analysis shows that <strong>most time consumption comes from embedding construction</strong> (simulating a host scenario without GPU). This part has limited optimization potential. Currently, llama_index does not handle embedding parallelism well; <strong>it must be placed in the transformation phase (once inside the vector index initialization, it becomes irrelevant to parallelism)</strong>.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>_get_text_embeddings</span> <span class=n>time</span><span class=p>:</span>  <span class=mf>5.118131160736084</span>
+</span></span><span class=line><span class=cl><span class=n>_get_text_embeddings</span> <span class=n>time</span><span class=p>:</span>  <span class=mf>2.813439130783081</span>
+</span></span><span class=line><span class=cl><span class=nb>all</span> <span class=n>index</span> <span class=n>time</span><span class=p>:</span>  <span class=mf>8.08009123802185</span>
+</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>Updated on 2024-07-06&nbsp;<a class=git-hash href=https://github.com/zjzjy/commit/d1068aa986ca9906558cc9fb39295506170b4c0d target=_blank title="commit by yewentao(zhyanwentao@126.com) d1068aa986ca9906558cc9fb39295506170b4c0d: adding llama_index source code reading" rel="noopener noreferrer">
+<i class="fas fa-hashtag fa-fw"></i>d1068aa</a></span></div><div class=post-info-license></div></div><div class=post-info-line><div class=post-info-md><span><a class=link-to-mardown href=/llama_index/index.md target=_blank rel="noopener noreferrer">Read markdown</a>
+</span><span>|&nbsp;<a class=link-to-source href=https://github.com/zjzjy/zjzjy.github.io/blob/main/content/posts/llm/llama_index/index.en.md target=_blank rel="noopener noreferrer">View source</a>
+</span><span>|&nbsp;<a class=link-to-edit href=https://github.com/zjzjy/zjzjy.github.io/edit/main/content/posts/llm/llama_index/index.en.md target=_blank rel="noopener noreferrer">Edit this page</a>
+</span><span>|&nbsp;<a class=link-to-report href="https://github.com/zjzjy/zjzjy.github.io/issues/new?title=[bug]%20Llama_index+Source+Code+Analysis%281%29&body=|Field|Value|%0A|-|-|%0A|Title|Llama_index+Source+Code+Analysis%281%29|%0A|Url|https://zjzjy.github.io/llama_index/|%0A|Filename|https://github.com/yewentao256/yewentao256.github.io/blob/main/content/posts/llm/llama_index/index.en.md|" target=_blank rel="noopener noreferrer">Report issue</a></span></div><div class=post-info-share><button title="Share on Twitter" data-sharer=twitter data-url=https://zjzjy.github.io/llama_index/ data-title="Llama_index Source Code Analysis(1)"><span class="fab fa-twitter fa-fw"></span></button><button title="Share on Facebook" data-sharer=facebook data-url=https://zjzjy.github.io/llama_index/><span class="fab fa-facebook-square fa-fw"></span></button><button title="Share on Hacker News" data-sharer=hackernews data-url=https://zjzjy.github.io/llama_index/ data-title="Llama_index Source Code Analysis(1)"><span class="fab fa-hacker-news fa-fw"></span></button><button title="Share on Line" data-sharer=line data-url=https://zjzjy.github.io/llama_index/ data-title="Llama_index Source Code Analysis(1)"><span data-svg-src=/lib/simple-icons/icons/line.min.svg></span></button><button title="Share on 微博" data-sharer=weibo data-url=https://zjzjy.github.io/llama_index/ data-title="Llama_index Source Code Analysis(1)"><span class="fab fa-weibo fa-fw"></span></button></div></div></div><div class=post-info-more><section class=post-tags></section><section><span><a href=javascript:void(0); onclick=window.history.back()>Back</a></span>&nbsp;|&nbsp;<span><a href=/>Home</a></span></section></div><div class=post-nav><a href=/llama_index_2/ class=prev rel=prev title="Llama_index Source Code Analysis(2)"><i class="fas fa-angle-left fa-fw"></i>Llama_index Source Code Analysis(2)</a>
+<a href=/llama_index_1/ class=next rel=next title=Llama_index_1>Llama_index_1<i class="fas fa-angle-right fa-fw"></i></a></div></div><div id=comments><div id=giscus></div><noscript>Please enable JavaScript to view the comments powered by <a href=https://giscus.app/>giscus</a>.</noscript></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>Powered by <a href=https://gohugo.io/ target=_blank rel="noopener noreferrer" title="Hugo 0.114.1">Hugo</a>&nbsp;|&nbsp;Theme - <a href=https://github.com/HEIGE-PCloud/DoIt target=_blank rel="noopener noreferrer" title="DoIt 0.4.0"><i class="far fa-edit fa-fw"></i> DoIt</a></div><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2024</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://zjzjy.github.io target=_blank rel="noopener noreferrer">Yewentao</a></span>&nbsp;|&nbsp;<span class=license><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span></div><div class=footer-line></div><div class=footer-line></div></div></footer></div><div id=fixed-buttons><a href=#back-to-top id=back-to-top-button class=fixed-button title="Back to Top"><i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title="View Comments"><i class="fas fa-comment fa-fw"></i></a></div><div id=cookieconsent-container></div><div class=assets><link rel=stylesheet href=/lib/katex/katex.min.css><link rel=preload as=style onload='this.onload=null,this.rel="stylesheet"' href=/lib/katex/copy-tex.min.css><noscript><link rel=stylesheet href=/lib/katex/copy-tex.min.css></noscript><link rel=stylesheet href=/lib/cookieconsent/cookieconsent.min.css><script type=text/javascript>window.config={code:{copyTitle:"Copy to clipboard",maxShownLines:30},comment:{giscus:{darkTheme:"dark",dataCategory:"Announcements",dataCategoryId:"DIC_kwDOI3HpRc4CYIaq",dataEmitMetadata:"0",dataInputPosition:"bottom",dataLang:"zh-CN",dataMapping:"pathname",dataReactionsEnabled:"1",dataRepo:"zjzjy/zjzjy.github.io",dataRepoId:"R_kgDOI3HpRQ",dataStrict:"0",lightTheme:"light"}},cookieconsent:{content:{dismiss:"Got it!",link:"Learn more",message:"This website uses Cookies to improve your experience."},enable:!0,palette:{button:{background:"#f0f0f0"},popup:{background:"#1aa3ff"}},theme:"edgeless"},math:{delimiters:[{display:!0,left:"$$",right:"$$"},{display:!0,left:"\\[",right:"\\]"},{display:!1,left:"$",right:"$"},{display:!1,left:"\\(",right:"\\)"}],strict:!1},search:{distance:100,findAllMatches:!1,fuseIndexURL:"/index.json",highlightTag:"em",ignoreFieldNorm:!1,ignoreLocation:!1,isCaseSensitive:!1,location:0,maxResultLength:10,minMatchCharLength:2,noResultsFound:"No results found",snippetLength:50,threshold:.3,type:"fuse",useExtendedSearch:!1},sharerjs:!0,table:{sort:!0}}</script><script type=text/javascript src=/lib/tablesort/tablesort.min.js></script><script type=text/javascript src=/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=/lib/sharer/sharer.min.js></script><script type=text/javascript src=/lib/katex/katex.min.js defer></script><script type=text/javascript src=/lib/katex/auto-render.min.js defer></script><script type=text/javascript src=/lib/katex/copy-tex.min.js defer></script><script type=text/javascript src=/lib/katex/mhchem.min.js defer></script><script type=text/javascript src=/js/katex.min.js defer></script><script type=text/javascript src=/lib/cookieconsent/cookieconsent.min.js defer></script><script type=text/javascript src=/js/cookieconsent.min.js defer></script><script type=text/javascript src=/js/theme.min.js defer></script><script type=text/javascript src=/js/giscus.min.js defer></script></div></body></html>

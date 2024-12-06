@@ -1,0 +1,967 @@
+<!doctype html><html lang=zh-CN><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>Llama_index 源码解读(1) - Zhengjunyin's Blog</title><meta name=Description content="zhengjunyin's blog"><meta property="og:title" content="Llama_index 源码解读(1)"><meta property="og:description" content="本文介绍了RAG的基础概念，并基于llama_index的源码解读进一步演示了RAG的流程，包括data loader、transformation、index、query等。此外，本文也对llama_index RAG流程进行了一些性能上的分析并给出了对应优化建议。"><meta property="og:type" content="article"><meta property="og:url" content="https://zjzjy.github.io/zh-cn/llama_index/"><meta property="og:image" content="https://zjzjy.github.io/person-circle.svg"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-06-10T14:22:16+08:00"><meta property="article:modified_time" content="2024-07-06T10:14:45+08:00"><meta property="og:site_name" content="ZhengJunyin's blog"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://zjzjy.github.io/person-circle.svg"><meta name=twitter:title content="Llama_index 源码解读(1)"><meta name=twitter:description content="本文介绍了RAG的基础概念，并基于llama_index的源码解读进一步演示了RAG的流程，包括data loader、transformation、index、query等。此外，本文也对llama_index RAG流程进行了一些性能上的分析并给出了对应优化建议。"><meta name=application-name content="Zhengjunyin's Blog"><meta name=apple-mobile-web-app-title content="Zhengjunyin's Blog"><meta name=theme-color content="#f8f8f8"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=canonical href=https://zjzjy.github.io/zh-cn/llama_index/><link rel=prev href=https://zjzjy.github.io/zh-cn/llama_index_2/><link rel=next href=https://zjzjy.github.io/zh-cn/iot/><link rel=stylesheet href=/css/main.css><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/color.css><link rel=stylesheet href=/css/style.min.css><link rel=preload as=style onload='this.onload=null,this.rel="stylesheet"' href=/lib/fontawesome-free/all.min.css><noscript><link rel=stylesheet href=/lib/fontawesome-free/all.min.css></noscript><link rel=preload as=style onload='this.onload=null,this.rel="stylesheet"' href=/lib/animate/animate.min.css><noscript><link rel=stylesheet href=/lib/animate/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Llama_index 源码解读(1)","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/zjzjy.github.io\/zh-cn\/llama_index\/"},"genre":"posts","wordcount":6834,"url":"https:\/\/zjzjy.github.io\/zh-cn\/llama_index\/","datePublished":"2024-06-10T14:22:16+08:00","dateModified":"2024-07-06T10:14:45+08:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"Yewentao"},"description":""}</script><script src=//instant.page/5.2.0 defer type=module integrity=sha384-jnZyxPjiipYXnSU0ygqeac2q7CVYMbh84q0uHVRRxEtvFPiQYbXWUorga2aqZJ0z></script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>function setTheme(e){document.body.setAttribute("theme",e),document.documentElement.style.setProperty("color-scheme",e==="light"?"light":"dark"),window.theme=e,window.isDark=window.theme!=="light"}function saveTheme(e){window.localStorage&&localStorage.setItem("theme",e)}function getMeta(e){const t=document.getElementsByTagName("meta");for(let n=0;n<t.length;n++)if(t[n].getAttribute("name")===e)return t[n];return""}if(window.localStorage&&localStorage.getItem("theme")){let e=localStorage.getItem("theme");e==="light"||e==="dark"||e==="black"?setTheme(e):setTheme(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")}else"auto"==="light"||"auto"==="dark"||"auto"==="black"?(setTheme("auto"),saveTheme("auto")):(saveTheme("auto"),setTheme(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"));let metaColors={light:"#f8f8f8",dark:"#252627",black:"#000000"};getMeta("theme-color").content=metaColors[document.body.getAttribute("theme")],window.switchThemeEventSet=new Set</script><div id=back-to-top></div><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/zh-cn/ title="Zhengjunyin's Blog">Home</a></div><div class=menu><div class=menu-inner><a class=menu-item href=/zh-cn/posts/>文章 </a><a class=menu-item href=/zh-cn/categories/>分类 </a><a class=menu-item href=/zh-cn/about/>关于 </a><a class=menu-item href=https://github.com/zjzjy title=GitHub rel="noopener noreferrer" target=_blank><i class='fab fa-github fa-fw' aria-hidden=true></i> </a><span class="menu-item delimiter"></span><a href=javascript:void(0); class="menu-item language" title=选择语言>简体中文<i class="fas fa-chevron-right fa-fw"></i>
+<select class=language-select title=选择语言 id=language-select-desktop onchange="location=this.value"><option value=/llama_index/>English</option><option value=/zh-cn/llama_index/ selected>简体中文</option></select>
+</a><span class="menu-item search" id=search-desktop><input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin"></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw"></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/zh-cn/ title="Zhengjunyin's Blog">Home</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin"></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/zh-cn/posts/ title>文章</a><a class=menu-item href=/zh-cn/categories/ title>分类</a><a class=menu-item href=/zh-cn/about/ title>关于</a><a class=menu-item href=https://github.com/zjzjy title=GitHub rel="noopener noreferrer" target=_blank><i class='fab fa-github fa-fw' aria-hidden=true></i></a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i>
+</a><a href=javascript:void(0); class=menu-item title=选择语言>简体中文<i class="fas fa-chevron-right fa-fw"></i>
+<select class=language-select title=选择语言 onchange="location=this.value"><option value=/llama_index/>English</option><option value=/zh-cn/llama_index/ selected>简体中文</option></select></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto><nav id=TableOfContents><ul><li><a href=#summary>Summary</a></li><li><a href=#1-introduction>1. Introduction</a></li><li><a href=#2-rag-high-level-concepts>2. RAG High Level Concepts</a></li><li><a href=#3-llama-index使用示例>3. Llama index使用示例</a></li><li><a href=#4-llama-index源码解析>4. llama index源码解析</a><ul><li><a href=#41-loading>4.1 Loading</a><ul><li><a href=#411-simpledirectoryreader>4.1.1 SimpleDirectoryReader</a></li><li><a href=#412-databasereader>4.1.2 DatabaseReader</a></li></ul></li><li><a href=#42-transformation>4.2 Transformation</a><ul><li><a href=#421-nodeparser>4.2.1 NodeParser</a></li><li><a href=#422-high-level-apivectorstoreindex>4.2.2 High level api：VectorStoreIndex</a></li><li><a href=#423-low-level-apiingestionpipeline>4.2.3 Low level api：IngestionPipeline</a></li></ul></li><li><a href=#43-indexing--embedding>4.3 Indexing & Embedding</a><ul><li><a href=#431-basic-concepts>4.3.1 Basic Concepts</a></li><li><a href=#432-process-of-building-index>4.3.2 Process of building index</a></li></ul></li></ul></li></ul></nav></div></div><script>document.getElementsByTagName("main")[0].setAttribute("autoTOC","true")</script><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Llama_index 源码解读(1)</h1><div class=post-meta><div class=post-meta-line><span class=post-author><span class="author fas fa-user-circle fa-fw"></span><a href=https://zjzjy.github.io title=Author target=_blank rel="noopener noreferrer author" class=author>Yewentao</a>
+</span>&nbsp;<span class=post-category>收录于 </span>&nbsp;<span class=post-category>类别 <a href=/zh-cn/categories/llm/><i class="far fa-folder fa-fw"></i>llm</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2024-06-10>2024-06-10</time>&nbsp;<i class="far fa-edit fa-fw"></i>&nbsp;<time datetime=2024-07-06>2024-07-06</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 6834 字&nbsp;<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 14 分钟&nbsp;</div></div><div class="details toc" id=toc-static kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#summary>Summary</a></li><li><a href=#1-introduction>1. Introduction</a></li><li><a href=#2-rag-high-level-concepts>2. RAG High Level Concepts</a></li><li><a href=#3-llama-index使用示例>3. Llama index使用示例</a></li><li><a href=#4-llama-index源码解析>4. llama index源码解析</a><ul><li><a href=#41-loading>4.1 Loading</a><ul><li><a href=#411-simpledirectoryreader>4.1.1 SimpleDirectoryReader</a></li><li><a href=#412-databasereader>4.1.2 DatabaseReader</a></li></ul></li><li><a href=#42-transformation>4.2 Transformation</a><ul><li><a href=#421-nodeparser>4.2.1 NodeParser</a></li><li><a href=#422-high-level-apivectorstoreindex>4.2.2 High level api：VectorStoreIndex</a></li><li><a href=#423-low-level-apiingestionpipeline>4.2.3 Low level api：IngestionPipeline</a></li></ul></li><li><a href=#43-indexing--embedding>4.3 Indexing & Embedding</a><ul><li><a href=#431-basic-concepts>4.3.1 Basic Concepts</a></li><li><a href=#432-process-of-building-index>4.3.2 Process of building index</a></li></ul></li></ul></li></ul></nav></div></div><div class=content id=content><h2 id=summary class=headerLink><a href=#summary class=header-mark></a>Summary</h2><p>本文介绍了<strong>RAG</strong>的基础概念，并基于<strong>llama_index</strong>的源码解读进一步演示了RAG的流程，包括data loader、transformation、index、query等。此外，本文也对llama_index RAG流程进行了一些性能上的分析并给出了对应优化建议。</p><h2 id=1-introduction class=headerLink><a href=#1-introduction class=header-mark></a>1. Introduction</h2><p>llama_index是一个用于构建上下文增强的大模型应用的框架，即基于用户的私有数据让模型在特定领域有更好表现。</p><p>llama_index主要提供以下工具：</p><ul><li><strong>data connector</strong>：连接到用户私有数据，API、数据库等</li><li><strong>data indexes</strong>：数据structure成便于llm使用的形式</li><li><strong>Engines</strong>：提供自然语言访问途径<ul><li>如query engine：question-answering的接口，如知识库查询等</li><li>如chat engine：多轮对话的接口，如gpt</li></ul></li><li><strong>Agents</strong>：基于LLM提供服务，如任务自动化，客服等</li><li><strong>Observability/Evaluation</strong>：集成应用评估、监控工具</li></ul><p>调研基于 <code>llama-index==0.10.40</code> 版本</p><h2 id=2-rag-high-level-concepts class=headerLink><a href=#2-rag-high-level-concepts class=header-mark></a>2. RAG High Level Concepts</h2><p>RAG即Retrieval-Augmented Generation，检索增强生成</p><p>通常，大模型使用公开数据集进行训练，但对于特定任务可能表现不佳。RAG可以将用户私有数据加入到大模型可以访问到的数据中，作为上下文一起喂给模型，这一步骤<strong>不需要对模型进行微调或训练</strong></p><p><figure><a class=lightgallery href=/zh-cn/llama_index/rag_process.png title=image data-thumbnail=/zh-cn/llama_index/rag_process.png><img loading=lazy src=/zh-cn/llama_index/rag_process.png srcset="/zh-cn/llama_index/rag_process.png, /zh-cn/llama_index/rag_process.png 1.5x, /zh-cn/llama_index/rag_process.png 2x" sizes=auto alt=image height=619 width=1280></a></figure></p><p>大致流程：</p><ol><li><p>数据加载和索引：</p><ul><li>加载数据：将私有数据（例如文档（非结构化）、数据库（结构化）、API 等）加载。</li><li>创建索引：对加载的数据进行预处理和索引，以便快速检索。这个 Index 是一个结构化的中间表示，能够高效地筛选出与查询相关的内容。</li></ul></li><li><p>用户查询：</p><ul><li>首先查询预先创建的索引</li><li>检索：从索引中筛选出与查询最相关的内容</li><li>这些被检索到的相关内容构成了上下文，用于辅助 LLM 的生成过程。</li></ul></li><li><p>生成回答：</p><ul><li>结合上下文和查询：将检索到的相关内容（上下文）与用户查询一起传递给 LLM。</li><li>生成响应：LLM 使用这些上下文信息生成更准确、相关性更高的回答。</li></ul></li></ol><p><figure><a class=lightgallery href=/zh-cn/llama_index/rag_process_2.png title=image data-thumbnail=/zh-cn/llama_index/rag_process_2.png><img loading=lazy src=/zh-cn/llama_index/rag_process_2.png srcset="/zh-cn/llama_index/rag_process_2.png, /zh-cn/llama_index/rag_process_2.png 1.5x, /zh-cn/llama_index/rag_process_2.png 2x" sizes=auto alt=image height=179 width=1280></a></figure></p><p>技术上来说，一共有五个阶段：</p><ul><li><p><strong>Loading</strong>:</p><ul><li><strong>Nodes and Documents</strong>: <code>Document</code>是一个容器，如PDF、API等都可以封装为一个容器，包含完整的数据源内容；<code>Node</code> 是LlamaIndex 中的数据原子单位，表示源 Document 的一个“块”或片段，每个<code>Node</code>都有自己的meta data来与所在的document和其他node产生关联</li><li><strong>Connectors</strong>: 或者称之为<code>Reader</code>，将数据源structure处理并转化为 <code>Documents</code> 和 <code>Nodes</code>.</li></ul></li><li><p><strong>Indexing</strong>:</p><ul><li><strong>Indexes</strong>: 组织好的数据索引，如存储在<code>VectorStore</code>中的<code>vector embeddings</code>。索引也包含所需的metadata</li><li><strong>Embeddings</strong>：<code>embeddings</code>即文本的数值表示。如vector embeddings是高维向量，表示数据的语义信息，相似语义的数据在向量空间中接近，进而便于query</li></ul></li><li><p><strong>Storing</strong>: 把已经构建好的索引和其他metadata存储，避免反复构建</p></li><li><p><strong>Querying</strong>:</p><ul><li><strong>Retrievers</strong>: <code>retriever</code>定义了在接收到查询时，如何高效地从索引中检索相关的context。检索策略直接影响检索到的数据的相关性和检索效率</li><li><strong>Routers</strong>: <code>router</code> 决定使用哪个 Retriever 检索相关的context。具体而言，我们使用 <code>RouterRetriever</code> 类负责选择一个或多个候选 Retriever 执行查询，使用<code>selector</code>根据metadata 和 query 内容决定最佳retriever.</li><li><strong>Node Postprocessors</strong>: 接收一组检索到的节点并对其应用变换、过滤或重新排序逻辑。</li><li><strong>Response Synthesizers</strong>: 使用用户query和检索context+promot拼接成输入，基于大模型生成response</li></ul></li><li><p><strong>Evaluation</strong>: 评估查询策略、pipeline及结果是否准确。</p></li></ul><h2 id=3-llama-index使用示例 class=headerLink><a href=#3-llama-index%e4%bd%bf%e7%94%a8%e7%a4%ba%e4%be%8b class=header-mark></a>3. Llama index使用示例</h2><p>我们使用<a href=https://docs.llamaindex.ai/en/stable/getting_started/starter_example_local/ target=_blank rel="noopener noreferrer"><strong>ollama</strong></a>云端部署了一个7B llama3，documents来自于一个简短的<a href=https://raw.githubusercontent.com/run-llama/llama_index/main/docs/docs/examples/data/paul_graham/paul_graham_essay.txt target=_blank rel="noopener noreferrer">文本</a>，78KB）然后在mac（Core i7 2.6 GHz）上运行以下代码</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=kn>import</span> <span class=nn>time</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.core</span> <span class=kn>import</span> <span class=n>VectorStoreIndex</span><span class=p>,</span> <span class=n>SimpleDirectoryReader</span><span class=p>,</span> <span class=n>Settings</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.embeddings.huggingface</span> <span class=kn>import</span> <span class=n>HuggingFaceEmbedding</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.llms.ollama</span> <span class=kn>import</span> <span class=n>Ollama</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>start_time</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>load_start</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>documents</span> <span class=o>=</span> <span class=n>SimpleDirectoryReader</span><span class=p>(</span><span class=s2>&#34;data&#34;</span><span class=p>)</span><span class=o>.</span><span class=n>load_data</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>load_end</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>embed_start</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>Settings</span><span class=o>.</span><span class=n>embed_model</span> <span class=o>=</span> <span class=n>HuggingFaceEmbedding</span><span class=p>(</span><span class=n>model_name</span><span class=o>=</span><span class=s2>&#34;BAAI/bge-base-en-v1.5&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>embed_end</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>llm_start</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>Settings</span><span class=o>.</span><span class=n>llm</span> <span class=o>=</span> <span class=n>Ollama</span><span class=p>(</span><span class=n>model</span><span class=o>=</span><span class=s2>&#34;llama3&#34;</span><span class=p>,</span> <span class=n>request_timeout</span><span class=o>=</span><span class=mf>360.0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>llm_end</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>index_start</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>index</span> <span class=o>=</span> <span class=n>VectorStoreIndex</span><span class=o>.</span><span class=n>from_documents</span><span class=p>(</span><span class=n>documents</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>index_end</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>query_engine_start</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>query_engine</span> <span class=o>=</span> <span class=n>index</span><span class=o>.</span><span class=n>as_query_engine</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>query_engine_end</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>query_start</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>response</span> <span class=o>=</span> <span class=n>query_engine</span><span class=o>.</span><span class=n>query</span><span class=p>(</span><span class=s2>&#34;What did the author do growing up?&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>query_end</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>response</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Data loading time: </span><span class=si>{</span><span class=n>load_end</span> <span class=o>-</span> <span class=n>load_start</span><span class=si>}</span><span class=s2> seconds&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Embedding model setup time: </span><span class=si>{</span><span class=n>embed_end</span> <span class=o>-</span> <span class=n>embed_start</span><span class=si>}</span><span class=s2> seconds&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;LLM setup time: </span><span class=si>{</span><span class=n>llm_end</span> <span class=o>-</span> <span class=n>llm_start</span><span class=si>}</span><span class=s2> seconds&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Index creation time: </span><span class=si>{</span><span class=n>index_end</span> <span class=o>-</span> <span class=n>index_start</span><span class=si>}</span><span class=s2> seconds&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Query engine creation time: </span><span class=si>{</span><span class=n>query_engine_end</span> <span class=o>-</span> <span class=n>query_engine_start</span><span class=si>}</span><span class=s2> seconds&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Query execution time: </span><span class=si>{</span><span class=n>query_end</span> <span class=o>-</span> <span class=n>query_start</span><span class=si>}</span><span class=s2> seconds&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Total time: </span><span class=si>{</span><span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span> <span class=o>-</span> <span class=n>start_time</span><span class=si>}</span><span class=s2> seconds&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>输出：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>According to the provided context, before college, the author worked on writing and programming outside of school. Specifically, he wrote short stories in his teenage years and tried writing programs on an IBM <span class=m>1401</span> computer using an early version of Fortran in 9th grade <span class=o>(</span>when he was around <span class=m>13</span> or 14<span class=o>)</span>.
+</span></span><span class=line><span class=cl>Data loading time: 0.021808862686157227 seconds
+</span></span><span class=line><span class=cl>Embedding model setup time: 3.6557559967041016 seconds
+</span></span><span class=line><span class=cl>LLM setup time: 0.0005099773406982422 seconds
+</span></span><span class=line><span class=cl>Index creation time: 10.546114921569824 seconds
+</span></span><span class=line><span class=cl>Query engine creation time: 0.0671701431274414 seconds
+</span></span><span class=line><span class=cl>Query execution time: 1.3822910785675049 seconds
+</span></span><span class=line><span class=cl>Total time: 15.673884868621826 seconds
+</span></span></code></pre></td></tr></table></div></div><p>可以看到，即使是78KB的一篇document创建index、query到返回结果，总共需要15s左右时间左右时间，其中创建index就花了10s+，为什么会有这么大的时间开销呢？我们后文进一步解析</p><h2 id=4-llama-index源码解析 class=headerLink><a href=#4-llama-index%e6%ba%90%e7%a0%81%e8%a7%a3%e6%9e%90 class=header-mark></a>4. llama index源码解析</h2><h3 id=41-loading class=headerLink><a href=#41-loading class=header-mark></a>4.1 Loading</h3><p>Loading主要有三种模式：从文件读、从db读、直接从text构建出document对象</p><p>我们主要以<code>SimpleDirectoryReader</code>和<code>DatabaseReader</code>为例说明</p><p>值得指出的是，<a href=https://llamahub.ai/ target=_blank rel="noopener noreferrer">llama_hub</a> 生态提供了很多reader选项</p><h4 id=411-simpledirectoryreader class=headerLink><a href=#411-simpledirectoryreader class=header-mark></a>4.1.1 SimpleDirectoryReader</h4><p>SimpleDirectoryReader从文件夹读取，对于每个file构建一个document</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.core</span> <span class=kn>import</span> <span class=n>SimpleDirectoryReader</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>documents</span> <span class=o>=</span> <span class=n>SimpleDirectoryReader</span><span class=p>(</span><span class=s2>&#34;./data&#34;</span><span class=p>)</span><span class=o>.</span><span class=n>load_data</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p>关键路径：<code>load_data()</code>，支持<code>num_workers</code>多进程读取（进程池）</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama-index-core/llama_index/core/readers/file/base.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>SimpleDirectoryReader</span><span class=p>(</span><span class=n>BaseReader</span><span class=p>,</span> <span class=n>ResourcesReaderMixin</span><span class=p>,</span> <span class=n>FileSystemReaderMixin</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>load_data</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=p>,</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>Document</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>num_workers</span> <span class=ow>and</span> <span class=n>num_workers</span> <span class=o>&gt;</span> <span class=mi>1</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=c1># multiprocessing ...</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=c1># ... </span>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=n>input_file</span> <span class=ow>in</span> <span class=n>files_to_process</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>documents</span><span class=o>.</span><span class=n>extend</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                    <span class=n>SimpleDirectoryReader</span><span class=o>.</span><span class=n>load_file</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>                    <span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_exclude_metadata</span><span class=p>(</span><span class=n>documents</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>在<code>load_file()</code>中，又有两个路径：对于<code>['.pdf', '.docx', '.pptx', '.png', '.mp3', '.mp4', '.csv', '.md', '.mbox', '.ipynb']</code>等特殊文件有默认的cls构建reader可以读取，否则直接<code>fs.open()</code>读文本</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama-index-core/llama_index/core/readers/file/base.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>SimpleDirectoryReader</span><span class=p>(</span><span class=n>BaseReader</span><span class=p>,</span> <span class=n>ResourcesReaderMixin</span><span class=p>,</span> <span class=n>FileSystemReaderMixin</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=nd>@staticmethod</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>load_file</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=n>input_file</span><span class=p>:</span> <span class=n>Path</span><span class=p>,</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>Document</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>file_suffix</span> <span class=ow>in</span> <span class=n>default_file_reader_suffix</span> <span class=ow>or</span> <span class=n>file_suffix</span> <span class=ow>in</span> <span class=n>file_extractor</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=c1># specific files ...</span>
+</span></span><span class=line><span class=cl>            <span class=n>documents</span><span class=o>.</span><span class=n>extend</span><span class=p>(</span><span class=n>docs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=c1># common text file ...</span>
+</span></span><span class=line><span class=cl>            <span class=k>with</span> <span class=n>fs</span><span class=o>.</span><span class=n>open</span><span class=p>(</span><span class=n>input_file</span><span class=p>,</span> <span class=n>errors</span><span class=o>=</span><span class=n>errors</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>encoding</span><span class=p>)</span> <span class=k>as</span> <span class=n>f</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>data</span> <span class=o>=</span> <span class=n>f</span><span class=o>.</span><span class=n>read</span><span class=p>()</span><span class=o>.</span><span class=n>decode</span><span class=p>(</span><span class=n>encoding</span><span class=p>,</span> <span class=n>errors</span><span class=o>=</span><span class=n>errors</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=n>doc</span> <span class=o>=</span> <span class=n>Document</span><span class=p>(</span><span class=n>text</span><span class=o>=</span><span class=n>data</span><span class=p>,</span> <span class=n>metadata</span><span class=o>=</span><span class=n>metadata</span> <span class=ow>or</span> <span class=p>{})</span>
+</span></span><span class=line><span class=cl>            <span class=n>documents</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>doc</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>documents</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=412-databasereader class=headerLink><a href=#412-databasereader class=header-mark></a>4.1.2 DatabaseReader</h4><p>DatabaseReader从数据库读取，<strong>这里需要用户手写sql</strong>，此外，这个其实是<a href=https://llamahub.ai/l/readers/llama-index-readers-database target=_blank rel="noopener noreferrer">插件</a></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.readers.database</span> <span class=kn>import</span> <span class=n>DatabaseReader</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>connection_uri</span> <span class=o>=</span> <span class=s2>&#34;sqlite:///example.db&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>reader</span> <span class=o>=</span> <span class=n>DatabaseReader</span><span class=p>(</span><span class=n>uri</span><span class=o>=</span><span class=n>connection_uri</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>query</span> <span class=o>=</span> <span class=s2>&#34;SELECT * FROM users&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>documents</span> <span class=o>=</span> <span class=n>reader</span><span class=o>.</span><span class=n>load_data</span><span class=p>(</span><span class=n>query</span><span class=o>=</span><span class=n>query</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># llama-index-readers-database/llama_index/readers/database/base.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>DatabaseReader</span><span class=p>(</span><span class=n>BaseReader</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>load_data</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>query</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>Document</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>        <span class=k>with</span> <span class=bp>self</span><span class=o>.</span><span class=n>sql_database</span><span class=o>.</span><span class=n>engine</span><span class=o>.</span><span class=n>connect</span><span class=p>()</span> <span class=k>as</span> <span class=n>connection</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>            <span class=n>result</span> <span class=o>=</span> <span class=n>connection</span><span class=o>.</span><span class=n>execute</span><span class=p>(</span><span class=n>text</span><span class=p>(</span><span class=n>query</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=n>item</span> <span class=ow>in</span> <span class=n>result</span><span class=o>.</span><span class=n>fetchall</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>                <span class=n>doc_str</span> <span class=o>=</span> <span class=s2>&#34;, &#34;</span><span class=o>.</span><span class=n>join</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                    <span class=p>[</span><span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=n>col</span><span class=si>}</span><span class=s2>: </span><span class=si>{</span><span class=n>entry</span><span class=si>}</span><span class=s2>&#34;</span> <span class=k>for</span> <span class=n>col</span><span class=p>,</span> <span class=n>entry</span> <span class=ow>in</span> <span class=nb>zip</span><span class=p>(</span><span class=n>result</span><span class=o>.</span><span class=n>keys</span><span class=p>(),</span> <span class=n>item</span><span class=p>)]</span>
+</span></span><span class=line><span class=cl>                <span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=n>documents</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>Document</span><span class=p>(</span><span class=n>text</span><span class=o>=</span><span class=n>doc_str</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>documents</span>
+</span></span></code></pre></td></tr></table></div></div><p>这里读取直接使用用户的query然后<code>fetchall</code>返回所有项，然后把text封入<code>document</code></p><h3 id=42-transformation class=headerLink><a href=#42-transformation class=header-mark></a>4.2 Transformation</h3><p>读取data为document后，我们需要对数据做一些transformation如chunking, 提取 metadata, embedding等。Transformation的input和output均为<code>Node</code>（注意document也是Node的子类）</p><p>llama_index同时提供了high level和low level（用户更多自由度）的API</p><h4 id=421-nodeparser class=headerLink><a href=#421-nodeparser class=header-mark></a>4.2.1 NodeParser</h4><p>NodeParser主要有三类：File-Based Node Parsers、Text-Splitters和Relation-Based Node Parsers，它们的输入都是node（document也是node），输出是处理后的node，多用于transformation</p><p>如file-based node parser:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.core.node_parser</span> <span class=kn>import</span> <span class=n>SimpleFileNodeParser</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.readers.file</span> <span class=kn>import</span> <span class=n>FlatReader</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>pathlib</span> <span class=kn>import</span> <span class=n>Path</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>md_docs</span> <span class=o>=</span> <span class=n>FlatReader</span><span class=p>()</span><span class=o>.</span><span class=n>load_data</span><span class=p>(</span><span class=n>Path</span><span class=p>(</span><span class=s2>&#34;./test.md&#34;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=n>parser</span> <span class=o>=</span> <span class=n>SimpleFileNodeParser</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>md_nodes</span> <span class=o>=</span> <span class=n>parser</span><span class=o>.</span><span class=n>get_nodes_from_documents</span><span class=p>(</span><span class=n>md_docs</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>Text-Splitters我们在后面会展开介绍</p><p>Relation-Based Node Parsers目前只有<code>HierarchicalNodeParser</code>，用于将node拆分为有继承关系的node，例如：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.core.schema</span> <span class=kn>import</span> <span class=n>Document</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.core.node_parser</span> <span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=n>HierarchicalNodeParser</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=n>get_leaf_nodes</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=n>get_root_nodes</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>doc_text</span> <span class=o>=</span> <span class=s2>&#34;&#34;&#34; ... &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>docs</span> <span class=o>=</span> <span class=p>[</span><span class=n>Document</span><span class=p>(</span><span class=n>text</span><span class=o>=</span><span class=n>doc_text</span><span class=p>)]</span>
+</span></span><span class=line><span class=cl><span class=c1># default chunk size [2048, 512, 128]</span>
+</span></span><span class=line><span class=cl><span class=n>node_parser</span> <span class=o>=</span> <span class=n>HierarchicalNodeParser</span><span class=o>.</span><span class=n>from_defaults</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>nodes</span> <span class=o>=</span> <span class=n>node_parser</span><span class=o>.</span><span class=n>get_nodes_from_documents</span><span class=p>(</span><span class=n>docs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Get specific kind of nodes</span>
+</span></span><span class=line><span class=cl><span class=n>leaf_nodes</span> <span class=o>=</span> <span class=n>get_leaf_nodes</span><span class=p>(</span><span class=n>nodes</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>root_nodes</span> <span class=o>=</span> <span class=n>get_root_nodes</span><span class=p>(</span><span class=n>nodes</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>level_nodes</span> <span class=o>=</span> <span class=n>get_deeper_nodes</span><span class=p>(</span><span class=n>nodes</span><span class=p>,</span> <span class=n>depth</span><span class=o>=</span><span class=mi>2</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>我们会获得根节点：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=n>TextNode</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=n>id_</span><span class=o>=</span><span class=s1>&#39;6562f0e3-e0bf-47c3-a75f-df3f19b99e71&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=n>embedding</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=n>metadata</span><span class=o>=</span><span class=p>{},</span>
+</span></span><span class=line><span class=cl>    <span class=n>excluded_embed_metadata_keys</span><span class=o>=</span><span class=p>[],</span>
+</span></span><span class=line><span class=cl>    <span class=n>excluded_llm_metadata_keys</span><span class=o>=</span><span class=p>[],</span>
+</span></span><span class=line><span class=cl>    <span class=n>relationships</span><span class=o>=</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=o>&lt;</span><span class=n>NodeRelationship</span><span class=o>.</span><span class=n>SOURCE</span><span class=p>:</span> <span class=s1>&#39;1&#39;</span><span class=o>&gt;</span><span class=p>:</span> <span class=n>RelatedNodeInfo</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=n>node_id</span><span class=o>=</span><span class=s1>&#39;8001ac4d-f9b0-4b51-b3e4-1f61aa44449a&#39;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>            <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=p>),</span>
+</span></span><span class=line><span class=cl>        <span class=o>&lt;</span><span class=n>NodeRelationship</span><span class=o>.</span><span class=n>CHILD</span><span class=p>:</span> <span class=s1>&#39;5&#39;</span><span class=o>&gt;</span><span class=p>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>            <span class=n>RelatedNodeInfo</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                <span class=n>node_id</span><span class=o>=</span><span class=s1>&#39;921ce06b-7880-483c-bf00-3ebf4746dc83&#39;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>            <span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span>
+</span></span><span class=line><span class=cl>    <span class=n>text</span><span class=o>=</span><span class=s1>&#39;...&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=c1># ...</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>与其中一个叶子结点：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=n>TextNode</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=n>id_</span><span class=o>=</span><span class=s1>&#39;2ab92648-63d2-4197-98e5-b9afb892538d&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=n>relationships</span><span class=o>=</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=o>&lt;</span><span class=n>NodeRelationship</span><span class=o>.</span><span class=n>SOURCE</span><span class=p>:</span> <span class=s1>&#39;1&#39;</span><span class=o>&gt;</span><span class=p>:</span> <span class=n>RelatedNodeInfo</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=n>node_id</span><span class=o>=</span><span class=s1>&#39;921ce06b-7880-483c-bf00-3ebf4746dc83&#39;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>            <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=p>),</span> 
+</span></span><span class=line><span class=cl>        <span class=o>&lt;</span><span class=n>NodeRelationship</span><span class=o>.</span><span class=n>PARENT</span><span class=p>:</span> <span class=s1>&#39;4&#39;</span><span class=o>&gt;</span><span class=p>:</span> <span class=n>RelatedNodeInfo</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=n>node_id</span><span class=o>=</span><span class=s1>&#39;921ce06b-7880-483c-bf00-3ebf4746dc83&#39;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>            <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span> 
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>带继承关系的node切分后如何获取某一层的节点呢？llama_index使用了遍历的策略，而这<strong>并不高效</strong>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama-index-core/llama_index/core/node_parser/relational/hierarchical.py</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>get_deeper_nodes</span><span class=p>(</span><span class=n>nodes</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>BaseNode</span><span class=p>],</span> <span class=n>depth</span><span class=p>:</span> <span class=nb>int</span> <span class=o>=</span> <span class=mi>1</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>BaseNode</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;Get children of root nodes in given nodes that have given depth.&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>depth</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>raise</span> <span class=ne>ValueError</span><span class=p>(</span><span class=s2>&#34;Depth cannot be a negative number!&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>root_nodes</span> <span class=o>=</span> <span class=n>get_root_nodes</span><span class=p>(</span><span class=n>nodes</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=ow>not</span> <span class=n>root_nodes</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>raise</span> <span class=ne>ValueError</span><span class=p>(</span><span class=s2>&#34;There is no root nodes in given nodes!&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>deeper_nodes</span> <span class=o>=</span> <span class=n>root_nodes</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>_</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=n>depth</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=n>deeper_nodes</span> <span class=o>=</span> <span class=n>get_child_nodes</span><span class=p>(</span><span class=n>deeper_nodes</span><span class=p>,</span> <span class=n>nodes</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>deeper_nodes</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl> <span class=k>def</span> <span class=nf>get_root_nodes</span><span class=p>(</span><span class=n>nodes</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>BaseNode</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>BaseNode</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>    <span class=n>root_nodes</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>node</span> <span class=ow>in</span> <span class=n>nodes</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>NodeRelationship</span><span class=o>.</span><span class=n>PARENT</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>node</span><span class=o>.</span><span class=n>relationships</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>root_nodes</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>node</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>root_nodes</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>get_child_nodes</span><span class=p>(</span><span class=n>nodes</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>BaseNode</span><span class=p>],</span> <span class=n>all_nodes</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>BaseNode</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>BaseNode</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;Get child nodes of nodes from given all_nodes.&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=n>children_ids</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>node</span> <span class=ow>in</span> <span class=n>nodes</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>NodeRelationship</span><span class=o>.</span><span class=n>CHILD</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>node</span><span class=o>.</span><span class=n>relationships</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>continue</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>children_ids</span><span class=o>.</span><span class=n>extend</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=p>[</span><span class=n>r</span><span class=o>.</span><span class=n>node_id</span> <span class=k>for</span> <span class=n>r</span> <span class=ow>in</span> <span class=n>node</span><span class=o>.</span><span class=n>relationships</span><span class=p>[</span><span class=n>NodeRelationship</span><span class=o>.</span><span class=n>CHILD</span><span class=p>]]</span>
+</span></span><span class=line><span class=cl>        <span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>child_nodes</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>candidate_node</span> <span class=ow>in</span> <span class=n>all_nodes</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>candidate_node</span><span class=o>.</span><span class=n>node_id</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>children_ids</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>continue</span>
+</span></span><span class=line><span class=cl>        <span class=n>child_nodes</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>candidate_node</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>child_nodes</span>
+</span></span></code></pre></td></tr></table></div></div><p>注意：由于 HierarchicalNodeParser将所有nodes放在一个列表里返回，<strong>我们必须获取某一层节点（<code>get_deeper_nodes</code>）后再构建index执行embedding</strong>，否则切出来的nodes<strong>含有很多重复内容</strong>，会大大降低rag整体效率</p><p>这种继承关系的信息可以与<code>AutoMergingRetriever</code>一起使用，参考<a href=https://docs.llamaindex.ai/en/stable/examples/retrievers/auto_merging_retriever/ target=_blank rel="noopener noreferrer">auto_merger</a></p><p>即将叶子节点送入构建index，但能够自动merge叶子节点来获取更丰富的上下文，最终获得更高的评分</p><table><thead><tr><th>Names</th><th>Correctness</th><th>Relevancy</th><th>Faithfulness</th><th>Semantic Similarity</th></tr></thead><tbody><tr><td>Auto Merging Retriever</td><td>4.266667</td><td>0.916667</td><td>0.95</td><td>0.962196</td></tr><tr><td>Base Retriever</td><td>4.208333</td><td>0.916667</td><td>0.95</td><td>0.960602</td></tr></tbody></table><h4 id=422-high-level-apivectorstoreindex class=headerLink><a href=#422-high-level-apivectorstoreindex class=header-mark></a>4.2.2 High level api：VectorStoreIndex</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.core</span> <span class=kn>import</span> <span class=n>VectorStoreIndex</span><span class=p>,</span> <span class=n>SimpleDirectoryReader</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>documents</span> <span class=o>=</span> <span class=n>SimpleDirectoryReader</span><span class=p>(</span><span class=s2>&#34;./data&#34;</span><span class=p>)</span><span class=o>.</span><span class=n>load_data</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>vector_index</span> <span class=o>=</span> <span class=n>VectorStoreIndex</span><span class=o>.</span><span class=n>from_documents</span><span class=p>(</span><span class=n>documents</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>vector_index</span><span class=o>.</span><span class=n>as_query_engine</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p>我们从文档中构建index：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/indices/base.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>BaseIndex</span><span class=p>(</span><span class=n>Generic</span><span class=p>[</span><span class=n>IS</span><span class=p>],</span> <span class=n>ABC</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=nd>@classmethod</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>from_documents</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>cls</span><span class=p>:</span> <span class=n>Type</span><span class=p>[</span><span class=n>IndexType</span><span class=p>],</span> <span class=n>documents</span><span class=p>:</span> <span class=n>Sequence</span><span class=p>[</span><span class=n>Document</span><span class=p>],</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>IndexType</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=n>nodes</span> <span class=o>=</span> <span class=n>run_transformations</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=n>documents</span><span class=p>,</span>  <span class=c1># type: ignore</span>
+</span></span><span class=line><span class=cl>            <span class=n>transformations</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>cls</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=n>nodes</span><span class=o>=</span><span class=n>nodes</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># llama_index/core/ingestion/pipeline.py</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>run_transformations</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=n>nodes</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>BaseNode</span><span class=p>],</span> <span class=n>transformations</span><span class=p>:</span> <span class=n>Sequence</span><span class=p>[</span><span class=n>TransformComponent</span><span class=p>],</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>BaseNode</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=ow>not</span> <span class=n>in_place</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>nodes</span> <span class=o>=</span> <span class=nb>list</span><span class=p>(</span><span class=n>nodes</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>transform</span> <span class=ow>in</span> <span class=n>transformations</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>cache</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=nb>hash</span> <span class=o>=</span> <span class=n>get_transformation_hash</span><span class=p>(</span><span class=n>nodes</span><span class=p>,</span> <span class=n>transform</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>cached_nodes</span> <span class=o>=</span> <span class=n>cache</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=nb>hash</span><span class=p>,</span> <span class=n>collection</span><span class=o>=</span><span class=n>cache_collection</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>cached_nodes</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>nodes</span> <span class=o>=</span> <span class=n>cached_nodes</span>
+</span></span><span class=line><span class=cl>            <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>nodes</span> <span class=o>=</span> <span class=n>transform</span><span class=p>(</span><span class=n>nodes</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=n>cache</span><span class=o>.</span><span class=n>put</span><span class=p>(</span><span class=nb>hash</span><span class=p>,</span> <span class=n>nodes</span><span class=p>,</span> <span class=n>collection</span><span class=o>=</span><span class=n>cache_collection</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>nodes</span> <span class=o>=</span> <span class=n>transform</span><span class=p>(</span><span class=n>nodes</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>nodes</span>
+</span></span></code></pre></td></tr></table></div></div><p>如果用户没有配置，默认的transform只有<code>SentenceSplitter</code>，其有一个很长的子类继承链路：</p><p><code>Representation</code> -> <code>BaseModel</code> -> <code>BaseComponent</code> -> <code>TransformComponent</code> -> <code>NodeParser</code> -> <code>TextSplitter</code> -> <code>MetadataAwareTextSplitter</code> -> <code>SentenceSplitter</code></p><p>调用<code>transform()</code>到基类的<code>__call__</code>方法，然后一路兜兜转转处理到</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/node_parser/text/sentence.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>SentenceSplitter</span><span class=p>(</span><span class=n>MetadataAwareTextSplitter</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>_split_text</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>text</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>chunk_size</span><span class=p>:</span> <span class=nb>int</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=n>splits</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_split</span><span class=p>(</span><span class=n>text</span><span class=p>,</span> <span class=n>chunk_size</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>chunks</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_merge</span><span class=p>(</span><span class=n>splits</span><span class=p>,</span> <span class=n>chunk_size</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>chunks</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>_split</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>text</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>chunk_size</span><span class=p>:</span> <span class=nb>int</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>_Split</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>        <span class=n>token_size</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_token_size</span><span class=p>(</span><span class=n>text</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>token_size</span> <span class=o>&lt;=</span> <span class=n>chunk_size</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=p>[</span><span class=n>_Split</span><span class=p>(</span><span class=n>text</span><span class=p>,</span> <span class=n>is_sentence</span><span class=o>=</span><span class=kc>True</span><span class=p>,</span> <span class=n>token_size</span><span class=o>=</span><span class=n>token_size</span><span class=p>)]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>text_splits_by_fns</span><span class=p>,</span> <span class=n>is_sentence</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_splits_by_fns</span><span class=p>(</span><span class=n>text</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>text_splits</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=n>text_split_by_fns</span> <span class=ow>in</span> <span class=n>text_splits_by_fns</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>token_size</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_token_size</span><span class=p>(</span><span class=n>text_split_by_fns</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>token_size</span> <span class=o>&lt;=</span> <span class=n>chunk_size</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>text_splits</span><span class=o>.</span><span class=n>append</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                    <span class=n>_Split</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                        <span class=n>text_split_by_fns</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                        <span class=n>is_sentence</span><span class=o>=</span><span class=n>is_sentence</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                        <span class=n>token_size</span><span class=o>=</span><span class=n>token_size</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>recursive_text_splits</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_split</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                    <span class=n>text_split_by_fns</span><span class=p>,</span> <span class=n>chunk_size</span><span class=o>=</span><span class=n>chunk_size</span>
+</span></span><span class=line><span class=cl>                <span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=n>text_splits</span><span class=o>.</span><span class=n>extend</span><span class=p>(</span><span class=n>recursive_text_splits</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>text_splits</span>
+</span></span></code></pre></td></tr></table></div></div><p>在这里，<code>_split</code>将text split成多个<code>_Split</code>块，这里的分割策略顺序为：</p><ol><li>用段落分割(&rsquo;\n\n\n')</li><li>用nltk句子分割器（一个基于Punkt模型的pip包）分割</li><li>用一个正则<code>[^,\.;]+[,\.;]?</code>分割（取字符串 + 标点（逗号、句号、分号）正则）</li><li>用 <code>" "</code>分割。</li><li>用字符分割（几乎不会使用）</li></ol><p>如果满足chunk_size会提前返回，不继续细分。注意这里有一个递归循环逻辑<code>recursive_text_splits</code></p><p>例如我们示例的text，75000字符，会切成<code>len(splits)=759</code>的列表</p><p><code>_merge</code>则会将分割好的splits合并成正式的chunks</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/node_parser/text/sentence.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>SentenceSplitter</span><span class=p>(</span><span class=n>MetadataAwareTextSplitter</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>_merge</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>splits</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>_Split</span><span class=p>],</span> <span class=n>chunk_size</span><span class=p>:</span> <span class=nb>int</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=k>def</span> <span class=nf>close_chunk</span><span class=p>()</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=c1># finish a chunk and then create a new one</span>
+</span></span><span class=line><span class=cl>            <span class=k>pass</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>while</span> <span class=nb>len</span><span class=p>(</span><span class=n>splits</span><span class=p>)</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>cur_split</span> <span class=o>=</span> <span class=n>splits</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>cur_split</span><span class=o>.</span><span class=n>token_size</span> <span class=o>&gt;</span> <span class=n>chunk_size</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=k>raise</span> <span class=ne>ValueError</span><span class=p>(</span><span class=s2>&#34;Single token exceeded chunk size&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>cur_chunk_len</span> <span class=o>+</span> <span class=n>cur_split</span><span class=o>.</span><span class=n>token_size</span> <span class=o>&gt;</span> <span class=n>chunk_size</span> <span class=ow>and</span> <span class=ow>not</span> <span class=n>new_chunk</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=c1># if adding split to current chunk exceeds chunk size</span>
+</span></span><span class=line><span class=cl>                <span class=n>close_chunk</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>            <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=k>if</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>                    <span class=n>cur_split</span><span class=o>.</span><span class=n>is_sentence</span>
+</span></span><span class=line><span class=cl>                    <span class=ow>or</span> <span class=n>cur_chunk_len</span> <span class=o>+</span> <span class=n>cur_split</span><span class=o>.</span><span class=n>token_size</span> <span class=o>&lt;=</span> <span class=n>chunk_size</span>
+</span></span><span class=line><span class=cl>                    <span class=ow>or</span> <span class=n>new_chunk</span>  <span class=c1># new chunk, always add at least one split</span>
+</span></span><span class=line><span class=cl>                <span class=p>):</span>
+</span></span><span class=line><span class=cl>                    <span class=c1># add split to chunk</span>
+</span></span><span class=line><span class=cl>                    <span class=n>cur_chunk_len</span> <span class=o>+=</span> <span class=n>cur_split</span><span class=o>.</span><span class=n>token_size</span>
+</span></span><span class=line><span class=cl>                    <span class=n>cur_chunk</span><span class=o>.</span><span class=n>append</span><span class=p>((</span><span class=n>cur_split</span><span class=o>.</span><span class=n>text</span><span class=p>,</span> <span class=n>cur_split</span><span class=o>.</span><span class=n>token_size</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>                    <span class=n>splits</span><span class=o>.</span><span class=n>pop</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                    <span class=n>new_chunk</span> <span class=o>=</span> <span class=kc>False</span>
+</span></span><span class=line><span class=cl>                <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=c1># close out chunk</span>
+</span></span><span class=line><span class=cl>                    <span class=n>close_chunk</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># handle the last chunk</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=ow>not</span> <span class=n>new_chunk</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>chunk</span> <span class=o>=</span> <span class=s2>&#34;&#34;</span><span class=o>.</span><span class=n>join</span><span class=p>([</span><span class=n>text</span> <span class=k>for</span> <span class=n>text</span><span class=p>,</span> <span class=n>length</span> <span class=ow>in</span> <span class=n>cur_chunk</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>            <span class=n>chunks</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>chunk</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># run postprocessing to remove blank spaces</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_postprocess_chunks</span><span class=p>(</span><span class=n>chunks</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>如果满足chunk_size条件，则会将尽可能多的split merge成一个chunk，注意此处还有<strong>chunk overlap</strong>，即两个相邻chunk有一些重叠的文本（默认200 token），提供更好的上下文连续性。</p><p><code>_split</code>和<code>_merge</code>完成后，对chunk封装成nodes返回</p><p>如本文例子的document，再合并为nodes后<code>len(nodes)=22</code></p><p><strong>性能上</strong>，这部分存在较为复杂的python处理，<strong>O（N）线性增长</strong>，可以考虑用c++/并行（在low level api中有）等方式优化。此外，逻辑上也有优化空间（splits切得太碎以至于chunks merge有较多反复循环，此外还有无意义的<code>pop(0)</code>）。此外，还有初始化tokenizer与较多反复调用<code>tokenize()</code>的开销（这部分见下文store详细展开）</p><h4 id=423-low-level-apiingestionpipeline class=headerLink><a href=#423-low-level-apiingestionpipeline class=header-mark></a>4.2.3 Low level api：IngestionPipeline</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.core</span> <span class=kn>import</span> <span class=n>SimpleDirectoryReader</span><span class=p>,</span> <span class=n>VectorStoreIndex</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.core.ingestion</span> <span class=kn>import</span> <span class=n>IngestionPipeline</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.core.node_parser</span> <span class=kn>import</span> <span class=n>TokenTextSplitter</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>documents</span> <span class=o>=</span> <span class=n>SimpleDirectoryReader</span><span class=p>(</span><span class=s2>&#34;./data&#34;</span><span class=p>)</span><span class=o>.</span><span class=n>load_data</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>pipeline</span> <span class=o>=</span> <span class=n>IngestionPipeline</span><span class=p>(</span><span class=n>transformations</span><span class=o>=</span><span class=p>[</span><span class=n>TokenTextSplitter</span><span class=p>(),</span> <span class=n>embed_model</span><span class=p>,</span> <span class=o>...</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>nodes</span> <span class=o>=</span> <span class=n>pipeline</span><span class=o>.</span><span class=n>run</span><span class=p>(</span><span class=n>documents</span><span class=o>=</span><span class=n>documents</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>index</span> <span class=o>=</span> <span class=n>VectorStoreIndex</span><span class=p>(</span><span class=n>nodes</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>pipeline的run方法<strong>支持并行和cache</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/ingestion/pipeline.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>IngestionPipeline</span><span class=p>(</span><span class=n>BaseModel</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>run</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=p>,</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Sequence</span><span class=p>[</span><span class=n>BaseNode</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>        <span class=n>input_nodes</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_prepare_inputs</span><span class=p>(</span><span class=n>documents</span><span class=p>,</span> <span class=n>nodes</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>num_workers</span> <span class=ow>and</span> <span class=n>num_workers</span> <span class=o>&gt;</span> <span class=mi>1</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=c1># multiprocessing ...</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>nodes</span> <span class=o>=</span> <span class=n>run_transformations</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                <span class=n>nodes_to_run</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=bp>self</span><span class=o>.</span><span class=n>transformations</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=n>cache</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>cache</span> <span class=k>if</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>disable_cache</span> <span class=k>else</span> <span class=kc>None</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>            <span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>vector_store</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=bp>self</span><span class=o>.</span><span class=n>vector_store</span><span class=o>.</span><span class=n>add</span><span class=p>([</span><span class=n>n</span> <span class=k>for</span> <span class=n>n</span> <span class=ow>in</span> <span class=n>nodes</span> <span class=k>if</span> <span class=n>n</span><span class=o>.</span><span class=n>embedding</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>nodes</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>cache</code>在<code>run_transformations</code>时应用，即应用<code>nodes</code>和<code>transform hash</code>值为键存储查询，在pipeline中有重复任务时可避免重复运算。</p><p>对于<code>IngestionCache</code>而言，其应用的cache本质是<code>SimpleCache</code>（一个<strong>in-memory</strong> cache）</p><p>llama_index也支持一些其他db cache，如基于<code>sqlalchemy</code>接入db</p><h3 id=43-indexing--embedding class=headerLink><a href=#43-indexing--embedding class=header-mark></a>4.3 Indexing & Embedding</h3><h4 id=431-basic-concepts class=headerLink><a href=#431-basic-concepts class=header-mark></a>4.3.1 Basic Concepts</h4><p>在使用transformation构建出nodes后，我们需要将nodes进一步处理为index，这一部分也是文档处理<strong>消耗时间最长的地方</strong>，我们以<code>VectorStoreIndex</code>为例来说明。</p><p><code>VectorStoreIndex</code>会为每个node创建<code>vector embedding</code>，embedding即text数据的数值化表示，语义相似的文本在数学上有相似的embedding，这使得我们可以使用语义搜索而不是简单的关键词匹配来实现查询。</p><p>例如：两个相同语义的句子有较高的余弦相似度（本质是向量夹角的余弦，为1表示方向相同）</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>Embedding <span class=k>for</span> <span class=s1>&#39;The cat is on the mat.&#39;</span>（猫在垫子上）:
+</span></span><span class=line><span class=cl> <span class=o>[</span> 0.021,  0.012, -0.034,  0.045,  0.038, -0.026,  0.056, -0.024,  0.013, -0.017<span class=o>]</span>
+</span></span><span class=line><span class=cl>Embedding <span class=k>for</span> <span class=s1>&#39;The feline is on the rug.&#39;</span>（猫咪在地毯上）:
+</span></span><span class=line><span class=cl> <span class=o>[</span> 0.023,  0.010, -0.032,  0.046,  0.036, -0.025,  0.057, -0.022,  0.011, -0.018<span class=o>]</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>Cosine Similarity（余弦相似度）: 0.995
+</span></span></code></pre></td></tr></table></div></div><p>查询时，query也会被转化为embedding，然后与所有nodes进行相似度计算，取top-k相似度最高的embedding返回。</p><p>其他一些index介绍：</p><ul><li><p><strong>SummaryIndex</strong>（之前为List Index）</p><p><figure><a class=lightgallery href=/zh-cn/llama_index/summary_index.png title=image data-thumbnail=/zh-cn/llama_index/summary_index.png><img loading=lazy src=/zh-cn/llama_index/summary_index.png srcset="/zh-cn/llama_index/summary_index.png, /zh-cn/llama_index/summary_index.png 1.5x, /zh-cn/llama_index/summary_index.png 2x" sizes=auto alt=image height=736 width=1576></a></figure></p></li><li><p><strong>TreeIndex</strong>：node有一个树状存储结构（继承关系）</p><p><figure><a class=lightgallery href=/zh-cn/llama_index/tree_index.png title=image data-thumbnail=/zh-cn/llama_index/tree_index.png><img loading=lazy src=/zh-cn/llama_index/tree_index.png srcset="/zh-cn/llama_index/tree_index.png, /zh-cn/llama_index/tree_index.png 1.5x, /zh-cn/llama_index/tree_index.png 2x" sizes=auto alt=image height=1248 width=1481></a></figure></p><p>Tree node便于检索有继承关系的node，query时从root开始，逐级往下查找到leaf node</p></li><li><p><strong>Keyword Table Index</strong>：</p><p><figure><a class=lightgallery href=/zh-cn/llama_index/keyword_index.png title=image data-thumbnail=/zh-cn/llama_index/keyword_index.png><img loading=lazy src=/zh-cn/llama_index/keyword_index.png srcset="/zh-cn/llama_index/keyword_index.png, /zh-cn/llama_index/keyword_index.png 1.5x, /zh-cn/llama_index/keyword_index.png 2x" sizes=auto alt=image height=992 width=1688></a></figure></p></li><li><p><strong>property graph index</strong>:例如</p></li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>        +---------+              +---------+
+</span></span><span class=line><span class=cl>        <span class=p>|</span>         <span class=p>|</span> WorksAt      <span class=p>|</span>         <span class=p>|</span>
+</span></span><span class=line><span class=cl>        <span class=p>|</span>  Alice  +-------------&gt;<span class=p>|</span>  OpenAI <span class=p>|</span>
+</span></span><span class=line><span class=cl>        <span class=p>|</span>         <span class=p>|</span>              <span class=p>|</span>         <span class=p>|</span>
+</span></span><span class=line><span class=cl>        +----+----+              +---------+
+</span></span><span class=line><span class=cl>             <span class=p>|</span>
+</span></span><span class=line><span class=cl>             <span class=p>|</span> Knows
+</span></span><span class=line><span class=cl>             <span class=p>|</span>
+</span></span><span class=line><span class=cl>        +----v----+
+</span></span><span class=line><span class=cl>        <span class=p>|</span>         <span class=p>|</span>
+</span></span><span class=line><span class=cl>        <span class=p>|</span>   Bob   <span class=p>|</span>
+</span></span><span class=line><span class=cl>        <span class=p>|</span>         <span class=p>|</span>
+</span></span><span class=line><span class=cl>        +----+----+
+</span></span><span class=line><span class=cl>             <span class=p>|</span>
+</span></span><span class=line><span class=cl>             <span class=p>|</span> WorksAt
+</span></span><span class=line><span class=cl>             <span class=p>|</span>
+</span></span><span class=line><span class=cl>        +----v----+
+</span></span><span class=line><span class=cl>        <span class=p>|</span>         <span class=p>|</span>
+</span></span><span class=line><span class=cl>        <span class=p>|</span>Microsoft<span class=p>|</span>
+</span></span><span class=line><span class=cl>        <span class=p>|</span>         <span class=p>|</span>
+</span></span><span class=line><span class=cl>        +---------+
+</span></span></code></pre></td></tr></table></div></div><h4 id=432-process-of-building-index class=headerLink><a href=#432-process-of-building-index class=header-mark></a>4.3.2 Process of building index</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/indices/vector_store/base.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>VectorStoreIndex</span><span class=p>(</span><span class=n>BaseIndex</span><span class=p>[</span><span class=n>IndexDict</span><span class=p>]):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=p>,</span> <span class=n>nodes</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>Sequence</span><span class=p>[</span><span class=n>BaseNode</span><span class=p>]]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=n>nodes</span><span class=o>=</span><span class=n>nodes</span><span class=p>,</span> <span class=n>index_struct</span><span class=o>=</span><span class=n>index_struct</span><span class=p>,</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=p>)</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl><span class=c1># llama_index/core/indices/base.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>BaseIndex</span><span class=p>(</span><span class=n>Generic</span><span class=p>[</span><span class=n>IS</span><span class=p>],</span> <span class=n>ABC</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=p>,</span> <span class=n>nodes</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>Sequence</span><span class=p>[</span><span class=n>BaseNode</span><span class=p>]]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>index_struct</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>nodes</span> <span class=o>=</span> <span class=n>nodes</span> <span class=ow>or</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>            <span class=n>index_struct</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>build_index_from_nodes</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                <span class=n>nodes</span> <span class=o>+</span> <span class=n>objects</span>  <span class=c1># type: ignore</span>
+</span></span><span class=line><span class=cl>            <span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>_index_struct</span> <span class=o>=</span> <span class=n>index_struct</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>_storage_context</span><span class=o>.</span><span class=n>index_store</span><span class=o>.</span><span class=n>add_index_struct</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_index_struct</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>_transformations</span> <span class=o>=</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=n>transformations</span>
+</span></span><span class=line><span class=cl>            <span class=ow>or</span> <span class=n>transformations_from_settings_or_context</span><span class=p>(</span><span class=n>Settings</span><span class=p>,</span> <span class=n>service_context</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>在基类初始化时调用<code>build_index_from_nodes</code>，然后一路调用至<code>_add_nodes_to_index</code>，然后对每个node进行<code>get_text_embedding_batch</code></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/indices/vector_store/base.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>VectorStoreIndex</span><span class=p>(</span><span class=n>BaseIndex</span><span class=p>[</span><span class=n>IndexDict</span><span class=p>]):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>_add_nodes_to_index</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=p>,</span> <span class=n>index_struct</span><span class=p>:</span> <span class=n>IndexDict</span><span class=p>,</span> <span class=n>nodes</span><span class=p>:</span> <span class=n>Sequence</span><span class=p>[</span><span class=n>BaseNode</span><span class=p>],</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=n>nodes_batch</span> <span class=ow>in</span> <span class=n>iter_batch</span><span class=p>(</span><span class=n>nodes</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>_insert_batch_size</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=n>nodes_batch</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_node_with_embedding</span><span class=p>(</span><span class=n>nodes_batch</span><span class=p>,</span> <span class=n>show_progress</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>new_ids</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_vector_store</span><span class=o>.</span><span class=n>add</span><span class=p>(</span><span class=n>nodes_batch</span><span class=p>,</span> <span class=o>**</span><span class=n>insert_kwargs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>_vector_store</span><span class=o>.</span><span class=n>stores_text</span> <span class=ow>or</span> <span class=bp>self</span><span class=o>.</span><span class=n>_store_nodes_override</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=k>for</span> <span class=n>node</span><span class=p>,</span> <span class=n>new_id</span> <span class=ow>in</span> <span class=nb>zip</span><span class=p>(</span><span class=n>nodes_batch</span><span class=p>,</span> <span class=n>new_ids</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>                    <span class=c1># NOTE: remove embedding from node to avoid duplication</span>
+</span></span><span class=line><span class=cl>                    <span class=n>node_without_embedding</span> <span class=o>=</span> <span class=n>node</span><span class=o>.</span><span class=n>copy</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>                    <span class=n>node_without_embedding</span><span class=o>.</span><span class=n>embedding</span> <span class=o>=</span> <span class=kc>None</span>
+</span></span><span class=line><span class=cl>                    <span class=n>index_struct</span><span class=o>.</span><span class=n>add_node</span><span class=p>(</span><span class=n>node_without_embedding</span><span class=p>,</span> <span class=n>text_id</span><span class=o>=</span><span class=n>new_id</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                    <span class=bp>self</span><span class=o>.</span><span class=n>_docstore</span><span class=o>.</span><span class=n>add_documents</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                        <span class=p>[</span><span class=n>node_without_embedding</span><span class=p>],</span> <span class=n>allow_update</span><span class=o>=</span><span class=kc>True</span>
+</span></span><span class=line><span class=cl>                    <span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=c1># image embedding ...</span>
+</span></span><span class=line><span class=cl>                        
+</span></span><span class=line><span class=cl><span class=c1># llama_index/core/indices/utils.py        </span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>embed_nodes</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=n>nodes</span><span class=p>:</span> <span class=n>Sequence</span><span class=p>[</span><span class=n>BaseNode</span><span class=p>],</span> <span class=n>embed_model</span><span class=p>:</span> <span class=n>BaseEmbedding</span><span class=p>,</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>List</span><span class=p>[</span><span class=nb>float</span><span class=p>]]:</span>
+</span></span><span class=line><span class=cl>    <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=n>new_embeddings</span> <span class=o>=</span> <span class=n>embed_model</span><span class=o>.</span><span class=n>get_text_embedding_batch</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=n>texts_to_embed</span><span class=p>,</span> <span class=n>show_progress</span><span class=o>=</span><span class=n>show_progress</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>new_id</span><span class=p>,</span> <span class=n>text_embedding</span> <span class=ow>in</span> <span class=nb>zip</span><span class=p>(</span><span class=n>ids_to_embed</span><span class=p>,</span> <span class=n>new_embeddings</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=n>id_to_embed_map</span><span class=p>[</span><span class=n>new_id</span><span class=p>]</span> <span class=o>=</span> <span class=n>text_embedding</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>id_to_embed_map</span>
+</span></span></code></pre></td></tr></table></div></div><p>在调用链路中，我们发现了一个function wrapper的机制<code>@dispatcher.span</code>：通过在函数调用前后插入 <code>span</code>，可以捕捉和记录每个函数的执行时间、输入输出和错误情况。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/base/embeddings/base.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>BaseEmbedding</span><span class=p>(</span><span class=n>TransformComponent</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=nd>@dispatcher.span</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>get_text_embedding_batch</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=p>,</span> <span class=n>texts</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>Embedding</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=n>model_dict</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>to_dict</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=n>idx</span><span class=p>,</span> <span class=n>text</span> <span class=ow>in</span> <span class=n>queue_with_progress</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>cur_batch</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>text</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>idx</span> <span class=o>==</span> <span class=nb>len</span><span class=p>(</span><span class=n>texts</span><span class=p>)</span> <span class=o>-</span> <span class=mi>1</span> <span class=ow>or</span> <span class=nb>len</span><span class=p>(</span><span class=n>cur_batch</span><span class=p>)</span> <span class=o>==</span> <span class=bp>self</span><span class=o>.</span><span class=n>embed_batch_size</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>                <span class=n>embeddings</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_text_embeddings</span><span class=p>(</span><span class=n>cur_batch</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=n>result_embeddings</span><span class=o>.</span><span class=n>extend</span><span class=p>(</span><span class=n>embeddings</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>                <span class=n>cur_batch</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>result_embeddings</span>
+</span></span></code></pre></td></tr></table></div></div><p>这里有一个batch的逻辑，积攒（默认10）个text后一起送入embedding。</p><p>再一路兜兜转转，最后便是调用模型本身的的encode接口，如我们使用<code>BAAI/bge-base-en-v1.5</code> embedding模型，最后会到hugging face model embedding</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/embeddings/huggingface/base.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>HuggingFaceEmbedding</span><span class=p>(</span><span class=n>BaseEmbedding</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>_embed</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=p>,</span> <span class=n>sentences</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span> <span class=n>prompt_name</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>List</span><span class=p>[</span><span class=nb>float</span><span class=p>]]:</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_model</span><span class=o>.</span><span class=n>encode</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=n>sentences</span><span class=p>,</span> <span class=n>batch_size</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>embed_batch_size</span><span class=p>,</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=p>)</span><span class=o>.</span><span class=n>tolist</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p>再往下调用就是<code>sentence_transformers/SentenceTransformer.py</code>的encode接口了，我们不再展开。</p><p>然后一路返回，将<code>node</code>加到<code>index_struct</code>中，将<code>node_without_embedding</code>加到<code>self._docstore</code>数据结构中，indexing就构建完成了。</p><p>性能上，我们做了一个简单的时间统计：<strong>大部分时间开销来自embedding构建</strong>（没有使用gpu模拟host场景），这部分底层调用优化提升空间可能并不大。目前llama_index embedding并行这块做的不好，<strong>得专门放到transformation里（进了vector index初始化就和并行无关了）</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>_get_text_embeddings</span> <span class=n>time</span><span class=p>:</span>  <span class=mf>5.118131160736084</span>
+</span></span><span class=line><span class=cl><span class=n>_get_text_embeddings</span> <span class=n>time</span><span class=p>:</span>  <span class=mf>2.813439130783081</span>
+</span></span><span class=line><span class=cl><span class=nb>all</span> <span class=n>index</span> <span class=n>time</span><span class=p>:</span>  <span class=mf>8.08009123802185</span>
+</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2024-07-06&nbsp;<a class=git-hash href=https://github.com/zjzjy/commit/d1068aa986ca9906558cc9fb39295506170b4c0d target=_blank title="commit by yewentao(zhyanwentao@126.com) d1068aa986ca9906558cc9fb39295506170b4c0d: adding llama_index source code reading" rel="noopener noreferrer">
+<i class="fas fa-hashtag fa-fw"></i>d1068aa</a></span></div><div class=post-info-license></div></div><div class=post-info-line><div class=post-info-md><span><a class=link-to-mardown href=/zh-cn/llama_index/index.md target=_blank rel="noopener noreferrer">阅读原始文档</a>
+</span><span>|&nbsp;<a class=link-to-source href=https://github.com/zjzjy/zjzjy.github.io/blob/main/content/posts/llm/llama_index/index.zh-cn.md target=_blank rel="noopener noreferrer">查看源代码</a>
+</span><span>|&nbsp;<a class=link-to-edit href=https://github.com/zjzjy/zjzjy.github.io/edit/main/content/posts/llm/llama_index/index.zh-cn.md target=_blank rel="noopener noreferrer">编辑此页</a>
+</span><span>|&nbsp;<a class=link-to-report href="https://github.com/zjzjy/zjzjy.github.io/issues/new?title=[bug]%20Llama_index+%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB%281%29&body=|Field|Value|%0A|-|-|%0A|Title|Llama_index+%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB%281%29|%0A|Url|https://zjzjy.github.io/zh-cn/llama_index/|%0A|Filename|https://github.com/yewentao256/yewentao256.github.io/blob/main/content/posts/llm/llama_index/index.zh-cn.md|" target=_blank rel="noopener noreferrer">报告问题</a></span></div><div class=post-info-share><button title="分享到 Twitter" data-sharer=twitter data-url=https://zjzjy.github.io/zh-cn/llama_index/ data-title="Llama_index 源码解读(1)"><span class="fab fa-twitter fa-fw"></span></button><button title="分享到 Facebook" data-sharer=facebook data-url=https://zjzjy.github.io/zh-cn/llama_index/><span class="fab fa-facebook-square fa-fw"></span></button><button title="分享到 Hacker News" data-sharer=hackernews data-url=https://zjzjy.github.io/zh-cn/llama_index/ data-title="Llama_index 源码解读(1)"><span class="fab fa-hacker-news fa-fw"></span></button><button title="分享到 Line" data-sharer=line data-url=https://zjzjy.github.io/zh-cn/llama_index/ data-title="Llama_index 源码解读(1)"><span data-svg-src=/lib/simple-icons/icons/line.min.svg></span></button><button title="分享到 微博" data-sharer=weibo data-url=https://zjzjy.github.io/zh-cn/llama_index/ data-title="Llama_index 源码解读(1)"><span class="fab fa-weibo fa-fw"></span></button></div></div></div><div class=post-info-more><section class=post-tags></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/zh-cn/>主页</a></span></section></div><div class=post-nav><a href=/zh-cn/llama_index_2/ class=prev rel=prev title="Llama_index 源码解读(2)"><i class="fas fa-angle-left fa-fw"></i>Llama_index 源码解读(2)</a>
+<a href=/zh-cn/iot/ class=next rel=next title=IoT>IoT<i class="fas fa-angle-right fa-fw"></i></a></div></div><div id=comments><div id=giscus></div><noscript>Please enable JavaScript to view the comments powered by <a href=https://giscus.app/>giscus</a>.</noscript></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreferrer" title="Hugo 0.114.1">Hugo</a> 强力驱动&nbsp;|&nbsp;主题 - <a href=https://github.com/HEIGE-PCloud/DoIt target=_blank rel="noopener noreferrer" title="DoIt 0.4.0"><i class="far fa-edit fa-fw"></i> DoIt</a></div><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2024</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://zjzjy.github.io target=_blank rel="noopener noreferrer">Yewentao</a></span>&nbsp;|&nbsp;<span class=license><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span></div><div class=footer-line></div><div class=footer-line></div></div></footer></div><div id=fixed-buttons><a href=#back-to-top id=back-to-top-button class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw"></i></a></div><div id=cookieconsent-container></div><div class=assets><link rel=stylesheet href=/lib/katex/katex.min.css><link rel=preload as=style onload='this.onload=null,this.rel="stylesheet"' href=/lib/katex/copy-tex.min.css><noscript><link rel=stylesheet href=/lib/katex/copy-tex.min.css></noscript><link rel=stylesheet href=/lib/cookieconsent/cookieconsent.min.css><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:30},comment:{giscus:{darkTheme:"dark",dataCategory:"Announcements",dataCategoryId:"DIC_kwDOI3HpRc4CYIaq",dataEmitMetadata:"0",dataInputPosition:"bottom",dataLang:"zh-CN",dataMapping:"pathname",dataReactionsEnabled:"1",dataRepo:"zjzjy/zjzjy.github.io",dataRepoId:"R_kgDOI3HpRQ",dataStrict:"0",lightTheme:"light"}},cookieconsent:{content:{dismiss:"同意",link:"了解更多",message:"本网站使用 Cookies 来改善您的浏览体验."},enable:!0,palette:{button:{background:"#f0f0f0"},popup:{background:"#1aa3ff"}},theme:"edgeless"},math:{delimiters:[{display:!0,left:"$$",right:"$$"},{display:!0,left:"\\[",right:"\\]"},{display:!1,left:"$",right:"$"},{display:!1,left:"\\(",right:"\\)"}],strict:!1},search:{distance:100,findAllMatches:!1,fuseIndexURL:"/zh-cn/index.json",highlightTag:"em",ignoreFieldNorm:!1,ignoreLocation:!1,isCaseSensitive:!1,location:0,maxResultLength:10,minMatchCharLength:2,noResultsFound:"没有找到结果",snippetLength:50,threshold:.3,type:"fuse",useExtendedSearch:!1},sharerjs:!0,table:{sort:!0}}</script><script type=text/javascript src=/lib/tablesort/tablesort.min.js></script><script type=text/javascript src=/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=/lib/sharer/sharer.min.js></script><script type=text/javascript src=/lib/katex/katex.min.js defer></script><script type=text/javascript src=/lib/katex/auto-render.min.js defer></script><script type=text/javascript src=/lib/katex/copy-tex.min.js defer></script><script type=text/javascript src=/lib/katex/mhchem.min.js defer></script><script type=text/javascript src=/js/katex.min.js defer></script><script type=text/javascript src=/lib/cookieconsent/cookieconsent.min.js defer></script><script type=text/javascript src=/js/cookieconsent.min.js defer></script><script type=text/javascript src=/js/theme.min.js defer></script><script type=text/javascript src=/js/giscus.min.js defer></script></div></body></html>

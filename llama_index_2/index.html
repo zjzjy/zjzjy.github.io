@@ -1,0 +1,1147 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>Llama_index Source Code Analysis(2) - Zhengjunyin's Blog</title><meta name=Description content="zhengjunyin's blog"><meta property="og:title" content="Llama_index Source Code Analysis(2)"><meta property="og:description" content="This blog introduces the basic concepts of RAG and further demonstrates the RAG process based on the source code interpretation of llama_index, including data loader, transformation, index, query, etc. In addition, this paper also analyzes the performance of llama_index RAG process and gives corresponding optimization suggestions."><meta property="og:type" content="article"><meta property="og:url" content="https://zjzjy.github.io/llama_index_2/"><meta property="og:image" content="https://zjzjy.github.io/person-circle.svg"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-06-10T14:22:16+08:00"><meta property="article:modified_time" content="2024-07-06T10:14:45+08:00"><meta property="og:site_name" content="ZhengJunyin's blog"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://zjzjy.github.io/person-circle.svg"><meta name=twitter:title content="Llama_index Source Code Analysis(2)"><meta name=twitter:description content="This blog introduces the basic concepts of RAG and further demonstrates the RAG process based on the source code interpretation of llama_index, including data loader, transformation, index, query, etc. In addition, this paper also analyzes the performance of llama_index RAG process and gives corresponding optimization suggestions."><meta name=application-name content="Zhengjunyin's Blog"><meta name=apple-mobile-web-app-title content="Zhengjunyin's Blog"><meta name=theme-color content="#f8f8f8"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=canonical href=https://zjzjy.github.io/llama_index_2/><link rel=prev href=https://zjzjy.github.io/about/><link rel=next href=https://zjzjy.github.io/llama_index/><link rel=stylesheet href=/css/main.css><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/color.css><link rel=stylesheet href=/css/style.min.css><link rel=preload as=style onload='this.onload=null,this.rel="stylesheet"' href=/lib/fontawesome-free/all.min.css><noscript><link rel=stylesheet href=/lib/fontawesome-free/all.min.css></noscript><link rel=preload as=style onload='this.onload=null,this.rel="stylesheet"' href=/lib/animate/animate.min.css><noscript><link rel=stylesheet href=/lib/animate/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Llama_index Source Code Analysis(2)","inLanguage":"en","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/zjzjy.github.io\/llama_index_2\/"},"genre":"posts","wordcount":3395,"url":"https:\/\/zjzjy.github.io\/llama_index_2\/","datePublished":"2024-06-10T14:22:16+08:00","dateModified":"2024-07-06T10:14:45+08:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"Yewentao"},"description":""}</script><script src=//instant.page/5.2.0 defer type=module integrity=sha384-jnZyxPjiipYXnSU0ygqeac2q7CVYMbh84q0uHVRRxEtvFPiQYbXWUorga2aqZJ0z></script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>function setTheme(e){document.body.setAttribute("theme",e),document.documentElement.style.setProperty("color-scheme",e==="light"?"light":"dark"),window.theme=e,window.isDark=window.theme!=="light"}function saveTheme(e){window.localStorage&&localStorage.setItem("theme",e)}function getMeta(e){const t=document.getElementsByTagName("meta");for(let n=0;n<t.length;n++)if(t[n].getAttribute("name")===e)return t[n];return""}if(window.localStorage&&localStorage.getItem("theme")){let e=localStorage.getItem("theme");e==="light"||e==="dark"||e==="black"?setTheme(e):setTheme(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")}else"auto"==="light"||"auto"==="dark"||"auto"==="black"?(setTheme("auto"),saveTheme("auto")):(saveTheme("auto"),setTheme(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"));let metaColors={light:"#f8f8f8",dark:"#252627",black:"#000000"};getMeta("theme-color").content=metaColors[document.body.getAttribute("theme")],window.switchThemeEventSet=new Set</script><div id=back-to-top></div><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title="Zhengjunyin's Blog">Home</a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>Posts </a><a class=menu-item href=/categories/>Categories </a><a class=menu-item href=/about/>About </a><a class=menu-item href=https://github.com/zjzjy title=GitHub rel="noopener noreferrer" target=_blank><i class='fab fa-github fa-fw' aria-hidden=true></i> </a><span class="menu-item delimiter"></span><a href=javascript:void(0); class="menu-item language" title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
+<select class=language-select title="Select Language" id=language-select-desktop onchange="location=this.value"><option value=/llama_index_2/ selected>English</option><option value=/zh-cn/llama_index_2/>简体中文</option></select>
+</a><span class="menu-item search" id=search-desktop><input type=text placeholder="Search titles or contents..." id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=Search><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=Clear><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin"></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title="Switch Theme"><i class="fas fa-adjust fa-fw"></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title="Zhengjunyin's Blog">Home</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder="Search titles or contents..." id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=Search><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=Clear><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin"></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>Cancel</a></div><a class=menu-item href=/posts/ title>Posts</a><a class=menu-item href=/categories/ title>Categories</a><a class=menu-item href=/about/ title>About</a><a class=menu-item href=https://github.com/zjzjy title=GitHub rel="noopener noreferrer" target=_blank><i class='fab fa-github fa-fw' aria-hidden=true></i></a><a href=javascript:void(0); class="menu-item theme-switch" title="Switch Theme">
+<i class="fas fa-adjust fa-fw"></i>
+</a><a href=javascript:void(0); class=menu-item title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
+<select class=language-select title="Select Language" onchange="location=this.value"><option value=/llama_index_2/ selected>English</option><option value=/zh-cn/llama_index_2/>简体中文</option></select></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>Contents</h2><div class=toc-content id=toc-content-auto><nav id=TableOfContents><ul><li><a href=#summary>Summary</a></li><li><a href=#4-llama-index-source-code-analysis>4. Llama index Source Code Analysis</a><ul><li><a href=#44-storing>4.4 Storing</a><ul><li><a href=#441-disk>4.4.1 Disk</a></li><li><a href=#442-database>4.4.2 Database</a></li><li><a href=#443-insert-document>4.4.3 Insert Document</a></li><li><a href=#444-delete-document>4.4.4 Delete Document</a></li></ul></li><li><a href=#45-quering>4.5 quering</a><ul><li><a href=#451-retrieval>4.5.1 Retrieval</a></li><li><a href=#452-postprocessing>4.5.2 Postprocessing</a></li><li><a href=#453-response-synthesis>4.5.3 Response synthesis</a></li></ul></li></ul></li><li><a href=#5-reference>5. Reference</a></li></ul></nav></div></div><script>document.getElementsByTagName("main")[0].setAttribute("autoTOC","true")</script><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Llama_index Source Code Analysis(2)</h1><div class=post-meta><div class=post-meta-line><span class=post-author><span class="author fas fa-user-circle fa-fw"></span><a href=https://zjzjy.github.io title=Author target=_blank rel="noopener noreferrer author" class=author>Yewentao</a>
+</span>&nbsp;<span class=post-category>included in </span>&nbsp;<span class=post-category>category <a href=/categories/llm/><i class="far fa-folder fa-fw"></i>llm</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2024-06-10>2024-06-10</time>&nbsp;<i class="far fa-edit fa-fw"></i>&nbsp;<time datetime=2024-07-06>2024-07-06</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;3395 words&nbsp;<i class="far fa-clock fa-fw"></i>&nbsp;16 minutes&nbsp;</div></div><div class="details toc" id=toc-static kept><div class="details-summary toc-title"><span>Contents</span>
+<span><i class="details-icon fas fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#summary>Summary</a></li><li><a href=#4-llama-index-source-code-analysis>4. Llama index Source Code Analysis</a><ul><li><a href=#44-storing>4.4 Storing</a><ul><li><a href=#441-disk>4.4.1 Disk</a></li><li><a href=#442-database>4.4.2 Database</a></li><li><a href=#443-insert-document>4.4.3 Insert Document</a></li><li><a href=#444-delete-document>4.4.4 Delete Document</a></li></ul></li><li><a href=#45-quering>4.5 quering</a><ul><li><a href=#451-retrieval>4.5.1 Retrieval</a></li><li><a href=#452-postprocessing>4.5.2 Postprocessing</a></li><li><a href=#453-response-synthesis>4.5.3 Response synthesis</a></li></ul></li></ul></li><li><a href=#5-reference>5. Reference</a></li></ul></nav></div></div><div class=content id=content><h2 id=summary class=headerLink><a href=#summary class=header-mark></a>Summary</h2><p>This blog introduces the basic concepts of <strong>RAG</strong> and further demonstrates the RAG process based on the source code interpretation of <strong>llama_index</strong>, including data loader, transformation, index, query, etc. In addition, this paper also analyzes the <strong>performance</strong> of llama_index RAG process and gives corresponding optimization suggestions.</p><h2 id=4-llama-index-source-code-analysis class=headerLink><a href=#4-llama-index-source-code-analysis class=header-mark></a>4. Llama index Source Code Analysis</h2><h3 id=44-storing class=headerLink><a href=#44-storing class=header-mark></a>4.4 Storing</h3><p>After constructing the index, we store it to avoid redundant constructions. By default, it is stored in memory, but we can also persist it to disk or a database.</p><h4 id=441-disk class=headerLink><a href=#441-disk class=header-mark></a>4.4.1 Disk</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># save</span>
+</span></span><span class=line><span class=cl><span class=n>index</span><span class=o>.</span><span class=n>storage_context</span><span class=o>.</span><span class=n>persist</span><span class=p>(</span><span class=n>persist_dir</span><span class=o>=</span><span class=s2>&#34;&lt;persist_dir&gt;&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># load</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.core</span> <span class=kn>import</span> <span class=n>StorageContext</span><span class=p>,</span> <span class=n>load_index_from_storage</span>
+</span></span><span class=line><span class=cl><span class=n>storage_context</span> <span class=o>=</span> <span class=n>StorageContext</span><span class=o>.</span><span class=n>from_defaults</span><span class=p>(</span><span class=n>persist_dir</span><span class=o>=</span><span class=s2>&#34;&lt;persist_dir&gt;&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>index</span> <span class=o>=</span> <span class=n>load_index_from_storage</span><span class=p>(</span><span class=n>storage_context</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>Storing to disk is straightforward, which uses Python’s built-in file handler. It does not employ multiprocessing or multithreading mechanisms. <strong>Note that everything is stored as JSON, which incurs additional overhead.</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/storage/kvstore/simple_kvstore.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>SimpleKVStore</span><span class=p>(</span><span class=n>BaseInMemoryKVStore</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>persist</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=p>,</span> <span class=n>persist_path</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>fs</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>fsspec</span><span class=o>.</span><span class=n>AbstractFileSystem</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=n>dirpath</span> <span class=o>=</span> <span class=n>os</span><span class=o>.</span><span class=n>path</span><span class=o>.</span><span class=n>dirname</span><span class=p>(</span><span class=n>persist_path</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>with</span> <span class=n>fs</span><span class=o>.</span><span class=n>open</span><span class=p>(</span><span class=n>persist_path</span><span class=p>,</span> <span class=s2>&#34;w&#34;</span><span class=p>)</span> <span class=k>as</span> <span class=n>f</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>f</span><span class=o>.</span><span class=n>write</span><span class=p>(</span><span class=n>json</span><span class=o>.</span><span class=n>dumps</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_data</span><span class=p>))</span>
+</span></span></code></pre></td></tr></table></div></div><p>Constructing the storage context involves:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/storage/storage_context.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>StorageContext</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=nd>@classmethod</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>from_defaults</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>cls</span><span class=p>,</span> <span class=n>persist_dir</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=s2>&#34;StorageContext&#34;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>persist_dir</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>docstore</span> <span class=o>=</span> <span class=n>docstore</span> <span class=ow>or</span> <span class=n>SimpleDocumentStore</span><span class=o>.</span><span class=n>from_persist_dir</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                <span class=n>persist_dir</span><span class=p>,</span> <span class=n>fs</span><span class=o>=</span><span class=n>fs</span>
+</span></span><span class=line><span class=cl>            <span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>index_store</span> <span class=o>=</span> <span class=n>index_store</span> <span class=ow>or</span> <span class=n>SimpleIndexStore</span><span class=o>.</span><span class=n>from_persist_dir</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                <span class=n>persist_dir</span><span class=p>,</span> <span class=n>fs</span><span class=o>=</span><span class=n>fs</span>
+</span></span><span class=line><span class=cl>            <span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>vector_store</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>vector_stores</span> <span class=o>=</span> <span class=p>{</span><span class=n>DEFAULT_VECTOR_STORE</span><span class=p>:</span> <span class=n>vector_store</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=k>elif</span> <span class=n>vector_stores</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>vector_stores</span> <span class=o>=</span> <span class=n>vector_stores</span>
+</span></span><span class=line><span class=cl>            <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>vector_stores</span> <span class=o>=</span> <span class=n>SimpleVectorStore</span><span class=o>.</span><span class=n>from_namespaced_persist_dir</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                    <span class=n>persist_dir</span><span class=p>,</span> <span class=n>fs</span><span class=o>=</span><span class=n>fs</span>
+</span></span><span class=line><span class=cl>                <span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>cls</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=n>docstore</span><span class=o>=</span><span class=n>docstore</span><span class=p>,</span> <span class=n>index_store</span><span class=o>=</span><span class=n>index_store</span><span class=p>,</span> <span class=n>vector_stores</span><span class=o>=</span><span class=n>vector_stores</span><span class=p>,</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># llama_index/core/storage/kvstore/simple_kvstore.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>SimpleKVStore</span><span class=p>(</span><span class=n>BaseInMemoryKVStore</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=nd>@classmethod</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>from_persist_path</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>cls</span><span class=p>,</span> <span class=n>persist_path</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>fs</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>fsspec</span><span class=o>.</span><span class=n>AbstractFileSystem</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=s2>&#34;SimpleKVStore&#34;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>fs</span> <span class=o>=</span> <span class=n>fs</span> <span class=ow>or</span> <span class=n>fsspec</span><span class=o>.</span><span class=n>filesystem</span><span class=p>(</span><span class=s2>&#34;file&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>with</span> <span class=n>fs</span><span class=o>.</span><span class=n>open</span><span class=p>(</span><span class=n>persist_path</span><span class=p>,</span> <span class=s2>&#34;rb&#34;</span><span class=p>)</span> <span class=k>as</span> <span class=n>f</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>data</span> <span class=o>=</span> <span class=n>json</span><span class=o>.</span><span class=n>load</span><span class=p>(</span><span class=n>f</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>cls</span><span class=p>(</span><span class=n>data</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>For each store (including docstore, index_store, graph_store, property_graph_store, vector_stores), which follows a similar process. All file handling is done using <code>fsspec</code> with performance comparable to native Python. One potential optimization is converting JSON to binary format.</p><p>Then let&rsquo;s see the process of constructing index from storage index:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/indices/loading.py</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>load_index_from_storage</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=n>storage_context</span><span class=p>:</span> <span class=n>StorageContext</span><span class=p>,</span> <span class=n>index_id</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>BaseIndex</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=n>indices</span> <span class=o>=</span> <span class=n>load_indices_from_storage</span><span class=p>(</span><span class=n>storage_context</span><span class=p>,</span> <span class=n>index_ids</span><span class=o>=</span><span class=n>index_ids</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>indices</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>load_indices_from_storage</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=n>storage_context</span><span class=p>:</span> <span class=n>StorageContext</span><span class=p>,</span> <span class=n>index_ids</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>Sequence</span><span class=p>[</span><span class=nb>str</span><span class=p>]]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>BaseIndex</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>index_ids</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>index_structs</span> <span class=o>=</span> <span class=n>storage_context</span><span class=o>.</span><span class=n>index_store</span><span class=o>.</span><span class=n>index_structs</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>indices</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>index_struct</span> <span class=ow>in</span> <span class=n>index_structs</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>type_</span> <span class=o>=</span> <span class=n>index_struct</span><span class=o>.</span><span class=n>get_type</span><span class=p>()</span>    <span class=c1># Vector_store</span>
+</span></span><span class=line><span class=cl>        <span class=n>index_cls</span> <span class=o>=</span> <span class=n>INDEX_STRUCT_TYPE_TO_INDEX_CLASS</span><span class=p>[</span><span class=n>type_</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>        <span class=n>index</span> <span class=o>=</span> <span class=n>index_cls</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=n>index_struct</span><span class=o>=</span><span class=n>index_struct</span><span class=p>,</span> <span class=n>storage_context</span><span class=o>=</span><span class=n>storage_context</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span>
+</span></span><span class=line><span class=cl>        <span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>indices</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>index</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>indices</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># llama_index/core/storage/index_store/keyval_index_store.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>KVIndexStore</span><span class=p>(</span><span class=n>BaseIndexStore</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>index_structs</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>IndexStruct</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>        <span class=n>jsons</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_kvstore</span><span class=o>.</span><span class=n>get_all</span><span class=p>(</span><span class=n>collection</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_collection</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=p>[</span><span class=n>json_to_index_struct</span><span class=p>(</span><span class=n>json</span><span class=p>)</span> <span class=k>for</span> <span class=n>json</span> <span class=ow>in</span> <span class=n>jsons</span><span class=o>.</span><span class=n>values</span><span class=p>()]</span>
+</span></span></code></pre></td></tr></table></div></div><p>From a performance perspective, storing to disk incurs minimal overhead, about 0.05s for our example file, resulting in a 452KB file. However, reading takes longer; <strong>reading this small file and constructing the storage context takes 0.12s, and rebuilding the index takes 0.36s</strong>.</p><p>The codes above essentially converts the read <code>storage_context</code> to a <code>VectorStoreIndex</code> class (by pre-constructing the <code>index_struct</code>, bypassing the previous embedding construction in <code>build_index_from_nodes</code>). In theory, this should not incur significant performance overhead. So where does the 0.36s come from?</p><p>Step-by-step investigation reveals that this overhead comes from constructing the index class&rsquo;s <code>transformations_from_settings_or_context</code>, specifically from initializing <code>SentenceSplitter</code> and calling <code>get_tokenizer()</code>.</p><p>In <code>get_tokenizer</code>, it uses the tiktoken Python library to get a GPT-3.5 token model: <code>enc = tiktoken.encoding_for_model("gpt-3.5-turbo")</code></p><p>The <code>SentenceSplitter</code> only uses this tokenizer to assess token length:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/node_parser/text/sentence.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>SentenceSplitter</span><span class=p>(</span><span class=n>MetadataAwareTextSplitter</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=p>,</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>_tokenizer</span> <span class=o>=</span> <span class=n>tokenizer</span> <span class=ow>or</span> <span class=n>get_tokenizer</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>_token_size</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>text</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=nb>len</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_tokenizer</span><span class=p>(</span><span class=n>text</span><span class=p>))</span>
+</span></span></code></pre></td></tr></table></div></div><p>Here, we identify two performance optimization points:</p><ul><li>Lazy loading: The tokenizer should only load when needed, not during every index construction.</li><li>Use a faster method to get the length instead of fully tokenizing the text (frequently used in splitting).</li></ul><h4 id=442-database class=headerLink><a href=#442-database class=header-mark></a>4.4.2 Database</h4><p>For database storage, we use the officially recommended <code>chromadb</code>.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=kn>import</span> <span class=nn>chromadb</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.vector_stores.chroma</span> <span class=kn>import</span> <span class=n>ChromaVectorStore</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.core</span> <span class=kn>import</span> <span class=n>SimpleDirectoryReader</span><span class=p>,</span> <span class=n>VectorStoreIndex</span><span class=p>,</span> <span class=n>Settings</span><span class=p>,</span> <span class=n>StorageContext</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.core.ingestion</span> <span class=kn>import</span> <span class=n>IngestionPipeline</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.core.node_parser</span> <span class=kn>import</span> <span class=n>SentenceSplitter</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.embeddings.huggingface</span> <span class=kn>import</span> <span class=n>HuggingFaceEmbedding</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.llms.ollama</span> <span class=kn>import</span> <span class=n>Ollama</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.vector_stores.chroma</span> <span class=kn>import</span> <span class=n>ChromaVectorStore</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>db</span> <span class=o>=</span> <span class=n>chromadb</span><span class=o>.</span><span class=n>PersistentClient</span><span class=p>(</span><span class=n>path</span><span class=o>=</span><span class=s2>&#34;./chroma_db&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>chroma_collection</span> <span class=o>=</span> <span class=n>db</span><span class=o>.</span><span class=n>get_or_create_collection</span><span class=p>(</span><span class=s2>&#34;quickstart&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=c1># assign chroma as the vector_store to the context</span>
+</span></span><span class=line><span class=cl><span class=n>vector_store</span> <span class=o>=</span> <span class=n>ChromaVectorStore</span><span class=p>(</span><span class=n>chroma_collection</span><span class=o>=</span><span class=n>chroma_collection</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>storage_context</span> <span class=o>=</span> <span class=n>StorageContext</span><span class=o>.</span><span class=n>from_defaults</span><span class=p>(</span><span class=n>vector_store</span><span class=o>=</span><span class=n>vector_store</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>Settings</span><span class=o>.</span><span class=n>embed_model</span> <span class=o>=</span> <span class=n>HuggingFaceEmbedding</span><span class=p>(</span><span class=n>model_name</span><span class=o>=</span><span class=s2>&#34;BAAI/bge-base-en-v1.5&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>documents</span> <span class=o>=</span> <span class=n>SimpleDirectoryReader</span><span class=p>(</span><span class=s2>&#34;./data&#34;</span><span class=p>)</span><span class=o>.</span><span class=n>load_data</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>pipeline</span> <span class=o>=</span> <span class=n>IngestionPipeline</span><span class=p>(</span><span class=n>transformations</span><span class=o>=</span><span class=p>[</span><span class=n>SentenceSplitter</span><span class=p>()])</span>
+</span></span><span class=line><span class=cl><span class=n>nodes</span> <span class=o>=</span> <span class=n>pipeline</span><span class=o>.</span><span class=n>run</span><span class=p>(</span><span class=n>documents</span><span class=o>=</span><span class=n>documents</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>index</span> <span class=o>=</span> <span class=n>VectorStoreIndex</span><span class=p>(</span><span class=n>nodes</span><span class=p>,</span> <span class=n>storage_context</span><span class=o>=</span><span class=n>storage_context</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>Using it is similar to constructing a conventional index, with the main difference being the additional construction and passing of the storage context to the index.</p><p>Internally, the process is almost identical to the in-memory store, with differences in the <code>add</code> methods of different stores.</p><p>The <code>ChromaVectorStore</code> add method:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/vector_stores/chroma/base.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>ChromaVectorStore</span><span class=p>(</span><span class=n>BasePydanticVectorStore</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>add</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>nodes</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>BaseNode</span><span class=p>],</span> <span class=o>**</span><span class=n>add_kwargs</span><span class=p>:</span> <span class=n>Any</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=n>node_chunk</span> <span class=ow>in</span> <span class=n>node_chunks</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=n>node</span> <span class=ow>in</span> <span class=n>node_chunk</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>embeddings</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>node</span><span class=o>.</span><span class=n>get_embedding</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>                <span class=n>metadata_dict</span> <span class=o>=</span> <span class=n>node_to_metadata_dict</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                    <span class=n>node</span><span class=p>,</span> <span class=n>remove_text</span><span class=o>=</span><span class=kc>True</span><span class=p>,</span> <span class=n>flat_metadata</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>flat_metadata</span>
+</span></span><span class=line><span class=cl>                <span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=k>for</span> <span class=n>key</span> <span class=ow>in</span> <span class=n>metadata_dict</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=k>if</span> <span class=n>metadata_dict</span><span class=p>[</span><span class=n>key</span><span class=p>]</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                        <span class=n>metadata_dict</span><span class=p>[</span><span class=n>key</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;&#34;</span>
+</span></span><span class=line><span class=cl>                <span class=n>metadatas</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>metadata_dict</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=n>ids</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>node</span><span class=o>.</span><span class=n>node_id</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=n>documents</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>node</span><span class=o>.</span><span class=n>get_content</span><span class=p>(</span><span class=n>metadata_mode</span><span class=o>=</span><span class=n>MetadataMode</span><span class=o>.</span><span class=n>NONE</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=bp>self</span><span class=o>.</span><span class=n>_collection</span><span class=o>.</span><span class=n>add</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                <span class=n>embeddings</span><span class=o>=</span><span class=n>embeddings</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=n>ids</span><span class=o>=</span><span class=n>ids</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=n>metadatas</span><span class=o>=</span><span class=n>metadatas</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=n>documents</span><span class=o>=</span><span class=n>documents</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>all_ids</span><span class=o>.</span><span class=n>extend</span><span class=p>(</span><span class=n>ids</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>all_ids</span>
+</span></span></code></pre></td></tr></table></div></div><p>Here, data is organized to lists and passed to the <code>add</code> method of the third-party library chromadb, ultimately persisting it to the database.</p><p>Note: <strong>ChromaDB</strong> is a high-performance vector database optimized with indexing structures and retrieval algorithms like HNSW (Hierarchical Navigable Small World) and IVF (Inverted File Index), making it more efficient than user-written SQL.</p><p>Then let&rsquo;s see the reading process from the database:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=n>db</span> <span class=o>=</span> <span class=n>chromadb</span><span class=o>.</span><span class=n>PersistentClient</span><span class=p>(</span><span class=n>path</span><span class=o>=</span><span class=s2>&#34;./chroma_db&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>chroma_collection</span> <span class=o>=</span> <span class=n>db</span><span class=o>.</span><span class=n>get_or_create_collection</span><span class=p>(</span><span class=s2>&#34;quickstart&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>vector_store</span> <span class=o>=</span> <span class=n>ChromaVectorStore</span><span class=p>(</span><span class=n>chroma_collection</span><span class=o>=</span><span class=n>chroma_collection</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>storage_context</span> <span class=o>=</span> <span class=n>StorageContext</span><span class=o>.</span><span class=n>from_defaults</span><span class=p>(</span><span class=n>vector_store</span><span class=o>=</span><span class=n>vector_store</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>index</span> <span class=o>=</span> <span class=n>VectorStoreIndex</span><span class=o>.</span><span class=n>from_vector_store</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=n>vector_store</span><span class=p>,</span> <span class=n>storage_context</span><span class=o>=</span><span class=n>storage_context</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>Initially, the third-party library <code>chromadb</code> is used to get the database handler, and then <code>ChromaVectorStore</code> initializes the <code>vector_store</code> from the handler, constructing the <code>StorageContext</code>.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/storage/storage_context.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>StorageContext</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=nd>@classmethod</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>from_defaults</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>cls</span><span class=p>,</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=s2>&#34;StorageContext&#34;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>persist_dir</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>docstore</span> <span class=o>=</span> <span class=n>docstore</span> <span class=ow>or</span> <span class=n>SimpleDocumentStore</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>            <span class=n>index_store</span> <span class=o>=</span> <span class=n>index_store</span> <span class=ow>or</span> <span class=n>SimpleIndexStore</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>            <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>vector_store</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>vector_stores</span> <span class=o>=</span> <span class=p>{</span><span class=n>DEFAULT_VECTOR_STORE</span><span class=p>:</span> <span class=n>vector_store</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>vector_stores</span> <span class=o>=</span> <span class=n>vector_stores</span> <span class=ow>or</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=n>DEFAULT_VECTOR_STORE</span><span class=p>:</span> <span class=n>SimpleVectorStore</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>image_store</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=c1># append image store to vector stores</span>
+</span></span><span class=line><span class=cl>                <span class=n>vector_stores</span><span class=p>[</span><span class=n>IMAGE_VECTOR_STORE_NAMESPACE</span><span class=p>]</span> <span class=o>=</span> <span class=n>image_store</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>cls</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=n>docstore</span><span class=o>=</span><span class=n>docstore</span><span class=p>,</span> <span class=n>index_store</span><span class=o>=</span><span class=n>index_store</span><span class=p>,</span> <span class=n>vector_stores</span><span class=o>=</span><span class=n>vector_stores</span><span class=p>,</span>  <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>Unlike reading from disk, here without a <code>persistent_dir</code>, a different branch constructs <code>SimpleDocumentStore</code>, <code>SimpleIndexStore</code>, etc.</p><p>After constructing <code>storage_context</code>, the key part is <code>from_vector_store</code>:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/indices/vector_store/base.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>VectorStoreIndex</span><span class=p>(</span><span class=n>BaseIndex</span><span class=p>[</span><span class=n>IndexDict</span><span class=p>]):</span>
+</span></span><span class=line><span class=cl>    <span class=nd>@classmethod</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>from_vector_store</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>cls</span><span class=p>,</span> <span class=n>vector_store</span><span class=p>:</span> <span class=n>BasePydanticVectorStore</span><span class=p>,</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=s2>&#34;VectorStoreIndex&#34;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=n>storage_context</span> <span class=o>=</span> <span class=n>StorageContext</span><span class=o>.</span><span class=n>from_defaults</span><span class=p>(</span><span class=n>vector_store</span><span class=o>=</span><span class=n>vector_store</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>cls</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=n>nodes</span><span class=o>=</span><span class=p>[],</span>
+</span></span><span class=line><span class=cl>            <span class=n>embed_model</span><span class=o>=</span><span class=n>embed_model</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=n>service_context</span><span class=o>=</span><span class=n>service_context</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=n>storage_context</span><span class=o>=</span><span class=n>storage_context</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=o>**</span><span class=n>kwargs</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>Here, llama_index reconstructs the <code>StorageContext</code>, <strong>making the external <code>StorageContext</code> useless, which contradicts the documentation</strong>, highlighting some architectural confusion in llama_index.</p><p>Then, the class is initialized similarly to constructing from a class, but nodes are empty, meaning no construction occurs. <strong>The actual nodes are fetched from the database during query</strong> (detailed in retrieval).</p><h4 id=443-insert-document class=headerLink><a href=#443-insert-document class=header-mark></a>4.4.3 Insert Document</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=kn>from</span> <span class=nn>llama_index.core</span> <span class=kn>import</span> <span class=n>VectorStoreIndex</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>index</span> <span class=o>=</span> <span class=n>VectorStoreIndex</span><span class=p>([])</span>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=n>doc</span> <span class=ow>in</span> <span class=n>documents</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>index</span><span class=o>.</span><span class=n>insert</span><span class=p>(</span><span class=n>doc</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># llama_index/core/indices/base.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>BaseIndex</span><span class=p>(</span><span class=n>Generic</span><span class=p>[</span><span class=n>IS</span><span class=p>],</span> <span class=n>ABC</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>insert</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>document</span><span class=p>:</span> <span class=n>Document</span><span class=p>,</span> <span class=o>**</span><span class=n>insert_kwargs</span><span class=p>:</span> <span class=n>Any</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>with</span> <span class=bp>self</span><span class=o>.</span><span class=n>_callback_manager</span><span class=o>.</span><span class=n>as_trace</span><span class=p>(</span><span class=s2>&#34;insert&#34;</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=n>nodes</span> <span class=o>=</span> <span class=n>run_transformations</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                <span class=p>[</span><span class=n>document</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                <span class=bp>self</span><span class=o>.</span><span class=n>_transformations</span><span class=p>,</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>            <span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=bp>self</span><span class=o>.</span><span class=n>insert_nodes</span><span class=p>(</span><span class=n>nodes</span><span class=p>,</span> <span class=o>**</span><span class=n>insert_kwargs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=bp>self</span><span class=o>.</span><span class=n>docstore</span><span class=o>.</span><span class=n>set_document_hash</span><span class=p>(</span><span class=n>document</span><span class=o>.</span><span class=n>get_doc_id</span><span class=p>(),</span> <span class=n>document</span><span class=o>.</span><span class=n>hash</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>insert_nodes</code> includes transformation, ultimately calling <code>_add_nodes_to_index</code>, the same as during index initialization.</p><h4 id=444-delete-document class=headerLink><a href=#444-delete-document class=header-mark></a>4.4.4 Delete Document</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=n>index</span> <span class=o>=</span> <span class=n>VectorStoreIndex</span><span class=p>(</span><span class=n>documents</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>index</span><span class=o>.</span><span class=n>delete_ref_doc</span><span class=p>(</span><span class=n>documents</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>.</span><span class=n>id_</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># llama_index/core/indices/vector_store/base.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>VectorStoreIndex</span><span class=p>(</span><span class=n>BaseIndex</span><span class=p>[</span><span class=n>IndexDict</span><span class=p>]):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>delete_ref_doc</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=p>,</span> <span class=n>ref_doc_id</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>_vector_store</span><span class=o>.</span><span class=n>delete</span><span class=p>(</span><span class=n>ref_doc_id</span><span class=p>,</span> <span class=o>**</span><span class=n>delete_kwargs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># delete from index_struct only if needed</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>_vector_store</span><span class=o>.</span><span class=n>stores_text</span> <span class=ow>or</span> <span class=bp>self</span><span class=o>.</span><span class=n>_store_nodes_override</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>ref_doc_info</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_docstore</span><span class=o>.</span><span class=n>get_ref_doc_info</span><span class=p>(</span><span class=n>ref_doc_id</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>ref_doc_info</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=k>for</span> <span class=n>node_id</span> <span class=ow>in</span> <span class=n>ref_doc_info</span><span class=o>.</span><span class=n>node_ids</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=bp>self</span><span class=o>.</span><span class=n>_index_struct</span><span class=o>.</span><span class=n>delete</span><span class=p>(</span><span class=n>node_id</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                    <span class=bp>self</span><span class=o>.</span><span class=n>_vector_store</span><span class=o>.</span><span class=n>delete</span><span class=p>(</span><span class=n>node_id</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># delete from docstore only if needed</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>_vector_store</span><span class=o>.</span><span class=n>stores_text</span> <span class=ow>or</span> <span class=bp>self</span><span class=o>.</span><span class=n>_store_nodes_override</span>
+</span></span><span class=line><span class=cl>        <span class=p>)</span> <span class=ow>and</span> <span class=n>delete_from_docstore</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=bp>self</span><span class=o>.</span><span class=n>_docstore</span><span class=o>.</span><span class=n>delete_ref_doc</span><span class=p>(</span><span class=n>ref_doc_id</span><span class=p>,</span> <span class=n>raise_error</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>_storage_context</span><span class=o>.</span><span class=n>index_store</span><span class=o>.</span><span class=n>add_index_struct</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_index_struct</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>delete</code> calls the corresponding <code>vector_store</code> method, such as <code>SimpleVectorStore</code>:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/vector_stores/simple.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>SimpleVectorStore</span><span class=p>(</span><span class=n>BasePydanticVectorStore</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>delete</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>ref_doc_id</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=o>**</span><span class=n>delete_kwargs</span><span class=p>:</span> <span class=n>Any</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>text_ids_to_delete</span> <span class=o>=</span> <span class=nb>set</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=n>text_id</span><span class=p>,</span> <span class=n>ref_doc_id_</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>data</span><span class=o>.</span><span class=n>text_id_to_ref_doc_id</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>ref_doc_id</span> <span class=o>==</span> <span class=n>ref_doc_id_</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>text_ids_to_delete</span><span class=o>.</span><span class=n>add</span><span class=p>(</span><span class=n>text_id</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=n>text_id</span> <span class=ow>in</span> <span class=n>text_ids_to_delete</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>del</span> <span class=bp>self</span><span class=o>.</span><span class=n>data</span><span class=o>.</span><span class=n>embedding_dict</span><span class=p>[</span><span class=n>text_id</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>            <span class=k>del</span> <span class=bp>self</span><span class=o>.</span><span class=n>data</span><span class=o>.</span><span class=n>text_id_to_ref_doc_id</span><span class=p>[</span><span class=n>text_id</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>data</span><span class=o>.</span><span class=n>metadata_dict</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=bp>self</span><span class=o>.</span><span class=n>data</span><span class=o>.</span><span class=n>metadata_dict</span><span class=o>.</span><span class=n>pop</span><span class=p>(</span><span class=n>text_id</span><span class=p>,</span> <span class=kc>None</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>It&rsquo;s worth noting that: this does not directly call the delete interface on <code>_storage_context.index_store</code> but instead updates the old key with the new <code>_index_struct</code> to delete it. This part does not have significant performance overhead.</p><p>For chroma db, it performs actual deletion: <code>self._collection.delete(where={"document_id": ref_doc_id})</code></p><p>For disk, since the data is already read into memory, <strong>only in-memory data is deleted, not affecting the disk</strong>.</p><h3 id=45-quering class=headerLink><a href=#45-quering class=header-mark></a>4.5 quering</h3><p>Once the index is stored, querying can commence.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=n>query_engine</span> <span class=o>=</span> <span class=n>index</span><span class=o>.</span><span class=n>as_query_engine</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>response</span> <span class=o>=</span> <span class=n>query_engine</span><span class=o>.</span><span class=n>query</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;Write an email to the user given their background information.&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># llama_index/core/indices/base.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>BaseIndex</span><span class=p>(</span><span class=n>Generic</span><span class=p>[</span><span class=n>IS</span><span class=p>],</span> <span class=n>ABC</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>as_query_engine</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=p>,</span> <span class=n>llm</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>LLMType</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>:</span> <span class=n>Any</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>BaseQueryEngine</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=n>retriever</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>as_retriever</span><span class=p>(</span><span class=o>**</span><span class=n>kwargs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>llm</span> <span class=o>=</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=n>resolve_llm</span><span class=p>(</span><span class=n>llm</span><span class=p>,</span> <span class=n>callback_manager</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_callback_manager</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>llm</span> <span class=k>else</span> <span class=n>llm_from_settings_or_context</span><span class=p>(</span><span class=n>Settings</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>service_context</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>RetrieverQueryEngine</span><span class=o>.</span><span class=n>from_args</span><span class=p>(</span><span class=n>retriever</span><span class=p>,</span> <span class=n>llm</span><span class=o>=</span><span class=n>llm</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>as_query_engine</code> sets up the retriever, selects the LLM (e.g., from settings), and returns a <code>RetrieverQueryEngine</code>. This step also initializes <code>response_synthesizer</code>, <code>prompt_helper</code>, and other components, and this construction is not particularly time-consuming.</p><p>Then we query:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/base/base_query_engine.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>BaseQueryEngine</span><span class=p>(</span><span class=n>ChainableMixin</span><span class=p>,</span> <span class=n>PromptMixin</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>query</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>str_or_query_bundle</span><span class=p>:</span> <span class=n>QueryType</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>RESPONSE_TYPE</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=nb>isinstance</span><span class=p>(</span><span class=n>str_or_query_bundle</span><span class=p>,</span> <span class=nb>str</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=n>str_or_query_bundle</span> <span class=o>=</span> <span class=n>QueryBundle</span><span class=p>(</span><span class=n>str_or_query_bundle</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>query_result</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_query</span><span class=p>(</span><span class=n>str_or_query_bundle</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>query_result</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl><span class=c1># llama_index/core/query_engine/retriever_query_engine.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>RetrieverQueryEngine</span><span class=p>(</span><span class=n>BaseQueryEngine</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>_query</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>query_bundle</span><span class=p>:</span> <span class=n>QueryBundle</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>RESPONSE_TYPE</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=n>nodes</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>retrieve</span><span class=p>(</span><span class=n>query_bundle</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>response</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_response_synthesizer</span><span class=o>.</span><span class=n>synthesize</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=n>query</span><span class=o>=</span><span class=n>query_bundle</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=n>nodes</span><span class=o>=</span><span class=n>nodes</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>response</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=451-retrieval class=headerLink><a href=#451-retrieval class=header-mark></a>4.5.1 Retrieval</h4><p>In a query, we first retrieve the most relevant documents to the user&rsquo;s query.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/query_engine/retriever_query_engine.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>RetrieverQueryEngine</span><span class=p>(</span><span class=n>BaseQueryEngine</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>retrieve</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>query_bundle</span><span class=p>:</span> <span class=n>QueryBundle</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>NodeWithScore</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>        <span class=n>nodes</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_retriever</span><span class=o>.</span><span class=n>retrieve</span><span class=p>(</span><span class=n>query_bundle</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_apply_node_postprocessors</span><span class=p>(</span><span class=n>nodes</span><span class=p>,</span> <span class=n>query_bundle</span><span class=o>=</span><span class=n>query_bundle</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># llama_index/core/base/base_retriever.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>BaseRetriever</span><span class=p>(</span><span class=n>ChainableMixin</span><span class=p>,</span> <span class=n>PromptMixin</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>retrieve</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>str_or_query_bundle</span><span class=p>:</span> <span class=n>QueryType</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>NodeWithScore</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>        <span class=n>nodes</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_retrieve</span><span class=p>(</span><span class=n>query_bundle</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>nodes</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_handle_recursive_retrieval</span><span class=p>(</span><span class=n>query_bundle</span><span class=p>,</span> <span class=n>nodes</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>nodes</span>
+</span></span></code></pre></td></tr></table></div></div><p>In <code>_retrieve</code>, the <code>get_agg_embedding_from_queries</code> processes all queries, converting each query to an embedding via <code>def _embed</code>. The embeddings are then aggregated using a <strong>mean</strong> reduction to avoid high computation costs for comparing each query.</p><p>Next, <code>self._get_nodes_with_embeddings</code> retrieves relevant nodes. The query uses different methods depending on the vector store. By default, <code>SimpleVectorStore</code> fetches nodes from memory.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/indices/vector_store/retrievers/retriever.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>VectorIndexRetriever</span><span class=p>(</span><span class=n>BaseRetriever</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>_retrieve</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>query_bundle</span><span class=p>:</span> <span class=n>QueryBundle</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>NodeWithScore</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>_vector_store</span><span class=o>.</span><span class=n>is_embedding_query</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>query_bundle</span><span class=o>.</span><span class=n>embedding</span> <span class=ow>is</span> <span class=kc>None</span> <span class=ow>and</span> <span class=nb>len</span><span class=p>(</span><span class=n>query_bundle</span><span class=o>.</span><span class=n>embedding_strs</span><span class=p>)</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>query_bundle</span><span class=o>.</span><span class=n>embedding</span> <span class=o>=</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>                    <span class=bp>self</span><span class=o>.</span><span class=n>_embed_model</span><span class=o>.</span><span class=n>get_agg_embedding_from_queries</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                        <span class=n>query_bundle</span><span class=o>.</span><span class=n>embedding_strs</span>
+</span></span><span class=line><span class=cl>                    <span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_nodes_with_embeddings</span><span class=p>(</span><span class=n>query_bundle</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>_get_nodes_with_embeddings</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=p>,</span> <span class=n>query_bundle_with_embeddings</span><span class=p>:</span> <span class=n>QueryBundle</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>NodeWithScore</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>        <span class=n>query</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_build_vector_store_query</span><span class=p>(</span><span class=n>query_bundle_with_embeddings</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>query_result</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_vector_store</span><span class=o>.</span><span class=n>query</span><span class=p>(</span><span class=n>query</span><span class=p>,</span> <span class=o>**</span><span class=bp>self</span><span class=o>.</span><span class=n>_kwargs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_build_node_list_from_query_result</span><span class=p>(</span><span class=n>query_result</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl><span class=c1># llama_index/core/vector_stores/simple.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>SimpleVectorStore</span><span class=p>(</span><span class=n>BasePydanticVectorStore</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>query</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>query</span><span class=p>:</span> <span class=n>VectorStoreQuery</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>:</span> <span class=n>Any</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>VectorStoreQueryResult</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>query</span><span class=o>.</span><span class=n>mode</span> <span class=ow>in</span> <span class=n>LEARNER_MODES</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=k>elif</span> <span class=n>query</span><span class=o>.</span><span class=n>mode</span> <span class=o>==</span> <span class=n>MMR_MODE</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=k>elif</span> <span class=n>query</span><span class=o>.</span><span class=n>mode</span> <span class=o>==</span> <span class=n>VectorStoreQueryMode</span><span class=o>.</span><span class=n>DEFAULT</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>top_similarities</span><span class=p>,</span> <span class=n>top_ids</span> <span class=o>=</span> <span class=n>get_top_k_embeddings</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                <span class=n>query_embedding</span><span class=p>,</span> <span class=n>embeddings</span><span class=p>,</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>            <span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>raise</span> <span class=ne>ValueError</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Invalid query mode: </span><span class=si>{</span><span class=n>query</span><span class=o>.</span><span class=n>mode</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>VectorStoreQueryResult</span><span class=p>(</span><span class=n>similarities</span><span class=o>=</span><span class=n>top_similarities</span><span class=p>,</span> <span class=n>ids</span><span class=o>=</span><span class=n>top_ids</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>Here we take the embedding of the query and the embedding of nodes for similarity calculation, by default, use <code>get_top_k_embeddings</code> to take the top-k nodes</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/indices/query/embedding_utils.py</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>get_top_k_embeddings</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=n>query_embedding</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=nb>float</span><span class=p>],</span> <span class=n>embeddings</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>List</span><span class=p>[</span><span class=nb>float</span><span class=p>]],</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Tuple</span><span class=p>[</span><span class=n>List</span><span class=p>[</span><span class=nb>float</span><span class=p>],</span> <span class=n>List</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>    <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=n>similarity_heap</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>Tuple</span><span class=p>[</span><span class=nb>float</span><span class=p>,</span> <span class=n>Any</span><span class=p>]]</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>i</span><span class=p>,</span> <span class=n>emb</span> <span class=ow>in</span> <span class=nb>enumerate</span><span class=p>(</span><span class=n>embeddings_np</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=n>similarity</span> <span class=o>=</span> <span class=n>similarity_fn</span><span class=p>(</span><span class=n>query_embedding_np</span><span class=p>,</span> <span class=n>emb</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>similarity_cutoff</span> <span class=ow>is</span> <span class=kc>None</span> <span class=ow>or</span> <span class=n>similarity</span> <span class=o>&gt;</span> <span class=n>similarity_cutoff</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>heapq</span><span class=o>.</span><span class=n>heappush</span><span class=p>(</span><span class=n>similarity_heap</span><span class=p>,</span> <span class=p>(</span><span class=n>similarity</span><span class=p>,</span> <span class=n>embedding_ids</span><span class=p>[</span><span class=n>i</span><span class=p>]))</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>similarity_top_k</span> <span class=ow>and</span> <span class=nb>len</span><span class=p>(</span><span class=n>similarity_heap</span><span class=p>)</span> <span class=o>&gt;</span> <span class=n>similarity_top_k</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>heapq</span><span class=o>.</span><span class=n>heappop</span><span class=p>(</span><span class=n>similarity_heap</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>result_tups</span> <span class=o>=</span> <span class=nb>sorted</span><span class=p>(</span><span class=n>similarity_heap</span><span class=p>,</span> <span class=n>key</span><span class=o>=</span><span class=k>lambda</span> <span class=n>x</span><span class=p>:</span> <span class=n>x</span><span class=p>[</span><span class=mi>0</span><span class=p>],</span> <span class=n>reverse</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>result_similarities</span> <span class=o>=</span> <span class=p>[</span><span class=n>s</span> <span class=k>for</span> <span class=n>s</span><span class=p>,</span> <span class=n>_</span> <span class=ow>in</span> <span class=n>result_tups</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=n>result_ids</span> <span class=o>=</span> <span class=p>[</span><span class=n>n</span> <span class=k>for</span> <span class=n>_</span><span class=p>,</span> <span class=n>n</span> <span class=ow>in</span> <span class=n>result_tups</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>result_similarities</span><span class=p>,</span> <span class=n>result_ids</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># llama_index/core/base/embeddings/base.py</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>similarity</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=n>embedding1</span><span class=p>:</span> <span class=n>Embedding</span><span class=p>,</span> <span class=n>embedding2</span><span class=p>:</span> <span class=n>Embedding</span><span class=p>,</span> <span class=n>mode</span><span class=p>:</span> <span class=n>SimilarityMode</span> <span class=o>=</span> <span class=n>SimilarityMode</span><span class=o>.</span><span class=n>DEFAULT</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>float</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>mode</span> <span class=o>==</span> <span class=n>SimilarityMode</span><span class=o>.</span><span class=n>EUCLIDEAN</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=o>-</span><span class=nb>float</span><span class=p>(</span><span class=n>np</span><span class=o>.</span><span class=n>linalg</span><span class=o>.</span><span class=n>norm</span><span class=p>(</span><span class=n>np</span><span class=o>.</span><span class=n>array</span><span class=p>(</span><span class=n>embedding1</span><span class=p>)</span> <span class=o>-</span> <span class=n>np</span><span class=o>.</span><span class=n>array</span><span class=p>(</span><span class=n>embedding2</span><span class=p>)))</span>
+</span></span><span class=line><span class=cl>    <span class=k>elif</span> <span class=n>mode</span> <span class=o>==</span> <span class=n>SimilarityMode</span><span class=o>.</span><span class=n>DOT_PRODUCT</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>np</span><span class=o>.</span><span class=n>dot</span><span class=p>(</span><span class=n>embedding1</span><span class=p>,</span> <span class=n>embedding2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>product</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>dot</span><span class=p>(</span><span class=n>embedding1</span><span class=p>,</span> <span class=n>embedding2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>norm</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>linalg</span><span class=o>.</span><span class=n>norm</span><span class=p>(</span><span class=n>embedding1</span><span class=p>)</span> <span class=o>*</span> <span class=n>np</span><span class=o>.</span><span class=n>linalg</span><span class=o>.</span><span class=n>norm</span><span class=p>(</span><span class=n>embedding2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>product</span> <span class=o>/</span> <span class=n>norm</span>
+</span></span></code></pre></td></tr></table></div></div><p>Three similarity algorithms are available:</p><ol><li><strong>Negative Euclidean Distance</strong> (smaller distance indicates higher similarity)</li><li><strong>Dot Product</strong> (higher value indicates higher similarity)</li><li><strong>Cosine Similarity</strong> (higher value indicates higher similarity)</li></ol><p>After computing similarities, a <strong>min-heap sort</strong> retrieves the top-k results (<code>NodeWithScore</code>). This involves complex Python calculations, which could be optimized using C++.</p><p>The nodes are then passed to <code>_handle_recursive_retrieval</code> to handle potential <code>IndexNode</code>s (from user constructs, use scenarios such as recursive document structure, looking at summaries before subdocuments, etc., see <a href="https://docs.llamaindex.ai/en/stable/examples/query_engine/multi_doc_auto_retrieval/multi_doc_auto_retrieval/?h=index_node" target=_blank rel="noopener noreferrer">Usage notes</a>).</p><p>If using a database like ChromaDB, <code>ChromaVectorStore</code> is built. <code>self._query</code> directly uses ChromaDB’s API to find top-k similarities.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/vector_stores/chroma/base.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>ChromaVectorStore</span><span class=p>(</span><span class=n>BasePydanticVectorStore</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>query</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>query</span><span class=p>:</span> <span class=n>VectorStoreQuery</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>:</span> <span class=n>Any</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>VectorStoreQueryResult</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=ow>not</span> <span class=n>query</span><span class=o>.</span><span class=n>query_embedding</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get</span><span class=p>(</span><span class=n>limit</span><span class=o>=</span><span class=n>query</span><span class=o>.</span><span class=n>similarity_top_k</span><span class=p>,</span> <span class=n>where</span><span class=o>=</span><span class=n>where</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_query</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=n>query_embeddings</span><span class=o>=</span><span class=n>query</span><span class=o>.</span><span class=n>query_embedding</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=n>n_results</span><span class=o>=</span><span class=n>query</span><span class=o>.</span><span class=n>similarity_top_k</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=452-postprocessing class=headerLink><a href=#452-postprocessing class=header-mark></a>4.5.2 Postprocessing</h4><p>Postprocessing can involve reranking, transformation, or filtering retrieved nodes to include specific metadata (e.g., keywords).</p><p><code>_apply_node_postprocessors</code> is called within <code>retrieve</code>.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/query_engine/retriever_query_engine.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>RetrieverQueryEngine</span><span class=p>(</span><span class=n>BaseQueryEngine</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>_apply_node_postprocessors</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=p>,</span> <span class=n>nodes</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>NodeWithScore</span><span class=p>],</span> <span class=n>query_bundle</span><span class=p>:</span> <span class=n>QueryBundle</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>NodeWithScore</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=n>node_postprocessor</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>_node_postprocessors</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>nodes</span> <span class=o>=</span> <span class=n>node_postprocessor</span><span class=o>.</span><span class=n>postprocess_nodes</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                <span class=n>nodes</span><span class=p>,</span> <span class=n>query_bundle</span><span class=o>=</span><span class=n>query_bundle</span>
+</span></span><span class=line><span class=cl>            <span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>nodes</span>
+</span></span></code></pre></td></tr></table></div></div><p>By default, <code>_node_postprocessors</code> is not set, allowing users to customize additional operations. For instance:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=n>query_engine</span> <span class=o>=</span> <span class=n>RetrieverQueryEngine</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=n>retriever</span><span class=o>=</span><span class=n>retriever</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=n>response_synthesizer</span><span class=o>=</span><span class=n>response_synthesizer</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=n>node_postprocessors</span><span class=o>=</span><span class=p>[</span><span class=n>SimilarityPostprocessor</span><span class=p>(</span><span class=n>similarity_cutoff</span><span class=o>=</span><span class=mf>0.7</span><span class=p>)],</span> <span class=c1># similarity cutoff</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=453-response-synthesis class=headerLink><a href=#453-response-synthesis class=header-mark></a>4.5.3 Response synthesis</h4><p>Combining the query, the most relevant data, and the prompt, the system queries the LLM for a response.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/response_synthesizers/base.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>BaseSynthesizer</span><span class=p>(</span><span class=n>ChainableMixin</span><span class=p>,</span> <span class=n>PromptMixin</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>synthesize</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=p>,</span> <span class=n>query</span><span class=p>:</span> <span class=n>QueryTextType</span><span class=p>,</span> <span class=n>nodes</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>NodeWithScore</span><span class=p>],</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>RESPONSE_TYPE</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=n>response_str</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>get_response</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=n>query_str</span><span class=o>=</span><span class=n>query</span><span class=o>.</span><span class=n>query_str</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=n>text_chunks</span><span class=o>=</span><span class=p>[</span>
+</span></span><span class=line><span class=cl>                <span class=n>n</span><span class=o>.</span><span class=n>node</span><span class=o>.</span><span class=n>get_content</span><span class=p>(</span><span class=n>metadata_mode</span><span class=o>=</span><span class=n>MetadataMode</span><span class=o>.</span><span class=n>LLM</span><span class=p>)</span> <span class=k>for</span> <span class=n>n</span> <span class=ow>in</span> <span class=n>nodes</span>
+</span></span><span class=line><span class=cl>            <span class=p>],</span>
+</span></span><span class=line><span class=cl>            <span class=o>**</span><span class=n>response_kwargs</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=n>response</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_prepare_response_output</span><span class=p>(</span><span class=n>response_str</span><span class=p>,</span> <span class=n>source_nodes</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>response</span>
+</span></span></code></pre></td></tr></table></div></div><p>The context includes all content retrieved in the top-k retrieval. If the <strong>context is too large</strong>, adjust the top-k parameter or increase the model’s allowed token limit.</p><p><code>self.get_response</code> calls the specific subclass implementation. The default response mode is <code>COMPACT</code>, <code>CompactAndRefine</code> is invoked.</p><p>In <code>CompactAndRefine</code>, <code>_make_compact_text_chunks</code> uses <code>query_str</code> to generate <code>text_qa_template</code> and <code>refine_template</code>.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/response_synthesizers/compact_and_refine.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>CompactAndRefine</span><span class=p>(</span><span class=n>Refine</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=nd>@dispatcher.span</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>get_response</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=p>,</span> <span class=n>query_str</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>text_chunks</span><span class=p>:</span> <span class=n>Sequence</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>RESPONSE_TEXT_TYPE</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>new_texts</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_make_compact_text_chunks</span><span class=p>(</span><span class=n>query_str</span><span class=p>,</span> <span class=n>text_chunks</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=n>get_response</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=n>query_str</span><span class=o>=</span><span class=n>query_str</span><span class=p>,</span> <span class=n>text_chunks</span><span class=o>=</span><span class=n>new_texts</span><span class=p>,</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>_make_compact_text_chunks</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=p>,</span> <span class=n>query_str</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>text_chunks</span><span class=p>:</span> <span class=n>Sequence</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>        <span class=n>text_qa_template</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_text_qa_template</span><span class=o>.</span><span class=n>partial_format</span><span class=p>(</span><span class=n>query_str</span><span class=o>=</span><span class=n>query_str</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>refine_template</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_refine_template</span><span class=o>.</span><span class=n>partial_format</span><span class=p>(</span><span class=n>query_str</span><span class=o>=</span><span class=n>query_str</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>max_prompt</span> <span class=o>=</span> <span class=n>get_biggest_prompt</span><span class=p>([</span><span class=n>text_qa_template</span><span class=p>,</span> <span class=n>refine_template</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_prompt_helper</span><span class=o>.</span><span class=n>repack</span><span class=p>(</span><span class=n>max_prompt</span><span class=p>,</span> <span class=n>text_chunks</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>For example, querying &ldquo;What did the author do growing up?&rdquo; generates a <code>text_qa_template</code> like:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>Context information is below.
+</span></span><span class=line><span class=cl>---------------------
+</span></span><span class=line><span class=cl><span class=o>{</span>context_str<span class=o>}</span>
+</span></span><span class=line><span class=cl>---------------------
+</span></span><span class=line><span class=cl>Given the context information and not prior knowledge, answer the query.
+</span></span><span class=line><span class=cl>Query: What did the author <span class=k>do</span> growing up?
+</span></span><span class=line><span class=cl>Answer:
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># conditional template (if chat model used)</span>
+</span></span><span class=line><span class=cl><span class=s2>&#34;You are an expert Q&amp;A system that strictly operates in two modes when refining existing answers:\n&#34;</span>
+</span></span><span class=line><span class=cl><span class=c1># ...</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>refine_template</code>:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>The original query is as follows: What did the author <span class=k>do</span> growing up?
+</span></span><span class=line><span class=cl>We have provided an existing answer: <span class=o>{</span>existing_answer<span class=o>}</span>
+</span></span><span class=line><span class=cl>We have the opportunity to refine the existing answer <span class=o>(</span>only <span class=k>if</span> needed<span class=o>)</span> with some more context below.
+</span></span><span class=line><span class=cl>------------
+</span></span><span class=line><span class=cl><span class=o>{</span>context_msg<span class=o>}</span>
+</span></span><span class=line><span class=cl>------------
+</span></span><span class=line><span class=cl>Given the new context, refine the original answer to better answer the query. If the context isn<span class=err>&#39;</span>t useful, <span class=k>return</span> the original answer.
+</span></span><span class=line><span class=cl>Refined Answer:
+</span></span></code></pre></td></tr></table></div></div><p><code>llama_index</code> then calls <code>get_biggest_prompt</code> to select the longest template (<code>refine_template</code>), and performs <code>repack</code>.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/indices/prompt_helper.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>PromptHelper</span><span class=p>(</span><span class=n>BaseComponent</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>repack</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=p>,</span> <span class=n>prompt</span><span class=p>:</span> <span class=n>BasePromptTemplate</span><span class=p>,</span> <span class=n>text_chunks</span><span class=p>:</span> <span class=n>Sequence</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>        <span class=n>text_splitter</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>get_text_splitter_given_prompt</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=n>prompt</span><span class=p>,</span> <span class=n>padding</span><span class=o>=</span><span class=n>padding</span><span class=p>,</span> <span class=n>llm</span><span class=o>=</span><span class=n>llm</span>
+</span></span><span class=line><span class=cl>        <span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>combined_str</span> <span class=o>=</span> <span class=s2>&#34;</span><span class=se>\n\n</span><span class=s2>&#34;</span><span class=o>.</span><span class=n>join</span><span class=p>([</span><span class=n>c</span><span class=o>.</span><span class=n>strip</span><span class=p>()</span> <span class=k>for</span> <span class=n>c</span> <span class=ow>in</span> <span class=n>text_chunks</span> <span class=k>if</span> <span class=n>c</span><span class=o>.</span><span class=n>strip</span><span class=p>()])</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>text_splitter</span><span class=o>.</span><span class=n>split_text</span><span class=p>(</span><span class=n>combined_str</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>get_text_splitter_given_prompt</code> gets a new <code>TokenTextSplitter</code>, which is used to re-split the context</p><p>Then <code>super().get_response</code> is then called, where <code>self._give_response_single</code> regenerates <code>text_qa_template</code> and repacks before invoking <code>model</code>, which is quite strange.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/response_synthesizers/refine.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>Refine</span><span class=p>(</span><span class=n>BaseSynthesizer</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>get_response</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=p>,</span> <span class=n>query_str</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>text_chunks</span><span class=p>:</span> <span class=n>Sequence</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span> <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>RESPONSE_TEXT_TYPE</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=n>text_chunk</span> <span class=ow>in</span> <span class=n>text_chunks</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>prev_response</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>response</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_give_response_single</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                    <span class=n>query_str</span><span class=p>,</span> <span class=n>text_chunk</span><span class=p>,</span> <span class=o>**</span><span class=n>response_kwargs</span>
+</span></span><span class=line><span class=cl>                <span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>response</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_refine_response_single</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                    <span class=n>prev_response</span><span class=p>,</span> <span class=n>query_str</span><span class=p>,</span> <span class=n>text_chunk</span><span class=p>,</span> <span class=o>**</span><span class=n>response_kwargs</span>
+</span></span><span class=line><span class=cl>                <span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>prev_response</span> <span class=o>=</span> <span class=n>response</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>response</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>_give_response_single</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=p>,</span> <span class=n>query_str</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>text_chunk</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=o>**</span><span class=n>response_kwargs</span><span class=p>:</span> <span class=n>Any</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>RESPONSE_TEXT_TYPE</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>text_qa_template</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_text_qa_template</span><span class=o>.</span><span class=n>partial_format</span><span class=p>(</span><span class=n>query_str</span><span class=o>=</span><span class=n>query_str</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>text_chunks</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_prompt_helper</span><span class=o>.</span><span class=n>repack</span><span class=p>(</span><span class=n>text_qa_template</span><span class=p>,</span> <span class=p>[</span><span class=n>text_chunk</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=n>cur_text_chunk</span> <span class=ow>in</span> <span class=n>text_chunks</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>query_satisfied</span> <span class=o>=</span> <span class=kc>False</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>response</span> <span class=ow>is</span> <span class=kc>None</span> <span class=ow>and</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>_streaming</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>structured_response</span> <span class=o>=</span> <span class=n>cast</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                    <span class=n>StructuredRefineResponse</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=n>program</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                        <span class=n>context_str</span><span class=o>=</span><span class=n>cur_text_chunk</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                        <span class=o>**</span><span class=n>response_kwargs</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=p>),</span>
+</span></span><span class=line><span class=cl>                <span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=k>if</span> <span class=n>structured_response</span><span class=o>.</span><span class=n>query_satisfied</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=n>response</span> <span class=o>=</span> <span class=n>structured_response</span><span class=o>.</span><span class=n>answer</span>
+</span></span><span class=line><span class=cl>                <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>            <span class=k>elif</span> <span class=n>response</span> <span class=ow>is</span> <span class=kc>None</span> <span class=ow>and</span> <span class=bp>self</span><span class=o>.</span><span class=n>_streaming</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>response</span>
+</span></span></code></pre></td></tr></table></div></div><p>This process highlights a potential design improvement: <strong>regenerating the same template during synthesis can be optimized</strong>.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/core/llms/llm.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>LLM</span><span class=p>(</span><span class=n>BaseLLM</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>predict</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>prompt</span><span class=p>:</span> <span class=n>BasePromptTemplate</span><span class=p>,</span> <span class=o>**</span><span class=n>prompt_args</span><span class=p>:</span> <span class=n>Any</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>_log_template_data</span><span class=p>(</span><span class=n>prompt</span><span class=p>,</span> <span class=o>**</span><span class=n>prompt_args</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>metadata</span><span class=o>.</span><span class=n>is_chat_model</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>messages</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_messages</span><span class=p>(</span><span class=n>prompt</span><span class=p>,</span> <span class=o>**</span><span class=n>prompt_args</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>chat_response</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>chat</span><span class=p>(</span><span class=n>messages</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>output</span> <span class=o>=</span> <span class=n>chat_response</span><span class=o>.</span><span class=n>message</span><span class=o>.</span><span class=n>content</span> <span class=ow>or</span> <span class=s2>&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>formatted_prompt</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_prompt</span><span class=p>(</span><span class=n>prompt</span><span class=p>,</span> <span class=o>**</span><span class=n>prompt_args</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>response</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>complete</span><span class=p>(</span><span class=n>formatted_prompt</span><span class=p>,</span> <span class=n>formatted</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>output</span> <span class=o>=</span> <span class=n>response</span><span class=o>.</span><span class=n>text</span>
+</span></span><span class=line><span class=cl>        <span class=n>parsed_output</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_parse_output</span><span class=p>(</span><span class=n>output</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>parsed_output</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>_get_messages</code> combines the prompt and all context into a complete message, which is then sent to the LLM.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=o>[</span>
+</span></span><span class=line><span class=cl>    ChatMessage<span class=o>(</span>
+</span></span><span class=line><span class=cl>        <span class=nv>role</span><span class=o>=</span>MessageRole.SYSTEM,
+</span></span><span class=line><span class=cl>        <span class=nv>content</span><span class=o>=(</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;You are an expert Q&amp;A system that is trusted around the world.\n&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;Always answer the query using the provided context information, and not prior knowledge.\n&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;Some rules to follow:\n&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;1. Never directly reference the given context in your answer.\n&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;2. Avoid statements like &#39;Based on the context, ...&#39; or &#39;The context information ...&#39; or anything along those lines.&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=o>)</span>,
+</span></span><span class=line><span class=cl>        <span class=nv>additional_kwargs</span><span class=o>={}</span>
+</span></span><span class=line><span class=cl>    <span class=o>)</span>,
+</span></span><span class=line><span class=cl>    ChatMessage<span class=o>(</span>
+</span></span><span class=line><span class=cl>        <span class=nv>role</span><span class=o>=</span>MessageRole.USER,
+</span></span><span class=line><span class=cl>        <span class=nv>content</span><span class=o>=(</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;Context information is below.\n&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;---------------------\n&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;file_path: /Users/yewentao/Desktop/llama_index/data/paul_graham_essay.txt\n\n&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;What I Worked On\n\n&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;Computer Science is an uneasy alliance between two halves, theory and systems. The theory people prove things, and the systems people build things.\n&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;---------------------\n&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;Given the context information and not prior knowledge, answer the query.\n&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;Query: What did the author do growing up?\n&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;Answer: &#34;</span>
+</span></span><span class=line><span class=cl>        <span class=o>)</span>,
+</span></span><span class=line><span class=cl>        <span class=nv>additional_kwargs</span><span class=o>={}</span>
+</span></span><span class=line><span class=cl>    <span class=o>)</span>
+</span></span><span class=line><span class=cl><span class=o>]</span>
+</span></span></code></pre></td></tr></table></div></div><p>For example, request with Ollama&rsquo;s llama3:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=c1># llama_index/llms/ollama/base.py</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>Ollama</span><span class=p>(</span><span class=n>CustomLLM</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=nd>@llm_chat_callback</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>chat</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>messages</span><span class=p>:</span> <span class=n>Sequence</span><span class=p>[</span><span class=n>ChatMessage</span><span class=p>],</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>:</span> <span class=n>Any</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>ChatResponse</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>        <span class=k>with</span> <span class=n>httpx</span><span class=o>.</span><span class=n>Client</span><span class=p>(</span><span class=n>timeout</span><span class=o>=</span><span class=n>Timeout</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>request_timeout</span><span class=p>))</span> <span class=k>as</span> <span class=n>client</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>response</span> <span class=o>=</span> <span class=n>client</span><span class=o>.</span><span class=n>post</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                <span class=n>url</span><span class=o>=</span><span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>base_url</span><span class=si>}</span><span class=s2>/api/chat&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=n>json</span><span class=o>=</span><span class=n>payload</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>ChatResponse</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                <span class=n>message</span><span class=o>=</span><span class=n>ChatMessage</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                    <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>                <span class=p>),</span>
+</span></span><span class=line><span class=cl>            <span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>The response is returned after the model prediction.</p><p>From a performance perspective, querying mainly incurs overhead from accessing the LLM and converting the query to embeddings and averaging them. <strong>Optimizing this part further is challenging</strong>.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>get agg embedding <span class=nb>time</span> 0.21804475784301758
+</span></span><span class=line><span class=cl>get nodes embedding <span class=nb>time</span> 0.002117156982421875
+</span></span><span class=line><span class=cl>post llm use time:  1.2400257587432861
+</span></span><span class=line><span class=cl>query time:  1.4748468399047852
+</span></span></code></pre></td></tr></table></div></div><p>Complex Python calculations primarily occur in:</p><ul><li><strong>Getting node embeddings (comparing all nodes for similarity and top-k)</strong>, which has linear growth in costs. The larger the document, the greater the consumption. For instance, a tenfold increase in document size results in a tenfold increase in time.</li><li>Multiple token splits reappear in queries (as detailed in transformation). However, this accounts for a small proportion due to the selected context.</li></ul><h2 id=5-reference class=headerLink><a href=#5-reference class=header-mark></a>5. Reference</h2><ul><li><a href=https://docs.llamaindex.ai/en/stable/ target=_blank rel="noopener noreferrer">llama_index_doc</a></li><li><a href=https://github.com/run-llama/llama_index target=_blank rel="noopener noreferrer">llama_index_github</a></li></ul></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>Updated on 2024-07-06&nbsp;<a class=git-hash href=https://github.com/zjzjy/commit/d1068aa986ca9906558cc9fb39295506170b4c0d target=_blank title="commit by yewentao(zhyanwentao@126.com) d1068aa986ca9906558cc9fb39295506170b4c0d: adding llama_index source code reading" rel="noopener noreferrer">
+<i class="fas fa-hashtag fa-fw"></i>d1068aa</a></span></div><div class=post-info-license></div></div><div class=post-info-line><div class=post-info-md><span><a class=link-to-mardown href=/llama_index_2/index.md target=_blank rel="noopener noreferrer">Read markdown</a>
+</span><span>|&nbsp;<a class=link-to-source href=https://github.com/zjzjy/zjzjy.github.io/blob/main/content/posts/llm/llama_index_2/index.en.md target=_blank rel="noopener noreferrer">View source</a>
+</span><span>|&nbsp;<a class=link-to-edit href=https://github.com/zjzjy/zjzjy.github.io/edit/main/content/posts/llm/llama_index_2/index.en.md target=_blank rel="noopener noreferrer">Edit this page</a>
+</span><span>|&nbsp;<a class=link-to-report href="https://github.com/zjzjy/zjzjy.github.io/issues/new?title=[bug]%20Llama_index+Source+Code+Analysis%282%29&body=|Field|Value|%0A|-|-|%0A|Title|Llama_index+Source+Code+Analysis%282%29|%0A|Url|https://zjzjy.github.io/llama_index_2/|%0A|Filename|https://github.com/yewentao256/yewentao256.github.io/blob/main/content/posts/llm/llama_index_2/index.en.md|" target=_blank rel="noopener noreferrer">Report issue</a></span></div><div class=post-info-share><button title="Share on Twitter" data-sharer=twitter data-url=https://zjzjy.github.io/llama_index_2/ data-title="Llama_index Source Code Analysis(2)"><span class="fab fa-twitter fa-fw"></span></button><button title="Share on Facebook" data-sharer=facebook data-url=https://zjzjy.github.io/llama_index_2/><span class="fab fa-facebook-square fa-fw"></span></button><button title="Share on Hacker News" data-sharer=hackernews data-url=https://zjzjy.github.io/llama_index_2/ data-title="Llama_index Source Code Analysis(2)"><span class="fab fa-hacker-news fa-fw"></span></button><button title="Share on Line" data-sharer=line data-url=https://zjzjy.github.io/llama_index_2/ data-title="Llama_index Source Code Analysis(2)"><span data-svg-src=/lib/simple-icons/icons/line.min.svg></span></button><button title="Share on 微博" data-sharer=weibo data-url=https://zjzjy.github.io/llama_index_2/ data-title="Llama_index Source Code Analysis(2)"><span class="fab fa-weibo fa-fw"></span></button></div></div></div><div class=post-info-more><section class=post-tags></section><section><span><a href=javascript:void(0); onclick=window.history.back()>Back</a></span>&nbsp;|&nbsp;<span><a href=/>Home</a></span></section></div><div class=post-nav><a href=/about/ class=prev rel=prev title=About><i class="fas fa-angle-left fa-fw"></i>About</a>
+<a href=/llama_index/ class=next rel=next title="Llama_index Source Code Analysis(1)">Llama_index Source Code Analysis(1)<i class="fas fa-angle-right fa-fw"></i></a></div></div><div id=comments><div id=giscus></div><noscript>Please enable JavaScript to view the comments powered by <a href=https://giscus.app/>giscus</a>.</noscript></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>Powered by <a href=https://gohugo.io/ target=_blank rel="noopener noreferrer" title="Hugo 0.114.1">Hugo</a>&nbsp;|&nbsp;Theme - <a href=https://github.com/HEIGE-PCloud/DoIt target=_blank rel="noopener noreferrer" title="DoIt 0.4.0"><i class="far fa-edit fa-fw"></i> DoIt</a></div><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2024</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://zjzjy.github.io target=_blank rel="noopener noreferrer">Yewentao</a></span>&nbsp;|&nbsp;<span class=license><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span></div><div class=footer-line></div><div class=footer-line></div></div></footer></div><div id=fixed-buttons><a href=#back-to-top id=back-to-top-button class=fixed-button title="Back to Top"><i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title="View Comments"><i class="fas fa-comment fa-fw"></i></a></div><div id=cookieconsent-container></div><div class=assets><link rel=stylesheet href=/lib/katex/katex.min.css><link rel=preload as=style onload='this.onload=null,this.rel="stylesheet"' href=/lib/katex/copy-tex.min.css><noscript><link rel=stylesheet href=/lib/katex/copy-tex.min.css></noscript><link rel=stylesheet href=/lib/cookieconsent/cookieconsent.min.css><script type=text/javascript>window.config={code:{copyTitle:"Copy to clipboard",maxShownLines:30},comment:{giscus:{darkTheme:"dark",dataCategory:"Announcements",dataCategoryId:"DIC_kwDOI3HpRc4CYIaq",dataEmitMetadata:"0",dataInputPosition:"bottom",dataLang:"zh-CN",dataMapping:"pathname",dataReactionsEnabled:"1",dataRepo:"zjzjy/zjzjy.github.io",dataRepoId:"R_kgDOI3HpRQ",dataStrict:"0",lightTheme:"light"}},cookieconsent:{content:{dismiss:"Got it!",link:"Learn more",message:"This website uses Cookies to improve your experience."},enable:!0,palette:{button:{background:"#f0f0f0"},popup:{background:"#1aa3ff"}},theme:"edgeless"},math:{delimiters:[{display:!0,left:"$$",right:"$$"},{display:!0,left:"\\[",right:"\\]"},{display:!1,left:"$",right:"$"},{display:!1,left:"\\(",right:"\\)"}],strict:!1},search:{distance:100,findAllMatches:!1,fuseIndexURL:"/index.json",highlightTag:"em",ignoreFieldNorm:!1,ignoreLocation:!1,isCaseSensitive:!1,location:0,maxResultLength:10,minMatchCharLength:2,noResultsFound:"No results found",snippetLength:50,threshold:.3,type:"fuse",useExtendedSearch:!1},sharerjs:!0,table:{sort:!0}}</script><script type=text/javascript src=/lib/tablesort/tablesort.min.js></script><script type=text/javascript src=/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=/lib/sharer/sharer.min.js></script><script type=text/javascript src=/lib/katex/katex.min.js defer></script><script type=text/javascript src=/lib/katex/auto-render.min.js defer></script><script type=text/javascript src=/lib/katex/copy-tex.min.js defer></script><script type=text/javascript src=/lib/katex/mhchem.min.js defer></script><script type=text/javascript src=/js/katex.min.js defer></script><script type=text/javascript src=/lib/cookieconsent/cookieconsent.min.js defer></script><script type=text/javascript src=/js/cookieconsent.min.js defer></script><script type=text/javascript src=/js/theme.min.js defer></script><script type=text/javascript src=/js/giscus.min.js defer></script></div></body></html>
