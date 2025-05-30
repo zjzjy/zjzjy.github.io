@@ -2,60 +2,60 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on LoveIt</title>
-    <link>https://zjzjy.github.io/zh-cn/tags/</link>
+    <link>http://localhost:1313/zh-cn/tags/</link>
     <description>Recent content in Tags on LoveIt</description>
     <generator>Hugo</generator>
     <language>zh-CN</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Fri, 12 Jun 2020 10:10:13 +0300</lastBuildDate>
-    <atom:link href="https://zjzjy.github.io/zh-cn/tags/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>安装</title>
-      <link>https://zjzjy.github.io/zh-cn/tags/installation/</link>
-      <pubDate>Fri, 06 Mar 2020 21:40:32 +0800</pubDate>
-      <guid>https://zjzjy.github.io/zh-cn/tags/installation/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>配置</title>
-      <link>https://zjzjy.github.io/zh-cn/tags/configuration/</link>
-      <pubDate>Fri, 06 Mar 2020 21:40:32 +0800</pubDate>
-      <guid>https://zjzjy.github.io/zh-cn/tags/configuration/</guid>
-      <description></description>
-    </item>
+    <lastBuildDate>Fri, 30 May 2025 17:06:32 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/zh-cn/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Markdown</title>
-      <link>https://zjzjy.github.io/zh-cn/tags/markdown/</link>
+      <link>http://localhost:1313/zh-cn/tags/markdown/</link>
       <pubDate>Thu, 05 Mar 2020 16:30:05 +0800</pubDate>
-      <guid>https://zjzjy.github.io/zh-cn/tags/markdown/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>内容</title>
-      <link>https://zjzjy.github.io/zh-cn/tags/content/</link>
-      <pubDate>Thu, 05 Mar 2020 16:30:05 +0800</pubDate>
-      <guid>https://zjzjy.github.io/zh-cn/tags/content/</guid>
+      <guid>http://localhost:1313/zh-cn/tags/markdown/</guid>
       <description></description>
     </item>
     <item>
       <title>Shortcodes</title>
-      <link>https://zjzjy.github.io/zh-cn/tags/shortcodes/</link>
+      <link>http://localhost:1313/zh-cn/tags/shortcodes/</link>
       <pubDate>Wed, 04 Mar 2020 16:29:59 +0800</pubDate>
-      <guid>https://zjzjy.github.io/zh-cn/tags/shortcodes/</guid>
+      <guid>http://localhost:1313/zh-cn/tags/shortcodes/</guid>
       <description></description>
     </item>
     <item>
       <title>HTML</title>
-      <link>https://zjzjy.github.io/zh-cn/tags/html/</link>
+      <link>http://localhost:1313/zh-cn/tags/html/</link>
       <pubDate>Sun, 01 Dec 2019 21:57:40 +0800</pubDate>
-      <guid>https://zjzjy.github.io/zh-cn/tags/html/</guid>
+      <guid>http://localhost:1313/zh-cn/tags/html/</guid>
       <description></description>
     </item>
     <item>
       <title>Emoji</title>
-      <link>https://zjzjy.github.io/zh-cn/tags/emoji/</link>
+      <link>http://localhost:1313/zh-cn/tags/emoji/</link>
       <pubDate>Tue, 01 Oct 2019 17:55:28 +0800</pubDate>
-      <guid>https://zjzjy.github.io/zh-cn/tags/emoji/</guid>
+      <guid>http://localhost:1313/zh-cn/tags/emoji/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>安装</title>
+      <link>http://localhost:1313/zh-cn/tags/installation/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/zh-cn/tags/installation/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>内容</title>
+      <link>http://localhost:1313/zh-cn/tags/content/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/zh-cn/tags/content/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>配置</title>
+      <link>http://localhost:1313/zh-cn/tags/configuration/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/zh-cn/tags/configuration/</guid>
       <description></description>
     </item>
   </channel>
