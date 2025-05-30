@@ -128,6 +128,15 @@
                     hreflang="en"
                     href="http://localhost:1313/en/tags/configuration/"
                     /></url><url>
+            <loc>http://localhost:1313/en/</loc><lastmod>2025-05-30T17:06:32&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+                        rel="alternate"
+                        hreflang="zh-cn"
+                        href="http://localhost:1313/"
+                        /><xhtml:link
+                    rel="alternate"
+                    hreflang="en"
+                    href="http://localhost:1313/en/"
+                    /></url><url>
             <loc>http://localhost:1313/en/tags/installation/</loc><lastmod>2025-05-30T17:06:32&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="zh-cn"
@@ -154,15 +163,6 @@
                     rel="alternate"
                     hreflang="en"
                     href="http://localhost:1313/en/tags/"
-                    /></url><url>
-            <loc>http://localhost:1313/en/</loc><lastmod>2025-05-30T17:06:32&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
-                        rel="alternate"
-                        hreflang="zh-cn"
-                        href="http://localhost:1313/"
-                        /><xhtml:link
-                    rel="alternate"
-                    hreflang="en"
-                    href="http://localhost:1313/en/"
                     /></url><url>
             <loc>http://localhost:1313/en/tags/content/</loc><lastmod>2025-05-30T17:06:32&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
