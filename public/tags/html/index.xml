@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>HTML on LoveIt</title>
+    <title>HTML on ZJY&#39;s Island</title>
     <link>http://localhost:1313/tags/html/</link>
-    <description>Recent content in HTML on LoveIt</description>
+    <description>Recent content in HTML on ZJY&#39;s Island</description>
     <generator>Hugo</generator>
-    <language>en</language>
+    <language>zh-CN</language>
+    <managingEditor>224040086@link.cuhk.edu.cn (Junyin Zheng)</managingEditor>
+    <webMaster>224040086@link.cuhk.edu.cn (Junyin Zheng)</webMaster>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
     <lastBuildDate>Fri, 30 May 2025 17:06:32 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/tags/html/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Basic Markdown Syntax</title>
+      <title>Markdown 基本语法</title>
       <link>http://localhost:1313/basic-markdown-syntax/</link>
-      <pubDate>Sun, 01 Dec 2019 21:57:40 +0800</pubDate>
+      <pubDate>Sun, 01 Dec 2019 21:57:40 +0800</pubDate><author>224040086@link.cuhk.edu.cn (Junyin Zheng)</author>
       <guid>http://localhost:1313/basic-markdown-syntax/</guid>
-      <description>&lt;p&gt;This article offers a sample of basic Markdown syntax that can be used in Hugo content files.&lt;/p&gt;</description>
+      <description>&lt;p&gt;这篇文章提供了可以在 Hugo 的文章中使用的基本 Markdown 语法示例.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Configuration on ZJY&#39;s Island</title>
+    <link>http://localhost:1313/en/tags/configuration/</link>
+    <description>Recent content in Configuration on ZJY&#39;s Island</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <managingEditor>224040086@link.cuhk.edu.cn (Junyin Zheng)</managingEditor>
+    <webMaster>224040086@link.cuhk.edu.cn (Junyin Zheng)</webMaster>
+    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+    <lastBuildDate>Fri, 30 May 2025 17:06:32 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/en/tags/configuration/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Theme Documentation - Basics</title>
+      <link>http://localhost:1313/en/theme-documentation-basics/</link>
+      <pubDate>Fri, 06 Mar 2020 21:29:01 +0800</pubDate><author>224040086@link.cuhk.edu.cn (Junyin Zheng)</author>
+      <guid>http://localhost:1313/en/theme-documentation-basics/</guid>
+      <description>&lt;p&gt;Discover what the Hugo - &lt;strong&gt;LoveIt&lt;/strong&gt; theme is all about and the core-concepts behind it.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
