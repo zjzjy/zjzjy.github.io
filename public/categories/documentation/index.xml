@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>文档 on Hiro&#39;s Island</title>
+    <title>Documentation on Hiro&#39;s Island</title>
     <link>http://localhost:1313/categories/documentation/</link>
-    <description>Recent content in 文档 on Hiro&#39;s Island</description>
+    <description>Recent content in Documentation on Hiro&#39;s Island</description>
     <generator>Hugo</generator>
     <language>zh-CN</language>
     <managingEditor>224040086@link.cuhk.edu.cn (Junyin Zheng)</managingEditor>
     <webMaster>224040086@link.cuhk.edu.cn (Junyin Zheng)</webMaster>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+    <lastBuildDate>Fri, 30 May 2025 17:06:32 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/categories/documentation/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>主题文档 - 基本概念</title>

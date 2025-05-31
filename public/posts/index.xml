@@ -4,7 +4,15 @@
         <link>http://localhost:1313/posts/</link>
         <description>所有文章 | Hiro&#39;s Island</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>224040086@link.cuhk.edu.cn (Junyin Zheng)</managingEditor>
-            <webMaster>224040086@link.cuhk.edu.cn (Junyin Zheng)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 30 May 2025 16:54:59 &#43;0800</lastBuildDate><atom:link href="http://localhost:1313/posts/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>224040086@link.cuhk.edu.cn (Junyin Zheng)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 31 May 2025 11:42:40 &#43;0800</lastBuildDate><atom:link href="http://localhost:1313/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>Factfulness - 引言</title>
+    <link>http://localhost:1313/reading-factfulness-introduction/</link>
+    <pubDate>Sat, 31 May 2025 11:42:40 &#43;0800</pubDate>
+    <author>Hiro</author>
+    <guid>http://localhost:1313/reading-factfulness-introduction/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>主题文档 - 基本概念</title>
     <link>http://localhost:1313/theme-documentation-basics/</link>
     <pubDate>Fri, 06 Mar 2020 21:40:32 &#43;0800</pubDate>
@@ -77,14 +85,6 @@
     <guid>http://localhost:1313/theme-documentation-mapbox-shortcode/</guid>
     <description><![CDATA[<a href="https://github.com/dillonzq/LoveIt/releases/tag/v0.2.0" rel="noopener noreffer" target="_blank"></a>
 <p><code>mapbox</code> shortcode 使用 <a href="https://docs.mapbox.com/mapbox-gl-js" target="_blank" rel="noopener noreffer ">Mapbox GL JS</a> 库提供互动式地图的功能.</p>]]></description>
-</item>
-<item>
-    <title>主题文档 - music Shortcode</title>
-    <link>http://localhost:1313/theme-documentation-music-shortcode/</link>
-    <pubDate>Tue, 03 Mar 2020 12:29:59 &#43;0800</pubDate>
-    <author>Dillon</author>
-    <guid>http://localhost:1313/theme-documentation-music-shortcode/</guid>
-    <description><![CDATA[<p><code>music</code> shortcode 基于 <a href="https://github.com/MoePlayer/APlayer" target="_blank" rel="noopener noreffer ">APlayer</a> 和 <a href="https://github.com/metowolf/MetingJS" target="_blank" rel="noopener noreffer ">MetingJS</a> 库提供了一个内嵌的响应式音乐播放器.</p>]]></description>
 </item>
 </channel>
 </rss>
