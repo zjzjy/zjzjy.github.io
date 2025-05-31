@@ -2,7 +2,7 @@
     xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     ><url>
-            <loc>http://localhost:1313/reading-factfulness-introduction/</loc><lastmod>2025-05-31T11:42:40&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>http://localhost:1313/reading-factfulness-introduction/</loc><lastmod>2025-05-31T11:47:21&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>http://localhost:1313/theme-documentation-basics/</loc><lastmod>2025-05-30T17:06:32&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
@@ -111,7 +111,7 @@
                     hreflang="zh-cn"
                     href="http://localhost:1313/theme-documentation-typeit-shortcode/"
                     /></url><url>
-            <loc>http://localhost:1313/</loc><lastmod>2025-05-31T11:42:40&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>http://localhost:1313/</loc><lastmod>2025-05-31T11:47:21&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="http://localhost:1313/en/"
@@ -120,7 +120,7 @@
                     hreflang="zh-cn"
                     href="http://localhost:1313/"
                     /></url><url>
-            <loc>http://localhost:1313/posts/</loc><lastmod>2025-05-31T11:42:40&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>http://localhost:1313/posts/</loc><lastmod>2025-05-31T11:47:21&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="http://localhost:1313/en/posts/"
@@ -147,7 +147,7 @@
                     hreflang="zh-cn"
                     href="http://localhost:1313/categories/documentation/"
                     /></url><url>
-            <loc>http://localhost:1313/tags/</loc><lastmod>2025-05-30T17:06:32&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>http://localhost:1313/tags/</loc><lastmod>2025-05-31T11:47:21&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="http://localhost:1313/en/tags/"
@@ -219,7 +219,6 @@
                     hreflang="zh-cn"
                     href="http://localhost:1313/tags/installation/"
                     /></url><url>
-            <loc>http://localhost:1313/tags/readings/</loc><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>http://localhost:1313/tags/content/</loc><lastmod>2025-05-30T17:06:32&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
@@ -237,4 +236,5 @@
                     rel="alternate"
                     hreflang="zh-cn"
                     href="http://localhost:1313/tags/configuration/"
-                    /></url></urlset>
+                    /></url><url>
+            <loc>http://localhost:1313/tags/readings/</loc><lastmod>2025-05-31T11:47:21&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url></urlset>
