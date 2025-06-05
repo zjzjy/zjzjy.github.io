@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>V0 on Hiro&#39;s Island</title>
+    <link>http://localhost:1313/tags/v0/</link>
+    <description>Recent content in V0 on Hiro&#39;s Island</description>
+    <generator>Hugo</generator>
+    <language>zh-CN</language>
+    <managingEditor>224040086@link.cuhk.edu.cn (Junyin Zheng)</managingEditor>
+    <webMaster>224040086@link.cuhk.edu.cn (Junyin Zheng)</webMaster>
+    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+    <lastBuildDate>Sat, 31 May 2025 15:37:44 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/v0/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>v0.dev：AI 驱动前端开发的探索与实践</title>
+      <link>http://localhost:1313/application-v0/</link>
+      <pubDate>Sat, 31 May 2025 15:37:44 +0800</pubDate><author>224040086@link.cuhk.edu.cn (Junyin Zheng)</author>
+      <guid>http://localhost:1313/application-v0/</guid>
+      <description>&lt;h1 id=&#34;v0devai-驱动前端开发的探索与实践&#34;&gt;v0.dev：AI 驱动前端开发的探索与实践&lt;/h1&gt;&#xA;&lt;h2 id=&#34;i-引言&#34;&gt;I. 引言&lt;/h2&gt;&#xA;&lt;p&gt;在当今飞速发展的技术浪潮中，人工智能（AI）正以前所未有的速度渗透到各个领域，软件开发亦不例外。从智能代码补全到自动化测试，AI 工具的出现极大地提升了开发效率，并逐渐改变了开发者们的工作方式。特别是在前端开发领域，AI 的应用潜力更是巨大，它有望简化繁琐的UI构建过程，让开发者能够更专注于业务逻辑和用户体验。&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
