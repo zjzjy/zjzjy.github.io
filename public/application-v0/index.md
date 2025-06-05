@@ -9,11 +9,11 @@
 ## 深入了解 `v0.dev`
 
 `v0.dev` 是由知名前端工具和平台提供商 Vercel 推出的一款创新性 AI 产品。它不仅仅是一个代码生成器，更是一个能够将自然语言描述转化为实际用户界面的智能系统。`v0.dev` 的核心在于其强大的 AI 模型，能够理解开发者的意图，并快速生成基于 React、`shadcn/ui` 和 `Tailwind CSS` 的高质量、可复用前端代码。这意味着开发者可以通过简单的文本提示，例如"创建一个带有搜索框和筛选功能的电商产品列表"，`v0.dev` 就能立即呈现出相应的 UI 结构和样式。Community里面也有很多优秀作品，包括：APPs, Games, Sites, Components, Blocks, Starters。下图是[Crypto Dashboard Site](https://v0.dev/community/crypto-dashboard-JfGEPnqVAVL)示例。
-![Crypto Dashboard Site in Community](/assets/images/Crypto%20Dashboard.png)
+![Crypto Dashboard Site in Community](images/Crypto%20Dashboard.png)
 
 
 `v0.dev` 的工作流程直观且高效。用户只需在输入框中键入对所需 UI 的描述，AI 模型便会迅速处理这些信息。一旦选择了合适的 UI，用户不仅可以直接复制其生成的代码，还可以对 UI 的特定部分进行进一步的精细调整。这种迭代和优化的能力，让 `v0.dev` 不仅能够快速生成初始代码，还能确保最终产出符合高质量标准。
-![v0对话式调试界面](/assets/images/v0对话式.png)
+![v0对话式调试界面](images/v0对话式.png)
 
 
 
@@ -37,7 +37,7 @@
 4.  部署到vercel
 
 项目成果展示 
+![v0leaderboard](images/v0leaderboard.png)
+![模型具体分析页面](images/v0模型具体分析.png)
+![模型对比页面](images/v0模型对比.png)
 
-![v0leaderboard](/assets/images/v0leaderboard.png)
-![模型具体分析页面](/assets/images/v0模型具体分析.png)
-![模型对比页面](/assets/images/v0模型对比.png)
