@@ -4,7 +4,7 @@ title: "v0.dev：AI 驱动前端开发的探索与实践"
 subtitle: ""
 date: 2025-05-31T15:37:44+08:00
 draft: false
-author: "Hiro"
+author: "June"
 authorLink: "https://github.com/zjzjy"
 description: ""
 images: []

@@ -4,7 +4,7 @@ title: "Factfulness - 引言"
 subtitle: ""
 date: 2025-05-31T11:42:40+08:00
 draft: false
-author: "Hiro"
+author: "June"
 authorLink: "https://github.com/zjzjy"
 description: ""
 images: []

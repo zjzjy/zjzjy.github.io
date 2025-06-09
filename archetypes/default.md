@@ -4,7 +4,7 @@ title: "{{ replace .TranslationBaseName "-" " " | title }}"
 subtitle: ""
 date: {{ .Date }}
 draft: true
-author: "Hiro"
+author: "June"
 authorLink: "https://github.com/zjzjy"
 description: ""
 images: []
