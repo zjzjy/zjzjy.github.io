@@ -489,3 +489,117 @@ result
 ```
 
 ## Drawing Workflows
+我们还可以绘制工作流程。让我们使用 `draw_all_possible_flows` 函数来绘制工作流程。该函数将工作流程存储在 HTML 文件中。
+```python
+from llama_index.utils.workflow import draw_all_possible_flows
+
+w = ... # as defined in the previous section
+draw_all_possible_flows(w, "flow.html")
+```
+
+## 状态管理
+当您想要跟踪工作流的状态，以便每个步骤都能访问相同的状态时，状态管理非常有用。我们可以在步骤函数的参数上使用 `Context` 类型提示来实现这一点。
+```python
+from llama_index.core.workflow import Context, StartEvent, StopEvent
+
+@step
+async def query(self, ctx: Context, ev: StartEvent) -> StopEvent:
+  #存储查询到上下文
+  await ctx.set("query", "What is the capital of France?")
+
+  # do something with context and event
+  val = ...
+
+  # 从上下文检索查询
+  query = await ctx.get("query")
+
+  return StopEvent(result=val)
+```
+## Automating workflows with Multi-Agent Workflows
+**我们可以使用 AgentWorkflow 类来创建多代理工作流，而无需手动创建工作流 。**
+AgentWorkflow 使用工作 AgentWorkflow 代理，允许您创建一个由一个或多个代理组成的系统，这些代理可以根据各自的特定功能进行协作并相互交接任务。这使我们能够构建复杂的代理系统，其中不同的代理负责处理任务的不同方面。我们不会从 llama_index.core.agent 导入类，而是从 llama_index.core.agent.workflow 导入代理类。必须在 AgentWorkflow 构造函数中指定一个代理作为根代理。当用户消息传入时，它会首先路由到根代理。  
+然后每个代理可以：
+- 使用他们的工具直接处理请求
+- 移交给另一个更适合该任务的代理
+- 向用户返回响应
+```python
+from llama_index.core.agent.workflow import AgentWorkflow, ReActAgent
+from llama_index.llms.huggingface_api import HuggingFaceInferenceAPI
+
+# Define some tools
+def add(a: int, b: int) -> int:
+    """Add two numbers."""
+    return a + b
+
+def multiply(a: int, b: int) -> int:
+    """Multiply two numbers."""
+    return a * b
+
+llm = HuggingFaceInferenceAPI(model_name="Qwen/Qwen2.5-Coder-32B-Instruct")
+
+# we can pass functions directly without FunctionTool -- the fn/docstring are parsed for the name/description
+multiply_agent = ReActAgent(
+    name="multiply_agent",
+    description="Is able to multiply two integers",
+    system_prompt="A helpful assistant that can use a tool to multiply numbers.",
+    tools=[multiply],
+    llm=llm,
+)
+
+addition_agent = ReActAgent(
+    name="add_agent",
+    description="Is able to add two integers",
+    system_prompt="A helpful assistant that can use a tool to add numbers.",
+    tools=[add],
+    llm=llm,
+)
+
+# Create the workflow
+workflow = AgentWorkflow(
+    agents=[multiply_agent, addition_agent],
+    root_agent="multiply_agent",
+)
+
+# Run the system
+response = await workflow.run(user_msg="Can you add 5 and 3?")
+```
+代理工具还可以修改我们之前提到的工作流状态。在启动工作流之前，我们可以提供一个初始状态字典，供所有代理使用。该状态存储在工作流上下文的 `state` 键中。它将被注入到 state_prompt 中，用于增强每条新的用户消息。Let’s inject a counter to count function calls by modifying the previous example:
+```python
+from llama_index.core.workflow import Context
+
+# Define some tools
+async def add(ctx: Context, a: int, b: int) -> int:
+    """Add two numbers."""
+    # update our count
+    cur_state = await ctx.get("state")
+    cur_state["num_fn_calls"] += 1
+    await ctx.set("state", cur_state)
+
+    return a + b
+
+async def multiply(ctx: Context, a: int, b: int) -> int:
+    """Multiply two numbers."""
+    # update our count
+    cur_state = await ctx.get("state")
+    cur_state["num_fn_calls"] += 1
+    await ctx.set("state", cur_state)
+
+    return a * b
+
+...
+
+workflow = AgentWorkflow(
+    agents=[multiply_agent, addition_agent],
+    root_agent="multiply_agent"
+    initial_state={"num_fn_calls": 0},
+    state_prompt="Current state: {state}. User message: {msg}",
+)
+
+# run the workflow with context
+ctx = Context(workflow)
+response = await workflow.run(user_msg="Can you add 5 and 3?", ctx=ctx)
+
+# pull out and inspect the state
+state = await ctx.get("state")
+print(state["num_fn_calls"])
+```
