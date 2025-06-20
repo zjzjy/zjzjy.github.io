@@ -293,4 +293,110 @@ agent_context = Context(agent)#创建代理上下文
 通常，直接查询 API 可能会返回过多的数据 ，其中一些数据可能不相关，溢出 LLM 的上下文窗口，或者不必要地增加您正在使用的令牌数量。下面让我们来介绍一下我们的两个主要实用工具。You can find toolspecs and utility tools on the [LlamaHub](https://llamahub.ai/).
 - OnDemandToolLoader ：此工具可将任何现有的 LlamaIndex 数据加载器（BaseReader 类）转换为代理可以使用的工具。调用此工具时，可以使用触发数据加载器 load_data 所需的所有参数以及自然语言查询字符串。在执行过程中，我们首先从数据加载器加载数据，对其进行索引（例如使用向量存储），然后“按需”查询。所有这三个步骤都可在一次工具调用中完成。
 - LoadAndSearchToolSpec ：LoadAndSearchToolSpec 接受任何现有工具作为输入。作为工具规范，它实现了 to_tool_list ，当调用该函数时，会返回两个工具：一个加载工具和一个搜索工具。加载工具的执行会调用底层工具，然后对输出进行索引（默认使用向量索引）。搜索工具的执行会接受查询字符串作为输入，并调用底层索引。
+## 在LlamaIndex中使用Agent
+LlamaIndex 支持三种主要类型的推理代理：
+- Function Calling Agents ——它们与可以调用特定函数的 AI 模型一起工作。
+- ReAct Agents - 它们可以与任何进行聊天或文本端点的 AI 一起工作并处理复杂的推理任务。
+- Advanced Custom Agents - 这些代理使用更复杂的方法来处理更复杂的任务和工作流程。
+### 初始化Agents
+要创建代理，我们首先要为其提供一组定义其功能的函数/工具 。
+```python
+from llama_index.llms.huggingface_api import HuggingFaceInferenceAPI
+from llama_index.core.agent.workflow import AgentWorkflow
+from llama_index.core.tools import FunctionTool
+
+# define sample Tool -- type annotations, function names, and docstrings, are all included in parsed schemas!
+def multiply(a: int, b: int) -> int:
+    """Multiplies two integers and returns the resulting integer"""
+    return a * b
+
+# initialize llm
+llm = HuggingFaceInferenceAPI(model_name="Qwen/Qwen2.5-Coder-32B-Instruct")
+
+# initialize agent
+agent = AgentWorkflow.from_tools_or_functions(#将工具（Tools）或函数（Functions）注册到代理中
+    [FunctionTool.from_defaults(multiply)],
+    llm=llm
+)
+```
+代理默认是无状态的 ，使用 Context 对象可以选择记住过去的交互，如果您想使用需要记住以前交互的代理，这可能会很有用，例如在多个消息中维护上下文的聊天机器人或需要跟踪进度的任务管理器。很棒的[异步指南](https://docs.llamaindex.ai/en/stable/getting_started/async_python/) 。
+```python
+# stateless
+response = await agent.run("What is 2 times 2?")
+
+# remembering state
+from llama_index.core.workflow import Context
+
+ctx = Context(agent)
+
+response = await agent.run("My name is Bob.", ctx=ctx)#将上下文对象传递给每次调用，保持状态连续性。
+response = await agent.run("What was my name again?", ctx=ctx)
+```
+### 使用 QueryEngineTools 创建 RAG 代理
+Agentic RAG 是一种强大的工具，它能够利用代理来解答数据相关问题。 我们可以将各种工具传递给 Alfred，帮助他解答问题。不过，Alfred 可以选择使用任何其他工具或流程来解答问题，而不是自动在文档上进行解答。  
+将 QueryEngine 包装为代理工具很容易。包装时，我们需要定义名称和描述 。LLM 将使用这些信息来正确使用该工具。让我们看看如何使用我们在组件部分创建的 QueryEngine 加载 QueryEngineTool 。
+```python
+from llama_index.core.tools import QueryEngineTool
+
+query_engine = index.as_query_engine(llm=llm, similarity_top_k=3) # as shown in the Components in LlamaIndex section
+
+query_engine_tool = QueryEngineTool.from_defaults(
+    query_engine=query_engine,
+    name="name",
+    description="a specific description",
+    return_direct=False,
+)
+query_engine_agent = AgentWorkflow.from_tools_or_functions(
+    [query_engine_tool],
+    llm=llm,
+    system_prompt="You are a helpful assistant that has access to a database containing persona descriptions. "
+)
+```
+### Creating Multi-agent systems
+AgentWorkflow 类还直接支持多代理系统。通过为每个代理赋予名称和描述，系统可以维护单个活跃的发言者，并且每个代理都可以将发言权移交给另一个代理。
+LlamaIndex 中的代理也可以直接用作其他代理的工具 ，用于更复杂和自定义的场景。
+```python
+from llama_index.core.agent.workflow import (
+    AgentWorkflow,
+    FunctionAgent,
+    ReActAgent,
+)
+
+# Define some tools
+def add(a: int, b: int) -> int:
+    """Add two numbers."""
+    return a + b
+
+
+def subtract(a: int, b: int) -> int:
+    """Subtract two numbers."""
+    return a - b
+
+# Create agent configs
+# NOTE: we can use FunctionAgent or ReActAgent here.
+# FunctionAgent works for LLMs with a function calling API.
+# ReActAgent works for any LLM.
+calculator_agent = ReActAgebt(
+  name = 'calculator',
+  description="Performs basic arithmetic operations",
+  system_prompt="You are a calculator assistant. Use your tools for any math operation.",
+  tools = [add, substract],
+  llm = llm,
+)
+
+query_agent = ReActAgent(
+    name="info_lookup",
+    description="Looks up information about XYZ",
+    system_prompt="Use your tool to query a RAG system to answer information about XYZ",
+    tools=[query_engine_tool],
+    llm=llm
+)
+
+agent = AgentWorkflow(
+    agents=[calculator_agent, query_agent], root_agent="calculator"
+)
+
+# Run the system
+response = await agent.run(user_msg="Can you add 5 and 3?")
+```
 # 创建实例
