@@ -213,4 +213,84 @@ llama_index.core.set_global_handler(
     endpoint="https://llamatrace.com/v1/traces"
 )
 ```
+## 使用LlamaIndex中的工具
+LlamaIndex 中有四种主要类型的工具 ：
+1. FunctionTool ：将任何 Python 函数转换为代理可以使用的工具。它会自动理解函数的工作原理。
+2. QueryEngineTool ：允许代理使用查询引擎的工具。由于代理构建于查询引擎之上，因此它们也可以使用其他代理作为工具。
+3. Toolspecs ：社区创建的工具集，通常包括用于特定服务（如 Gmail）的工具。
+4. Utility Tools ：帮助处理来自其他工具的大量数据的特殊工具。
+### Creating a FunctionTool 
+[FunctionTool](https://docs.llamaindex.ai/en/stable/examples/workflow/function_calling_agent/) 提供了一种简单的方法来包装任何 Python 函数并将其提供给代理。您可以将同步或异步函数以及可选的 name 和 description 参数传递给该工具。
+```python
+from llama_index.core.tools import FunctionTool
+
+def get_weather(location: str) -> str:
+  """Useful for getting the weather for a given location."""
+  print(f"Getting weather for {location}")
+  return f"The weather in {location} is sunny"
+
+tool = FuntionTool.from_defaults(
+  get_weather,
+  name = "my_weather_tool",
+  description="Useful for getting the weather for a given location.",
+)
+tool.call("New York")
+```
+### Creating a QueryEngineTool
+使用 QueryEngineTool 类，我们可以轻松地将上一单元中定义的 QueryEngine 转换为工具。让我们在下面的示例中看看如何从 QueryEngine 创建 QueryEngineTool 。
+```python
+from llama_index.core import VectorStoreIndex
+from llama_index.core.tools import QueryEngineTool
+from llama_index.llms.huggingface_api import HuggingFaceInferenceAPI
+from llama_index.embeddings.huggingface import HuggingFaceEmbedding
+from llama_index.vector_stores.chroma import ChromaVectorStore
+
+embed_model = HuggingFaceEmbedding("BAAI/bge-small-en-v1.5")
+
+db = chromadb.PersistentClient(path="./alfred_chroma_db")
+chroma_collection = db.get_or_create_collection("alfred")
+vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
+
+index = VectorStoreIndex.from_vector_store(vector_store, embed_model=embed_model)
+
+llm = HuggingFaceInferenceAPI(model_name="Qwen/Qwen2.5-Coder-32B-Instruct")
+query_engine = index.as_query_engine(llm=llm)
+tool = QueryEngineTool.from_defaults(query_engine, name="some useful name", description="some useful description")
+```
+### Creating Toolspecs
+可以将 ToolSpecs 视为协同工作的工具集合，就像一个井然有序的专业工具包。正如机械师的工具包包含用于车辆维修的互补工具一样， ToolSpec 可以将相关工具组合起来用于特定用途。例如，会计代理的 ToolSpec 可以巧妙地集成电子表格功能、电子邮件功能和计算工具，从而精准高效地处理财务任务。
+```python
+pip install llama-index-tools-google
+```
+加载工具规范并将其转换为工具列表。
+```python
+from llama_index.tools.google import GmailToolSpec
+
+tool_spec = GmailToolSpec()
+tool_spec_list = tool_spec.to_tool_list()
+[(tool.metadata.name, tool.metadata.description) for tool in tool_spec_list]# 查看每个工具的 metadata
+```
+### Model Context Protocol (MCP) in LlamaIndex
+LlamaIndex 还允许通过 [LlamaHub 上的 ToolSpec](https://llamahub.ai/l/tools/llama-index-tools-mcp?from=) 使用 MCP 工具。您可以简单地运行一个 MCP 服务器，并通过以下实现开始使用它。
+```python
+pip install llama-index-tools-mcp
+
+from llama_index.tools.mcp import BasicMCPClient, McpToolSpec
+
+from llama_index.tools.mcp import BasicMCPClient, McpToolSpec
+
+# We consider there is a mcp server running on 127.0.0.1:8000, or you can use the mcp client to connect to your own mcp server.
+mcp_client = BasicMCPClient("http://127.0.0.1:8000/sse")#建立与 MCP 服务器的连接
+mcp_tool = McpToolSpec(client=mcp_client)#将 MCP 客户端包装为 LlamaIndex 工具
+
+# get the agent
+agent = await get_agent(mcp_tool)
+
+# create the agent context
+agent_context = Context(agent)#创建代理上下文
+```
+### Utility Tools
+通常，直接查询 API 可能会返回过多的数据 ，其中一些数据可能不相关，溢出 LLM 的上下文窗口，或者不必要地增加您正在使用的令牌数量。下面让我们来介绍一下我们的两个主要实用工具。You can find toolspecs and utility tools on the [LlamaHub](https://llamahub.ai/).
+- OnDemandToolLoader ：此工具可将任何现有的 LlamaIndex 数据加载器（BaseReader 类）转换为代理可以使用的工具。调用此工具时，可以使用触发数据加载器 load_data 所需的所有参数以及自然语言查询字符串。在执行过程中，我们首先从数据加载器加载数据，对其进行索引（例如使用向量存储），然后“按需”查询。所有这三个步骤都可在一次工具调用中完成。
+- LoadAndSearchToolSpec ：LoadAndSearchToolSpec 接受任何现有工具作为输入。作为工具规范，它实现了 to_tool_list ，当调用该函数时，会返回两个工具：一个加载工具和一个搜索工具。加载工具的执行会调用底层工具，然后对输出进行索引（默认使用向量索引）。搜索工具的执行会接受查询字符串作为输入，并调用底层索引。
 # 创建实例
