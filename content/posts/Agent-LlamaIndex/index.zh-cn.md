@@ -399,4 +399,93 @@ agent = AgentWorkflow(
 # Run the system
 response = await agent.run(user_msg="Can you add 5 and 3?")
 ```
-# 创建实例
+# 在 LlamaIndex 中创建代理工作流
+LlamaIndex 中的工作流提供了一种结构化的方法，将您的代码组织成连续且可管理的步骤。
+这样的工作流是通过定义由 Events 触发的 Steps 来创建的，这些步骤本身会发出 Events 来触发后续步骤。让我们来看看 Alfred 如何演示 RAG 任务的 LlamaIndex 工作流。
+![Workflow](images/llamaindex_workflow.png)
+工作流程在代理的自主性与保持对整个工作流程的控制之间取得了很好的平衡。  
+## 创建工作流
+1. 首先安装需要的包 `pip install llama-index-utils-workflow`
+2. 我们可以通过定义一个继承自 Workflow 的类，并用 @step 装饰函数来创建单步工作流。我们还需要添加 StartEvent 和 StopEvent ，它们是用于指示工作流开始和结束的特殊事件。
+```python
+from llama_index.core.workflow import StartEvent, StopEvent, Workflow, step
+
+class MyWorkflow(Workflow):
+  @step
+  async def my_step(self, ev: StartEvent) -> StopEvent:
+    # do something here
+    return StopEvent(result="Hello, world!")
+
+w = MyWorkflow(timeout=10, verbose=False)
+result = await w.run()
+```
+## 连接多个步骤
+为了连接多个步骤，我们创建在步骤之间传递数据的自定义事件。 为此，我们需要添加一个在步骤之间传递的 `Event` ，并将第一步的输出传输到第二步。
+```python
+from llama_index.core.workflow import Event
+
+class ProcessingEvent(Event)
+  intermediate_result: str
+
+class MultiStepWorkflow(Workflow):
+  @step
+  async def step_one(self, ev: StartEvent) -> ProcessingEvent
+    # Process initial data
+    return ProcessingEvent(intermediate_result='Step 1 complete')
+
+  @step
+   async def step_two(self, ev: ProcessingEvent) -> StopEvent:
+      # Use the intermediate result
+      final_result = f"Finished processing: {ev.intermediate_result}"
+      return StopEvent(result=final_result)
+
+w = MultiStepWorkflow(timeout=10, verbose=False)
+result = await w.run()
+result
+```
+## 循环和分支
+类型提示是工作流中最强大的部分，因为它允许我们创建分支、循环和连接以促进更复杂的工作流。  
+让我们展示一个使用联合运算符 | 创建循环的示例。在下面的示例中，我们看到 `LoopEvent` 被作为步骤的输入，也可以作为输出返回。
+step_one
+- 输入：
+  - 首次执行：接收StartEvent（工作流启动）。
+  - 循环执行：接收LoopEvent（携带重试信息）。
+- 输出：
+  - 50% 概率返回LoopEvent，触发循环。
+  - 50% 概率返回ProcessingEvent，进入下一步。
+```python
+from llama_index.core.workflow import Event
+import random
+
+
+class ProcessingEvent(Event):
+    intermediate_result: str
+
+
+class LoopEvent(Event):
+    loop_output: str
+
+
+class MultiStepWorkflow(Workflow):
+    @step
+    async def step_one(self, ev: StartEvent | LoopEvent) -> ProcessingEvent | LoopEvent:
+        if random.randint(0, 1) == 0:
+            print("Bad thing happened")
+            return LoopEvent(loop_output="Back to step one.")
+        else:
+            print("Good thing happened")
+            return ProcessingEvent(intermediate_result="First step complete.")
+
+    @step
+    async def step_two(self, ev: ProcessingEvent) -> StopEvent:
+        # Use the intermediate result
+        final_result = f"Finished processing: {ev.intermediate_result}"
+        return StopEvent(result=final_result)
+
+
+w = MultiStepWorkflow(verbose=False)
+result = await w.run()
+result
+```
+
+## Drawing Workflows
