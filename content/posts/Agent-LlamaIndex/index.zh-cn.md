@@ -12,8 +12,8 @@ resources:
 - name: "featured-image"
   src: "featured-image.jpg"
 
-tags: []
-categories: []
+tags: ['Agent','LlamaIndex']
+categories: ['Agent']
 lightgallery: true
 
 hiddenFromHomePage: false
