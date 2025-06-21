@@ -109,5 +109,45 @@ Edges可以是：
 - 条件 ：根据当前状态选择下一个节点
 
 ## StateGraph
+StateGraph 是保存整个代理工作流程的容器：
+```python
+from IPython.display import Image, display
+from langgraph.graph import StaeGraph, START, END
 
-# 构建一个文件分析agent吧
+# 创建状态图并添加节点
+builder = StateGraph(State)
+builder.add_node("node_1", node_1)
+builder.add_node("node_2", node_2)
+builder.add_node("node_3", node_3)
+
+# 定义节点之间的连接关系（边）
+builder.add_edge(START, "node_1")
+builder.add_conditional_edges("node_1", decide_mood)
+builder.add_edge("node_2", END)
+builder.add_edge("node_3", END)
+
+graph = builder.compile()
+
+# View
+display(Image(graph.get_graph().draw_mermaid_png()))
+
+# 调用
+graph.invoke({"graph_state": "Hi, this is Lance."})
+# 输出
+#---Node 1---
+#---Node 3---
+#{'graph_state': 'Hi, this is Lance. I am sad!'}
+```
+# 构建一个邮件助手吧！
+在这一小节，我们会实现Alfred的电子邮件处理系统，他需要执行以下操作：
+1. 阅读收到的电子邮件
+2. 将其归类为垃圾邮件或合法邮件
+3. 起草对合法电子邮件的初步回复
+4. 在合法的情况下向韦恩先生发送信息（仅打印）
+这是我们将构建的工作流程：
+![email workflow](/assets/images/langgraph_email.png)
+## 设置环境
+```python
+
+```
+# 构建一个文件分析agent吧！
