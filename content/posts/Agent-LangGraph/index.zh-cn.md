@@ -148,6 +148,80 @@ graph.invoke({"graph_state": "Hi, this is Lance."})
 ![email workflow](/assets/images/langgraph_email.png)
 ## 设置环境
 ```python
+pip install langgraph langchain_openai
 
+import os
+from typing import TypedDict, List, Dict, Any, Optional
+from langgraph.graph import StateGraph, START, END
+from langchain_openai import ChatOpenAI
+from langchain_core.messages import HumanMessage
+```
+
+## Step 1: Define Our State
+使您的State足够全面以跟踪所有重要信息，但避免添加不必要的细节。
+```python
+class EmailState(TypedDict)
+  # The email being processed
+  email: Dict[str, Any] # Contains subject, sender, body, etc.
+
+   # Category of the email (inquiry, complaint, etc.)
+   email_category: Optional[str]
+
+   # Reason why the email was marked as spam
+   spam_reason: Optional[str]
+
+   # Analysis and decisions
+   is_spam: Optional[bool]
+
+   # Response generation
+   email_draft: Optional[str]
+
+   # Processing metadata
+   messages: List[DItc[str, Any]]
+```
+## Step 2: Define Our Nodes
+现在我们创建构成节点的处理函数，想一想我们需要什么？
+1. 小助手要读邮件，返回logs: 小助手在处理来自发送者某某关于某某主题的邮件
+2. 小助手要判断是不是垃圾邮件，从LLM回答中提取is_spam，reason，category。
+3. 小助手处理垃圾邮件
+4. 小助手起草回复
+5. 小助手回复整个过程
+```python
+# Initialize LLM
+model = ChatOpenAI(temparature=0)
+
+def read_email(state: EmailState):
+  """Alfred reads and logs the incoming email"""
+  email = state["email"]
+
+  # Here we might do some initial preprocessing
+  print(f"Alfred is processing an email from {email['sender']} with subject: {email['subject']}")
+
+  # No state changes needed here
+  return {}
+
+def classify_email(state: EmailState):
+  """Alfred uses an LLM to determine if the email is spam or legitimate"""
+  email = state["email"]
+
+  # prepare our prompt for the LLM
+  prompt = f"""
+    As Alfred the butler, analyze this email and determine if it is spam or legitimate.
+    
+    Email:
+    From: {email['sender']}
+    Subject: {email['subject']}
+    Body: {email['body']}
+    
+    First, determine if this email is spam. If it is spam, explain why.
+    If it is legitimate, categorize it (inquiry, complaint, thank you, etc.).
+    """
+
+    # call the LLM
+    messages = [HumanMessage(content=prompt)]
+    response = model.invoke(messages)
+
+    # Simple logic to parse the response (in a real app, you'd want more robust parsing)
+    
 ```
 # 构建一个文件分析agent吧！
