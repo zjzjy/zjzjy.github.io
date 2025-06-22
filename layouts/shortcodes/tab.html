@@ -1,0 +1,5 @@
+{{- $title := .Get "title" | default (.Get 0) -}}
+{{- $name := $title | default (printf "tab-%d" .Ordinal) -}}
+{{- $tabs := .Page.Scratch.Get "tabs" | default slice -}}
+{{- $tabs = $tabs | append (dict "name" $name "title" $title "content" .Inner) -}}
+{{- .Page.Scratch.Set "tabs" $tabs -}} 

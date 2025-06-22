@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Categories on Hiro&#39;s Island</title>
+    <title>Categories on June&#39;s Island</title>
     <link>http://localhost:1313/categories/</link>
-    <description>Recent content in Categories on Hiro&#39;s Island</description>
+    <description>Recent content in Categories on June&#39;s Island</description>
     <generator>Hugo</generator>
     <language>zh-CN</language>
     <managingEditor>224040086@link.cuhk.edu.cn (Junyin Zheng)</managingEditor>
     <webMaster>224040086@link.cuhk.edu.cn (Junyin Zheng)</webMaster>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Thu, 05 Jun 2025 15:29:09 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 22 Jun 2025 12:07:16 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Agent</title>
+      <link>http://localhost:1313/categories/agent/</link>
+      <pubDate>Sun, 22 Jun 2025 12:03:24 +0800</pubDate><author>224040086@link.cuhk.edu.cn (Junyin Zheng)</author>
+      <guid>http://localhost:1313/categories/agent/</guid>
+      <description></description>
+    </item>
     <item>
       <title>Application</title>
       <link>http://localhost:1313/categories/application/</link>

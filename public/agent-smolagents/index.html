@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Smolagents - Introduction - June&#39;s Island</title><meta name="Description" content="Hiro&#39;s Learning and Daily Records Island"><meta property="og:url" content="http://localhost:1313/agent-smolagents/">
+  <meta property="og:site_name" content="June&#39;s Island">
+  <meta property="og:title" content="Smolagents - Introduction">
+  <meta property="og:description" content="本文根据Hugging Face上的Agent课程编写而成，包括 。 相关资源：
+smolagents Documentation - Official docs for the smolagents library Building Effective Agents - Research paper on agent architectures Agent Guidelines - Best practices for building reliable agents LangGraph Agents - Additional examples of agent implementations Function Calling Guide - Understanding function calling in LLMs RAG Best Practices - Guide to implementing effective RAG smolagents Blog - Introduction to smolagents and code interactions 什么是smolagents，为什么要使用smolagents？ smolagents 是一个 Hugging Face 库。smolagents 是一个简单但功能强大的 AI 代理构建框架。它为LLM提供了与现实世界交互的能力，例如搜索或生成图像。">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-06-17T15:27:19+08:00">
+    <meta property="article:modified_time" content="2025-06-21T11:40:46+08:00">
+    <meta property="article:tag" content="Agent">
+    <meta property="article:tag" content="Smolagents">
+    <meta property="og:image" content="http://localhost:1313/agent-smolagents/featured-image.jpg">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="http://localhost:1313/agent-smolagents/featured-image.jpg">
+  <meta name="twitter:title" content="Smolagents - Introduction">
+  <meta name="twitter:description" content="本文根据Hugging Face上的Agent课程编写而成，包括 。 相关资源：
+smolagents Documentation - Official docs for the smolagents library Building Effective Agents - Research paper on agent architectures Agent Guidelines - Best practices for building reliable agents LangGraph Agents - Additional examples of agent implementations Function Calling Guide - Understanding function calling in LLMs RAG Best Practices - Guide to implementing effective RAG smolagents Blog - Introduction to smolagents and code interactions 什么是smolagents，为什么要使用smolagents？ smolagents 是一个 Hugging Face 库。smolagents 是一个简单但功能强大的 AI 代理构建框架。它为LLM提供了与现实世界交互的能力，例如搜索或生成图像。">
+<meta name="application-name" content="June&#39;s Island">
+<meta name="apple-mobile-web-app-title" content="June&#39;s Island"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/agent-smolagents/" /><link rel="prev" href="http://localhost:1313/application-v0/" /><link rel="next" href="http://localhost:1313/agent-llamaindex/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Smolagents - Introduction",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/agent-smolagents\/"
+        },"image": [{
+                            "@type": "ImageObject",
+                            "url": "http:\/\/localhost:1313\/agent-smolagents\/featured-image.jpg",
+                            "width":  1920 ,
+                            "height":  1080 
+                        }],"genre": "posts","keywords": "Agent, Smolagents","wordcount":  1396 ,
+        "url": "http:\/\/localhost:1313\/agent-smolagents\/","datePublished": "2025-06-17T15:27:19+08:00","dateModified": "2025-06-21T11:40:46+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": {
+                    "@type": "ImageObject",
+                    "url": "http:\/\/localhost:1313\/images\/avatar.png",
+                    "width":  1164 ,
+                    "height":  819 
+                }},"author": {
+                "@type": "Person",
+                "name": "June"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="June&#39;s Island"><span class="header-title-pre"><img src='/favicon.ico' style='height:1.5em;vertical-align:-0.25em;margin-right:0.2em;'/></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/zjzjy" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/agent-smolagents/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="June&#39;s Island"><span class="header-title-pre"><img src='/favicon.ico' style='height:1.5em;vertical-align:-0.25em;margin-right:0.2em;'/></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/zjzjy" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/agent-smolagents/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Smolagents - Introduction</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/zjzjy" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>June</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/agent/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Agent</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="171719-19-30">171719-19-30</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1396 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 3 分钟&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/agent-smolagents/featured-image.jpg"
+        data-srcset="/agent-smolagents/featured-image.jpg, /agent-smolagents/featured-image.jpg 1.5x, /agent-smolagents/featured-image.jpg 2x"
+        data-sizes="auto"
+        alt="/agent-smolagents/featured-image.jpg"
+        title="/agent-smolagents/featured-image.jpg" /></div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#主要优势">主要优势</a></li>
+    <li><a href="#何时适合使用smolagents">何时适合使用smolagents?</a></li>
+    <li><a href="#smolagents中的模型集成">smolagents中的模型集成</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#codeagents">CodeAgents</a>
+      <ul>
+        <li><a href="#codeagent逻辑流程">CodeAgent逻辑流程</a></li>
+        <li><a href="#实践时间">实践时间！</a>
+          <ul>
+            <li><a href="#派对管家">派对管家</a></li>
+            <li><a href="#旅游助手">旅游助手</a></li>
+          </ul>
+        </li>
+        <li><a href="#toolcallingagents">ToolCallingAgents</a></li>
+        <li><a href="#tools">Tools</a></li>
+      </ul>
+    </li>
+    <li><a href="#让我们来实现一些agents吧">让我们来实现一些Agents吧</a>
+      <ul>
+        <li><a href="#retrieval-agents">Retrieval Agents</a></li>
+        <li><a href="#multi-agent-system">Multi-Agent System</a></li>
+        <li><a href="#vision-and-browser-agents">Vision and Browser agents</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>本文根据<a href="https://huggingface.co/learn/agents-course/unit2/smolagents/introduction" target="_blank" rel="noopener noreffer ">Hugging Face上的Agent课程</a>编写而成，包括        。
+相关资源：</p>
+<ul>
+<li><a href="https://huggingface.co/docs/smolagents" target="_blank" rel="noopener noreffer ">smolagents Documentation</a> - Official docs for the smolagents library</li>
+<li><a href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank" rel="noopener noreffer ">Building Effective Agents</a> - Research paper on agent architectures</li>
+<li><a href="https://huggingface.co/docs/smolagents/tutorials/building_good_agents" target="_blank" rel="noopener noreffer ">Agent Guidelines</a> - Best practices for building reliable agents</li>
+<li><a href="https://langchain-ai.github.io/langgraph/" target="_blank" rel="noopener noreffer ">LangGraph Agents</a> - Additional examples of agent implementations</li>
+<li><a href="https://platform.openai.com/docs/guides/function-calling?api-mode=chat" target="_blank" rel="noopener noreffer ">Function Calling Guide</a> - Understanding function calling in LLMs</li>
+<li><a href="https://www.pinecone.io/learn/retrieval-augmented-generation/" target="_blank" rel="noopener noreffer ">RAG Best Practices</a> - Guide to implementing effective RAG</li>
+<li><a href="https://huggingface.co/blog/smolagents" target="_blank" rel="noopener noreffer ">smolagents Blog</a> - Introduction to smolagents and code interactions</li>
+</ul>
+<h1 id="什么是smolagents为什么要使用smolagents">什么是smolagents，为什么要使用smolagents？</h1>
+<p>smolagents 是一个 <a href="https://github.com/huggingface/smolagents" target="_blank" rel="noopener noreffer ">Hugging Face 库</a>。smolagents 是一个简单但功能强大的 AI 代理构建框架。它为LLM提供了与现实世界交互的能力，例如搜索或生成图像。</p>
+<h2 id="主要优势">主要优势</h2>
+<ul>
+<li><strong>简单性</strong>： 最小的代码复杂性和抽象性，使框架易于理解、采用和扩展。</li>
+<li><strong>灵活的 LLM 支持</strong>： 通过与 Hugging Face 工具和外部 API 集成，可与任何 LLM 配合使用</li>
+<li><strong>代码优先方法</strong>： 对代码代理提供一流的支持，这些代理直接在代码中编写其操作，无需解析并简化工具调用</li>
+<li><strong>HF Hub 集成</strong>： 与 Hugging Face Hub 无缝集成，允许使用 Gradio Spaces 作为工具</li>
+</ul>
+<h2 id="何时适合使用smolagents">何时适合使用smolagents?</h2>
+<ul>
+<li>您需要一个轻量级且最小的解决方案。</li>
+<li>您希望快速进行实验而无需进行复杂的配置。</li>
+<li>您的应用程序逻辑很简单。</li>
+</ul>
+<p>以上的情况适合使用smolagents。</p>
+<h2 id="smolagents中的模型集成">smolagents中的模型集成</h2>
+<p>smolagents 支持灵活的 LLM 集成，允许您使用任何符合特定条件的可调用模型。该框架提供了几个预定义的类来简化模型连接：</p>
+<ul>
+<li><a href="https://huggingface.co/docs/smolagents/main/en/reference/models#smolagents.TransformersModel" target="_blank" rel="noopener noreffer ">TransformersModel</a>： 实现本地 transformers 管道，实现无缝集成。</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">smolagents</span> <span class="kn">import</span> <span class="n">TransformersModel</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">model</span> <span class="o">=</span> <span class="n">TransformersModel</span><span class="p">(</span><span class="n">model_id</span><span class="o">=</span><span class="s2">&#34;HuggingFaceTB/SmolLM-135M-Instruct&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="p">([{</span><span class="s2">&#34;role&#34;</span><span class="p">:</span> <span class="s2">&#34;user&#34;</span><span class="p">,</span> <span class="s2">&#34;content&#34;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;text&#34;</span><span class="p">,</span> <span class="s2">&#34;text&#34;</span><span class="p">:</span> <span class="s2">&#34;Ok!&#34;</span><span class="p">}]}],</span> <span class="n">stop_sequences</span><span class="o">=</span><span class="p">[</span><span class="s2">&#34;great&#34;</span><span class="p">]))</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><a href="https://huggingface.co/docs/smolagents/main/en/reference/models#smolagents.InferenceClientModel" target="_blank" rel="noopener noreffer ">InferenceClientModel</a> ： 支持通过 <a href="https://huggingface.co/docs/huggingface_hub/main/en/guides/inference" target="_blank" rel="noopener noreffer ">Hugging Face 的基础设施</a>或通过越来越多的<a href="https://huggingface.co/docs/huggingface_hub/main/en/guides/inference#supported-providers-and-tasks" target="_blank" rel="noopener noreffer ">第三方推理提供商进行无服务器推理调用</a>。
+HfApiModel 封装了 huggingface_hub 的 InferenceClient ，用于执行 LLM。它支持 Hub 上所有可用的推理提供程序 ：Cerebras、Cohere、Fal、Fireworks、HF-Inference、Hyperbolic、Nebius、Novita、Replicate、SambaNova、Together 等。</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">smolagents</span> <span class="kn">import</span> <span class="n">InferenceClientModel</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">message</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span><span class="s2">&#34;role&#34;</span><span class="p">:</span> <span class="s2">&#34;user&#34;</span><span class="p">,</span> <span class="s2">&#34;content&#34;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;text&#34;</span><span class="p">,</span> <span class="s2">&#34;text&#34;</span><span class="p">:</span> <span class="s2">&#34;Hello, how are you?&#34;</span><span class="p">}]}</span>
+</span></span><span class="line"><span class="cl"><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">model</span> <span class="o">=</span> <span class="n">InferenceClientModel</span><span class="p">(</span><span class="n">provider</span> <span class="o">=</span> <span class="s2">&#34;novita&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="n">messages</span><span class="p">))</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><a href="https://huggingface.co/docs/smolagents/main/en/reference/models#smolagents.LiteLLMModel" target="_blank" rel="noopener noreffer ">LiteLLMModel</a> ： 利用 LiteLLM 实现轻量级模型交互。</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">solagents</span> <span class="kn">import</span> <span class="n">LiteLLMModel</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">messages</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span><span class="s2">&#34;role&#34;</span><span class="p">:</span> <span class="s2">&#34;user&#34;</span><span class="p">,</span> <span class="s2">&#34;content&#34;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;text&#34;</span><span class="p">,</span> <span class="s2">&#34;text&#34;</span><span class="p">:</span> <span class="s2">&#34;Hello, how are you?&#34;</span><span class="p">}]}</span>
+</span></span><span class="line"><span class="cl"><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">model</span> <span class="o">=</span> <span class="n">LiteLLMModel</span><span class="p">(</span><span class="n">model_id</span><span class="o">=</span><span class="s2">&#34;anthropic/claude-3-5-sonnet-latest&#34;</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">max_tokens</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="n">messages</span><span class="p">))</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><a href="https://huggingface.co/docs/smolagents/main/en/reference/models#smolagents.OpenAIServerModel" target="_blank" rel="noopener noreffer ">OpenAIServerModel</a> ： 连接到任何提供 OpenAI API 接口的服务。</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">os</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">smolagents</span> <span class="kn">import</span> <span class="n">OpenAIServerModel</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">model</span> <span class="o">=</span> <span class="n">OpenAIServerModel</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">  <span class="n">model_id</span> <span class="o">=</span> <span class="s2">&#34;gpt-4o&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="n">api_base</span> <span class="o">=</span> <span class="s2">&#34;https://api.openai.com/v1&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="n">api_key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&#34;OPENAI_API_KEY&#34;</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><a href="https://huggingface.co/docs/smolagents/main/en/reference/models#smolagents.AzureOpenAIServerModel" target="_blank" rel="noopener noreffer ">AzureOpenAIServerModel</a> ： 支持与任何 Azure OpenAI 部署集成。</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">os</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">smolagents</span> <span class="kn">import</span> <span class="n">AzureOpenAIServerModel</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">model</span> <span class="o">=</span> <span class="n">AzureOpenAIServerModel</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="n">model_id</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;AZURE_OPENAI_MODEL&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="n">azure_endpoint</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;AZURE_OPENAI_ENDPOINT&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="n">api_key</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;AZURE_OPENAI_API_KEY&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="n">api_version</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;OPENAI_API_VERSION&#34;</span><span class="p">)</span>    
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="agent类型">Agent类型</h1>
+<h2 id="codeagents">CodeAgents</h2>
+<p>使用代码而不是 JSON 编写操作有几个主要优势：</p>
+<ul>
+<li>可组合性 ：轻松组合和重用操作</li>
+<li>对象管理 ：直接处理图像等复杂结构</li>
+<li>通用性 ：表达任何计算上可能的任务</li>
+</ul>
+<p>这对 LLM 来说很自然 ：LLM 训练数据中已经存在高质量的代码。
+它是核心构建块。CodeAgent 是一种特殊的 MultiStepAgent ， CodeAgent 将在下面的示例中看到。</p>
+<h3 id="codeagent逻辑流程">CodeAgent逻辑流程</h3>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/codeagent_run.png"
+        data-srcset="/images/codeagent_run.png, /images/codeagent_run.png 1.5x, /images/codeagent_run.png 2x"
+        data-sizes="auto"
+        alt="/images/codeagent_run.png"
+        title="how code agent works?" width="1588" height="868" />
+CodeAgent 通过一系列步骤执行操作，将现有变量和知识纳入代理的上下文中，并保存在执行日志中：</p>
+<ol>
+<li>系统提示存储在 SystemPromptStep 中，用户查询记录在 TaskStep 中。</li>
+<li>然后，执行以下 while 循环：
+<ol>
+<li>agent.write_memory_to_messages() 将代理的日志写入 LLM 可读的chat messages中。</li>
+<li>这些消息被发送到一个 Model ，该模型生成一个完成信息。</li>
+<li>解析完成以提取操作，在我们的例子中，它应该是一个代码片段，因为我们正在使用 CodeAgent 。</li>
+<li>动作执行。</li>
+<li>将结果记录到 ActionStep 的内存中。</li>
+</ol>
+</li>
+<li>在每个步骤结束时，如果agent包含任何函数调用（在 agent.step_callback 中），则会执行它们。</li>
+</ol>
+<h3 id="实践时间">实践时间！</h3>
+<p>以下我会展示两个示例，一个是huggingface 官方课程的例子，一个是自己设计的旅游助手。</p>
+<h4 id="派对管家">派对管家</h4>
+<p>Alfred要为Wayen家族筹办一场派对。需要做到以下几点：</p>
+<ul>
+<li>选择派对上的音乐</li>
+<li>为访客整理菜单</li>
+<li>计算准备时间</li>
+<li>在社区共享</li>
+<li>使用 OpenTelemetry 和 Langfuse 📡 检查我们的派对管家</li>
+</ul>
+<h4 id="旅游助手">旅游助手</h4>
+<h3 id="toolcallingagents">ToolCallingAgents</h3>
+<h3 id="tools">Tools</h3>
+<h2 id="让我们来实现一些agents吧">让我们来实现一些Agents吧</h2>
+<h3 id="retrieval-agents">Retrieval Agents</h3>
+<h3 id="multi-agent-system">Multi-Agent System</h3>
+<h3 id="vision-and-browser-agents">Vision and Browser agents</h3>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 212146-46-110&nbsp;<a class="git-hash" href="https://github.com/zjzjy/commit/4c98d1b9a759ed2ea3d49ad31b0eb6d84f0b25bb" target="_blank" title="commit by 郑钧尹(Zheng Junyin)(108924030&#43;zjzjy@users.noreply.github.com) 4c98d1b9a759ed2ea3d49ad31b0eb6d84f0b25bb: 28">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>4c98d1b</a></span>
+            </div><div class="post-info-license">
+                <span><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/agent-smolagents/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="http://localhost:1313/agent-smolagents/" data-title="Smolagents - Introduction" data-hashtags="Agent,Smolagents"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="http://localhost:1313/agent-smolagents/" data-hashtag="Agent"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="http://localhost:1313/agent-smolagents/" data-title="Smolagents - Introduction"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="http://localhost:1313/agent-smolagents/" data-title="Smolagents - Introduction"><i data-svg-src="/lib/simple-icons/icons/line.min.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="http://localhost:1313/agent-smolagents/" data-title="Smolagents - Introduction" data-ralateuid="xxxx"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/agent/">Agent</a>,&nbsp;<a href="/tags/smolagents/">Smolagents</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/application-v0/" class="prev" rel="prev" title="v0.dev：AI 驱动前端开发的探索与实践"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>v0.dev：AI 驱动前端开发的探索与实践</a>
+            <a href="/agent-llamaindex/" class="next" rel="next" title="LlamaIndex - Introduction">LlamaIndex - Introduction<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.147.6">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.0"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">Junyin Zheng</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/algoliasearch/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lightgallery.min.js"></script><script type="text/javascript" src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/typeit/index.umd.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"data":{"id-1":"June's Island","id-2":"June's Island"},"lightgallery":true,"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html> 

@@ -1,24 +1,78 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>所有文章 - Hiro&#39;s Island</title>
+        <title>所有文章 - June&#39;s Island</title>
         <link>http://localhost:1313/posts/</link>
-        <description>所有文章 | Hiro&#39;s Island</description>
+        <description>所有文章 | June&#39;s Island</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>224040086@link.cuhk.edu.cn (Junyin Zheng)</managingEditor>
-            <webMaster>224040086@link.cuhk.edu.cn (Junyin Zheng)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 31 May 2025 15:37:44 &#43;0800</lastBuildDate><atom:link href="http://localhost:1313/posts/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>224040086@link.cuhk.edu.cn (Junyin Zheng)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 22 Jun 2025 12:03:24 &#43;0800</lastBuildDate><atom:link href="http://localhost:1313/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>Agentic RAG - Usecase</title>
+    <link>http://localhost:1313/agent-agentic-rag/</link>
+    <pubDate>Sun, 22 Jun 2025 12:03:24 &#43;0800</pubDate>
+    <author>June</author>
+    <guid>http://localhost:1313/agent-agentic-rag/</guid>
+    <description><![CDATA[<p>本文根据<a href="https://huggingface.co/learn/agents-course/unit3/agentic-rag/introduction" target="_blank" rel="noopener noreffer ">Hugging Face上的Agent课程</a>编写而成，包括        。
+在本章节，我们将使用 Agentic RAG 创建一个工具来帮助主持晚会的友好经纪人 Alfred，该工具可用于回答有关晚会嘉宾的问题。</p>]]></description>
+</item>
+<item>
+    <title>LangGraph - Introduction</title>
+    <link>http://localhost:1313/agent-langgraph/</link>
+    <pubDate>Sat, 21 Jun 2025 10:21:11 &#43;0800</pubDate>
+    <author>June</author>
+    <guid>http://localhost:1313/agent-langgraph/</guid>
+    <description><![CDATA[<p>本文根据<a href="https://huggingface.co/learn/agents-course/unit2/langgraph/introduction" target="_blank" rel="noopener noreffer ">Hugging Face上的Agent课程</a>编写而成，包括        。
+在本章节您将学习如何使用 <a href="https://github.com/langchain-ai/langgraph" target="_blank" rel="noopener noreffer ">LangGraph</a> 框架构建应用程序，该框架旨在帮助您构建和协调复杂的 LLM 工作流程。LangGraph 是一个框架，它通过为您提供代理流程的控制工具，允许您构建可用于生产的应用程序。
+相关资源：</p>]]></description>
+</item>
+<item>
+    <title>LlamaIndex - Introduction</title>
+    <link>http://localhost:1313/agent-llamaindex/</link>
+    <pubDate>Thu, 19 Jun 2025 14:38:53 &#43;0800</pubDate>
+    <author>June</author>
+    <guid>http://localhost:1313/agent-llamaindex/</guid>
+    <description><![CDATA[<p>本文根据<a href="https://huggingface.co/learn/agents-course/unit2/llama-index/introduction" target="_blank" rel="noopener noreffer ">Hugging Face上的Agent课程</a>编写而成，包括        。</p>
+<h1 id="什么是llamaindex">什么是LlamaIndex？</h1>
+<p>LlamaIndex 是一个完整的工具包，用于使用索引和工作流创建基于LLM的Agent。</p>
+<h2 id="llamaindex的关键部分以及它们如何帮助代理">LlamaIndex的关键部分以及它们如何帮助代理？</h2>
+<p><strong>Components</strong>：在 LlamaIndex 中使用的基本构建块。 These include things like prompts, models, and databases.组件通常用于将 LlamaIndex 与其他工具和库连接起来。<br>
+<strong>Tools</strong>: 工具是提供特定功能（例如搜索、计算或访问外部服务）的组件。<br>
+<strong>Agents</strong>：能够使用工具并做出决策的自主组件。它们协调工具的使用，以实现复杂的目标。<br>
+<strong>Workflows</strong>：是将逻辑整合在一起的逐步流程。工作流或代理工作流是一种无需明确使用代理即可构建代理行为的方法。</p>]]></description>
+</item>
+<item>
+    <title>Smolagents - Introduction</title>
+    <link>http://localhost:1313/agent-smolagents/</link>
+    <pubDate>Tue, 17 Jun 2025 15:27:19 &#43;0800</pubDate>
+    <author>June</author>
+    <guid>http://localhost:1313/agent-smolagents/</guid>
+    <description><![CDATA[<p>本文根据<a href="https://huggingface.co/learn/agents-course/unit2/smolagents/introduction" target="_blank" rel="noopener noreffer ">Hugging Face上的Agent课程</a>编写而成，包括        。
+相关资源：</p>
+<ul>
+<li><a href="https://huggingface.co/docs/smolagents" target="_blank" rel="noopener noreffer ">smolagents Documentation</a> - Official docs for the smolagents library</li>
+<li><a href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank" rel="noopener noreffer ">Building Effective Agents</a> - Research paper on agent architectures</li>
+<li><a href="https://huggingface.co/docs/smolagents/tutorials/building_good_agents" target="_blank" rel="noopener noreffer ">Agent Guidelines</a> - Best practices for building reliable agents</li>
+<li><a href="https://langchain-ai.github.io/langgraph/" target="_blank" rel="noopener noreffer ">LangGraph Agents</a> - Additional examples of agent implementations</li>
+<li><a href="https://platform.openai.com/docs/guides/function-calling?api-mode=chat" target="_blank" rel="noopener noreffer ">Function Calling Guide</a> - Understanding function calling in LLMs</li>
+<li><a href="https://www.pinecone.io/learn/retrieval-augmented-generation/" target="_blank" rel="noopener noreffer ">RAG Best Practices</a> - Guide to implementing effective RAG</li>
+<li><a href="https://huggingface.co/blog/smolagents" target="_blank" rel="noopener noreffer ">smolagents Blog</a> - Introduction to smolagents and code interactions</li>
+</ul>
+<h1 id="什么是smolagents为什么要使用smolagents">什么是smolagents，为什么要使用smolagents？</h1>
+<p>smolagents 是一个 <a href="https://github.com/huggingface/smolagents" target="_blank" rel="noopener noreffer ">Hugging Face 库</a>。smolagents 是一个简单但功能强大的 AI 代理构建框架。它为LLM提供了与现实世界交互的能力，例如搜索或生成图像。</p>]]></description>
+</item>
+<item>
     <title>v0.dev：AI 驱动前端开发的探索与实践</title>
     <link>http://localhost:1313/application-v0/</link>
     <pubDate>Sat, 31 May 2025 15:37:44 &#43;0800</pubDate>
-    <author>Hiro</author>
+    <author>June</author>
     <guid>http://localhost:1313/application-v0/</guid>
     <description><![CDATA[<p>在当今飞速发展的技术浪潮中，人工智能（AI）正以前所未有的速度渗透到各个领域，软件开发亦不例外。从智能代码补全到自动化测试，AI 工具的出现极大地提升了开发效率，并逐渐改变了开发者们的工作方式。特别是在前端开发领域，AI 的应用潜力更是巨大，它有望简化繁琐的UI构建过程，让开发者能够更专注于业务逻辑和用户体验。</p>]]></description>
 </item>
 <item>
-    <title>Factfulness - 引言</title>
-    <link>http://localhost:1313/reading-factfulness-introduction/</link>
+    <title>Factfulness</title>
+    <link>http://localhost:1313/reading-factfulness/</link>
     <pubDate>Sat, 31 May 2025 11:42:40 &#43;0800</pubDate>
-    <author>Hiro</author>
-    <guid>http://localhost:1313/reading-factfulness-introduction/</guid>
-    <description><![CDATA[]]></description>
+    <author>June</author>
+    <guid>http://localhost:1313/reading-factfulness/</guid>
+    <description><![CDATA[<p>听了Tako的推荐，决定读一读这本书。果然带给我极大的收获。可以这么说，这本书一定程度上修正了我的世界观和价值观，重塑了我对待事物的态度。花了五个半小时读完中了中译版，我想再过一段时间经历更多的事情之后，我会再读一遍英文原版，看看是否会有观念的变化。</p>]]></description>
 </item>
 <item>
     <title>主题文档 - 基本概念</title>
@@ -51,39 +105,6 @@
     <author>Dillon</author>
     <guid>http://localhost:1313/theme-documentation-extended-shortcodes/</guid>
     <description><![CDATA[<p><strong>LoveIt</strong> 主题在 Hugo 内置的 shortcode 的基础上提供多个扩展的 shortcode.</p>]]></description>
-</item>
-<item>
-    <title>Markdown 基本语法</title>
-    <link>http://localhost:1313/basic-markdown-syntax/</link>
-    <pubDate>Sun, 01 Dec 2019 21:57:40 &#43;0800</pubDate>
-    <author>Dillon</author>
-    <guid>http://localhost:1313/basic-markdown-syntax/</guid>
-    <description><![CDATA[<p>这篇文章提供了可以在 Hugo 的文章中使用的基本 Markdown 语法示例.</p>]]></description>
-</item>
-<item>
-    <title>主题文档 - mermaid Shortcode</title>
-    <link>http://localhost:1313/theme-documentation-mermaid-shortcode/</link>
-    <pubDate>Tue, 03 Mar 2020 15:29:59 &#43;0800</pubDate>
-    <author>Dillon</author>
-    <guid>http://localhost:1313/theme-documentation-mermaid-shortcode/</guid>
-    <description><![CDATA[<a href="https://github.com/dillonzq/LoveIt/releases/tag/v0.2.11" rel="noopener noreffer" target="_blank"></a>
-<p><code>mermaid</code> shortcode 使用 <a href="https://mermaidjs.github.io/" target="_blank" rel="noopener noreffer ">Mermaid</a> 库提供绘制图表和流程图的功能.</p>]]></description>
-</item>
-<item>
-    <title>Emoji 支持</title>
-    <link>http://localhost:1313/emoji-support/</link>
-    <pubDate>Tue, 01 Oct 2019 17:55:28 &#43;0800</pubDate>
-    <author>Dillon</author>
-    <guid>http://localhost:1313/emoji-support/</guid>
-    <description><![CDATA[<p>Emoji 可以通过多种方式在 Hugo 项目中启用.</p>]]></description>
-</item>
-<item>
-    <title>主题文档 - echarts Shortcode</title>
-    <link>http://localhost:1313/theme-documentation-echarts-shortcode/</link>
-    <pubDate>Tue, 03 Mar 2020 14:29:59 &#43;0800</pubDate>
-    <author>Dillon</author>
-    <guid>http://localhost:1313/theme-documentation-echarts-shortcode/</guid>
-    <description><![CDATA[<p><code>echarts</code> shortcode 使用 <a href="https://echarts.apache.org/" target="_blank" rel="noopener noreffer ">ECharts</a> 库提供数据可视化的功能.</p>]]></description>
 </item>
 </channel>
 </rss>

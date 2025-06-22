@@ -1,16 +1,51 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Tags on Hiro&#39;s Island</title>
+    <title>Tags on June&#39;s Island</title>
     <link>http://localhost:1313/tags/</link>
-    <description>Recent content in Tags on Hiro&#39;s Island</description>
+    <description>Recent content in Tags on June&#39;s Island</description>
     <generator>Hugo</generator>
     <language>zh-CN</language>
     <managingEditor>224040086@link.cuhk.edu.cn (Junyin Zheng)</managingEditor>
     <webMaster>224040086@link.cuhk.edu.cn (Junyin Zheng)</webMaster>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Thu, 05 Jun 2025 15:29:09 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 22 Jun 2025 12:07:16 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Agent</title>
+      <link>http://localhost:1313/tags/agent/</link>
+      <pubDate>Sun, 22 Jun 2025 12:03:24 +0800</pubDate><author>224040086@link.cuhk.edu.cn (Junyin Zheng)</author>
+      <guid>http://localhost:1313/tags/agent/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Agentic RAG</title>
+      <link>http://localhost:1313/tags/agentic-rag/</link>
+      <pubDate>Sun, 22 Jun 2025 12:03:24 +0800</pubDate><author>224040086@link.cuhk.edu.cn (Junyin Zheng)</author>
+      <guid>http://localhost:1313/tags/agentic-rag/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>LangGraph</title>
+      <link>http://localhost:1313/tags/langgraph/</link>
+      <pubDate>Sat, 21 Jun 2025 10:21:11 +0800</pubDate><author>224040086@link.cuhk.edu.cn (Junyin Zheng)</author>
+      <guid>http://localhost:1313/tags/langgraph/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>LlamaIndex</title>
+      <link>http://localhost:1313/tags/llamaindex/</link>
+      <pubDate>Thu, 19 Jun 2025 14:38:53 +0800</pubDate><author>224040086@link.cuhk.edu.cn (Junyin Zheng)</author>
+      <guid>http://localhost:1313/tags/llamaindex/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Smolagents</title>
+      <link>http://localhost:1313/tags/smolagents/</link>
+      <pubDate>Tue, 17 Jun 2025 15:27:19 +0800</pubDate><author>224040086@link.cuhk.edu.cn (Junyin Zheng)</author>
+      <guid>http://localhost:1313/tags/smolagents/</guid>
+      <description></description>
+    </item>
     <item>
       <title>V0</title>
       <link>http://localhost:1313/tags/v0/</link>

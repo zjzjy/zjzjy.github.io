@@ -1,0 +1,60 @@
+{{ .Inner }}
+<div class="tabs">
+    <ul class="nav nav-tabs">
+        {{- range $index, $element := .Scratch.Get "tabs" }}
+            <li class="nav-item">
+                <a class="nav-link{{ if eq $index 0 }} active{{ end }}" data-toggle="tab" href="#{{ .name | urlize }}">{{ .title | safeHTML }}</a>
+            </li>
+        {{- end }}
+    </ul>
+    <div class="tab-content">
+        {{- range $index, $element := .Scratch.Get "tabs" }}
+            <div class="tab-pane fade{{ if eq $index 0 }} active show{{ end }}" id="{{ .name | urlize }}">
+                {{ .content | safeHTML }}
+            </div>
+        {{- end }}
+    </div>
+</div>
+{{ .Scratch.Delete "tabs" }}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const tabs = document.querySelectorAll('.tabs .nav-link');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function(event) {
+                event.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetPane = document.querySelector(targetId);
+
+                // Hide all tab panes
+                this.closest('.tabs').querySelectorAll('.tab-pane').forEach(pane => {
+                    pane.classList.remove('active', 'show');
+                });
+
+                // Deactivate all tabs
+                this.closest('.nav-tabs').querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                });
+
+                // Show target tab pane
+                if (targetPane) {
+                    targetPane.classList.add('active', 'show');
+                }
+                
+                // Activate current tab
+                this.classList.add('active');
+            });
+        });
+
+        // Activate the first tab by default if no other tab is active
+        const tabGroups = document.querySelectorAll('.tabs');
+        tabGroups.forEach(group => {
+            if (!group.querySelector('.nav-link.active')) {
+                const firstTab = group.querySelector('.nav-link');
+                if (firstTab) {
+                    firstTab.click();
+                }
+            }
+        });
+    });
+</script> 
