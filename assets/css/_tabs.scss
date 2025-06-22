@@ -4,48 +4,50 @@
   margin-bottom: 1rem;
 }
 
-.nav-tabs {
+.tabs .nav-tabs {
   border-bottom: 1px solid #dee2e6;
-  display: flex;
+  display: flex !important;
   flex-wrap: wrap;
-  list-style: none;
-  padding-left: 0;
+  list-style: none !important;
+  padding-left: 0 !important;
+  margin-left: 0 !important;
   margin-bottom: 0;
 }
 
-.nav-item {
+.tabs .nav-item {
   margin-bottom: -1px;
 }
 
-.nav-link {
-  display: block;
-  padding: 0.5rem 1rem;
+.tabs .nav-link {
+  display: block !important;
+  padding: 0.5rem 1rem !important;
   border: 1px solid transparent;
   border-top-left-radius: 0.25rem;
   border-top-right-radius: 0.25rem;
   cursor: pointer;
   color: #007bff;
   text-decoration: none;
+  background-color: #f1f1f1;
 }
 
-.nav-link:hover,
-.nav-link:focus {
+.tabs .nav-link:hover,
+.tabs .nav-link:focus {
   border-color: #e9ecef #e9ecef #dee2e6;
 }
 
-.nav-link.active {
-  color: #495057;
-  background-color: #fff;
-  border-color: #dee2e6 #dee2e6 #fff;
+.tabs .nav-link.active {
+  color: #495057 !important;
+  background-color: #fff !important;
+  border-color: #dee2e6 #dee2e6 #fff !important;
 }
 
-.tab-content > .tab-pane {
+.tabs .tab-content > .tab-pane {
   display: none;
   padding: 1rem;
   border: 1px solid #dee2e6;
   border-top: none;
 }
 
-.tab-content > .active {
-  display: block;
+.tabs .tab-content > .active {
+  display: block !important;
 } 
