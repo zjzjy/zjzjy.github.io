@@ -46,33 +46,213 @@ toc:
 - Description：关于客人的简短传记或有趣的事实
 - Email Address：发送邀请或后续活动的联系信息
 
-
-我们需要做的步骤：
-1. 加载并准备数据集
-  
-2. 创建检索工具
-3. 将工具与Alfred集成
-
+### Step1: 加载并准备数据集
 我们提供了三种不同 Agent 库的实现方式，你可以展开下面的折叠框查看各自的代码。
-
-{{< admonition type=note title="使用 smolagents 实现" open=false >}}
+{{< admonition type=note title="smolagents" open=false >}}
+我们将使用 Hugging Face datasets 集库来加载数据集并将其转换为来自 langchain.docstore.document 模块的 Document 对象列表。
 ```python
-# smol-agent code placeholder
-print("This is code for smolagents")
+import datasets
+from langchain.docstore.document import Document
+
+# Load the dataset
+guest_dataset = datasets.load_dataset("agents-course/unit3-invitees", split="train")
+
+# Convert dataset entries into document objects
+docs = [
+  Document(
+    page_content = "\n".join([
+      f"Name: {guest['name']}",
+      f"Relation: {guest['relation']}",
+      f"Description: {guest['description']}",
+      f"Email: {guest['email']}"
+    ]),
+    metadata={"name": guest["name"]}
+  )
+  for guest in guest_dataset
+]
 ```
 {{< /admonition >}}
 
-{{< admonition type=note title="使用 llama-index 实现" open=false >}}
+{{< admonition type=note title="llama-index" open=false >}}
+我们将使用 Hugging Face datasets 集库来加载数据集并将其转换为来自 llama_index.core.schema 模块的 Document 对象列表。
 ```python
-# llama-index code placeholder
-print("This is code for llama-index")
+import datasets
+from llama_index.core.schema import Document
+
+# Load the dataset
+guest_dataset = datasets.load_dataset("agents-course/unit3-invitees", split="train")
+
+# Convert dataset entries into Document objects
+docs = [
+    Document(
+        text="\n".join([
+            f"Name: {guest_dataset['name'][i]}",
+            f"Relation: {guest_dataset['relation'][i]}",
+            f"Description: {guest_dataset['description'][i]}",
+            f"Email: {guest_dataset['email'][i]}"
+        ]),
+        metadata={"name": guest_dataset['name'][i]}
+    )
+    for i in range(len(guest_dataset))
+]
 ```
 {{< /admonition >}}
 
-{{< admonition type=note title="使用 langgraph 实现" open=false >}}
+{{< admonition type=note title="langgraph" open=false >}}
+我们将使用 Hugging Face datasets 集库来加载数据集并将其转换为来自 langchain.docstore.document 模块的 Document 对象列表。
+```python
+import datasets
+from langchain.docstore.document import Document
+
+# Load the dataset
+guest_dataset = datasets.load_dataset("agents-course/unit3-invitees", split="train")
+
+# Convert dataset entries into document objects
+docs = [
+  Document(
+    page_content = "\n".join([
+      f"Name: {guest['name']}",
+      f"Relation: {guest['relation']}",
+      f"Description: {guest['description']}",
+      f"Email: {guest['email']}"
+    ]),
+    metadata={"name": guest["name"]}
+  )
+  for guest in guest_dataset
+]
+```
+{{< /admonition >}}
+
+在上面的代码中，我们：加载数据集，将每个客人条目转换为具有格式化内容的 Document 对象，将 Document 对象存储在列表中。
+
+### Step2: 创建检索工具
+{{< admonition type=note title="smolagents" open=false >}}
+我们将使用 langchain_community.retrievers 模块中的 BM25Retriever 来创建检索工具。BM25是相关性搜索，如果要更高级的语义搜索，可以考虑embedding检索器，例如[sentence-transformers ](https://www.sbert.net/)。
+```python
+from solagents import Tool
+from langchain_community.retrievers import BM25Retriever
+
+class GuestInfoRetrieverTool(Tool):
+  # 工具的元数据描述
+  name = "guest_info_retriever"
+  description = "Retrieves detailed information about gala guests based on their name or relation."
+  inputs = {
+    "query": {
+      "type": "string",
+      "description": "The name or relation of the guest you want information about."
+    }
+  }
+  output_type = "string"
+
+  def __init__(self, docs):
+    self.is_initialized = False
+    self.retriever = BM25Retriever.from_document(docs)
+
+  def forward(self, query: str):
+    results = self.retriever.get_relevant_documents(query)
+    if results:
+      return "\n\n".join([doc.page_content for doc in results[:3]])
+    else:
+      return "No matching guest information found."
+
+# Initialize the tool
+guest_info_tool = GuestInfoRetrieverTool(docs)
+```
+{{< /admonition >}}
+
+{{< admonition type=note title="llama-index" open=false >}}
+```python
+from llama_index.core.tools import FunctionTool
+from llama_index.retrievers.bm25 import BM25Retriever
+
+bm25_retriever = BM25Retriever.from_defaults(nodes = docs)
+
+def get_guest_info_retriever(query: str) -> str:
+  """Retrieves detailed information about gala guests based on their name or relation."""
+  results = bm25_retriever(query)
+  if results:
+        return "\n\n".join([doc.text for doc in results[:3]])
+  else:
+        return "No matching guest information found."
+
+# Initialize the tool
+guest_info_tool = FunctionTool.from_defaults(get_guest_info_retriever) 
+```
+{{< /admonition >}}
+
+{{< admonition type=note title="langgraph" open=false >}}
+```python
+from langchain_community.retrievers import BM25Retriever
+from langchain.tools import Tool
+
+bm25_retriever = BM25Retriever.from_documents(docs)
+
+def extract_text(query: str) -> str:
+    """Retrieves detailed information about gala guests based on their name or relation."""
+    results = bm25_retriever.invoke(query)
+    if results:
+        return "\n\n".join([doc.page_content for doc in results[:3]])
+    else:
+        return "No matching guest information found."
+
+guest_info_tool = Tool(
+    name="guest_info_retriever",
+    func=extract_text,
+    description="Retrieves detailed information about gala guests based on their name or relation."
+)
+```
+{{< /admonition >}}
+
+### Step3：将工具与Alfred集成
+最后，让我们通过创建代理并为其配备自定义工具来将所有内容整合在一起：
+{{< admonition type=note title="smolagents" open=false >}}
+我们将使用 langchain_community.retrievers 模块中的 BM25Retriever 来创建检索工具。BM25是相关性搜索，如果要更高级的语义搜索，可以考虑embedding检索器，例如[sentence-transformers ](https://www.sbert.net/)。
+```python
+from smolagents import CodeAgent, InferenceClientModel
+
+# Initialize the Hugging Face model
+model = InferenceClientModel()
+
+# Create Alfred, our gala agent, with the guest info tool
+alfred = CodeAgent(tools=[guest_info_tool], model=model)
+
+# Example query Alfred might receive during the gala
+response = alfred.run("Tell me about our guest named 'Lady Ada Lovelace'.")
+
+print("🎩 Alfred's Response:")
+print(response)
+#🎩 Alfred's Response:
+#Based on the information I retrieved, Lady Ada Lovelace is an esteemed mathematician and friend. She is renowned for her pioneering work in mathematics and computing, often celebrated as the first computer programmer due to her work on Charles Babbage's Analytical Engine. Her email address is ada.lovelace@example.com.
+```
+{{< /admonition >}}
+
+{{< admonition type=note title="llama-index" open=false >}}
+```python
+from llama_index.core.agent.workflow import AgentWorkflow
+from llama_index.llms.huggingface_api import HuggingFaceInferenceAPI
+
+# Initialize the Hugging Face model
+llm = HuggingFaceInferenceAPI(model_name="Qwen/Qwen2.5-Coder-32B-Instruct")
+
+# Create Alfred, our gala agent, with the guest info tool
+alfred = AgentWorkflow.from_tools_or_functions(
+    [guest_info_tool],
+    llm=llm,
+)
+
+# Example query Alfred might receive during the gala
+response = await alfred.run("Tell me about our guest named 'Lady Ada Lovelace'.")
+
+print("🎩 Alfred's Response:")
+print(response)
+#🎩 Alfred's Response:
+#Lady Ada Lovelace is an esteemed mathematician and friend, renowned for her pioneering work in mathematics and computing. She is celebrated as the first computer programmer due to her work on Charles Babbage's Analytical Engine. Her email is ada.lovelace@example.com.
+```
+{{< /admonition >}}
+
+{{< admonition type=note title="langgraph" open=false >}}
 ```python
 from typing import TypedDict, Annotated
-
 from langgraph.graph.message import add_messages
 from langchain_core.messages import AnyMessage, HumanMessage, AIMessage
 from langgraph.prebuilt import ToolNode
@@ -85,6 +265,59 @@ llm = HuggingFaceEndpoint(
     repo_id="Qwen/Qwen2.5-Coder-32B-Instruct",
     huggingfacehub_api_token=HUGGINGFACEHUB_API_TOKEN,
 )
+
+chat = ChatHuggingFace(llm=llm, verbose=True)
+tools = [guest_info_tool]
+chat_with_tools = chat.bind_tools(tools)
+
+# Generate the AgentState and Agent graph
+class AgentState(TypedDict):
+    messages: Annotated[list[AnyMessage], add_messages]
+
+def assistant(state: AgentState):
+    return {
+        "messages": [chat_with_tools.invoke(state["messages"])],
+    }
+
+## The graph
+builder = StateGraph(AgentState)
+
+# Define nodes: these do the work
+builder.add_node("assistant", assistant)
+builder.add_node("tools", ToolNode(tools))
+
+# Define edges: these determine how the control flow moves
+builder.add_edge(START, "assistant")
+builder.add_conditional_edges(
+    "assistant",
+    # If the latest message requires a tool, route to tools
+    # Otherwise, provide a direct response
+    tools_condition,
+)
+builder.add_edge("tools", "assistant")
+alfred = builder.compile()
+
+messages = [HumanMessage(content="Tell me about our guest named 'Lady Ada Lovelace'.")]
+response = alfred.invoke({"messages": messages})
+
+print("🎩 Alfred's Response:")
+print(response['messages'][-1].content)
+#🎩 Alfred's Response:
+#Lady Ada Lovelace is an esteemed mathematician and pioneer in computing, often celebrated as the first computer programmer due to her work on Charles Babbage's Analytical Engine.
 ```
 {{< /admonition >}}
 
+最后一步发生了什么：
+
+我们使用 HuggingFaceEndpoint 类初始化 HuggingFace 模型。我们还生成了一个聊天界面并附加了一些工具。
+
+我们将代理（Alfred）创建为 StateGraph ，它使用边组合 2 个节点（ assistant 、 tools ）
+
+我们要求阿尔弗雷德检索有关一位名叫“Lady Ada Lovelace”的客人的信息。
+
+
+现在 Alfred 可以检索客人信息，请考虑如何增强此系统：
+- 改进检索器以使用更复杂的算法，例如句子转换器
+- 实现对话记忆 ，以便 Alfred 记住之前的互动
+- 结合网络搜索获取陌生客人的最新信息
+- 整合多个索引 ，从经过验证的来源获取更完整的信息
