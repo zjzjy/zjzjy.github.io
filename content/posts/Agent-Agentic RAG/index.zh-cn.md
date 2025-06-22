@@ -53,3 +53,38 @@ toc:
 2. 创建检索工具
 3. 将工具与Alfred集成
 
+我们提供了三种不同 Agent 库的实现方式，你可以展开下面的折叠框查看各自的代码。
+
+{{< admonition type=note title="使用 smolagents 实现" open=false >}}
+```python
+# smol-agent code placeholder
+print("This is code for smolagents")
+```
+{{< /admonition >}}
+
+{{< admonition type=note title="使用 llama-index 实现" open=false >}}
+```python
+# llama-index code placeholder
+print("This is code for llama-index")
+```
+{{< /admonition >}}
+
+{{< admonition type=note title="使用 langgraph 实现" open=false >}}
+```python
+from typing import TypedDict, Annotated
+
+from langgraph.graph.message import add_messages
+from langchain_core.messages import AnyMessage, HumanMessage, AIMessage
+from langgraph.prebuilt import ToolNode
+from langgraph.graph import START, StateGraph
+from langgraph.prebuilt import tools_condition
+from langchain_huggingface import HuggingFaceEndpoint, ChatHuggingFace
+
+# Generate the chat interface, including the tools
+llm = HuggingFaceEndpoint(
+    repo_id="Qwen/Qwen2.5-Coder-32B-Instruct",
+    huggingfacehub_api_token=HUGGINGFACEHUB_API_TOKEN,
+)
+```
+{{< /admonition >}}
+

@@ -27,20 +27,23 @@
 2. 创建检索工具
 3. 将工具与Alfred集成
 
-{{< tabs >}}
-{{% tab title="smolagents" %}}
+我们提供了三种不同 Agent 库的实现方式，你可以展开下面的折叠框查看各自的代码。
+
+{{< admonition type=note title="使用 smolagents 实现" open=false >}}
 ```python
 # smol-agent code placeholder
 print("This is code for smolagents")
 ```
-{{% /tab %}}
-{{% tab title="llama-index" %}}
+{{< /admonition >}}
+
+{{< admonition type=note title="使用 llama-index 实现" open=false >}}
 ```python
 # llama-index code placeholder
 print("This is code for llama-index")
 ```
-{{% /tab %}}
-{{% tab title="langgraph" %}}
+{{< /admonition >}}
+
+{{< admonition type=note title="使用 langgraph 实现" open=false >}}
 ```python
 from typing import TypedDict, Annotated
 
@@ -57,6 +60,6 @@ llm = HuggingFaceEndpoint(
     huggingfacehub_api_token=HUGGINGFACEHUB_API_TOKEN,
 )
 ```
-{{% /tab %}}
-{{< /tabs >}}
+{{< /admonition >}}
+
 
