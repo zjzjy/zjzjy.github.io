@@ -180,7 +180,6 @@ guest_info_tool = Tool(
 ### Step3：将工具与Alfred集成
 最后，让我们通过创建代理并为其配备自定义工具来将所有内容整合在一起：
 {{< admonition type=note title="smolagents" open=false >}}
-我们将使用 langchain_community.retrievers 模块中的 BM25Retriever 来创建检索工具。BM25是相关性搜索，如果要更高级的语义搜索，可以考虑embedding检索器，例如[sentence-transformers ](https://www.sbert.net/)。
 ```python
 from smolagents import CodeAgent, InferenceClientModel
 
