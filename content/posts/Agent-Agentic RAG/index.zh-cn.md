@@ -319,4 +319,22 @@ print(response['messages'][-1].content)
 - 改进检索器以使用更复杂的算法，例如句子转换器
 - 实现对话记忆 ，以便 Alfred 记住之前的互动
 - 结合网络搜索获取陌生客人的最新信息
-- 整合多个索引 ，从经过验证的来源获取更完整的信息
+- 整合多个索引 ，从经过验证的来源获取更完整的信息。
+
+关于solagents,llama-index, langgraph 小TIPs:
+- 数据加载这块：smolagent和langgraph共用`from langchain.docstore.document import Document`，lamma-index用`from llama_index.core.schema import Document`加载document模块转化为Document object。
+- 创建检索工具：
+  - 检索工具导入：Smolagent和langgraph使用langchain的BM25检索工具；llama-index使用`from llama_index.retrievers.bm25 import BM25Retriever`
+  - Smolagent的Tool库，使用方法：定义一个工具类继承自`Tool`，添加工具的元数据描述(name, description, inputs)，定义`forward`方法。
+  - llama-index的`from llama_index.core.tools import FunctionTool`，直接定义python函数即可（注意要添加函数描述），最后`FunctionTool.from_defaults(get_guest_info_retriever) `初始化工具
+  - langgraph的`from langchain.tools import Tool`，定义python函数（注意要添加函数描述），初始化工具步骤需要手动描述(name, func,description), like
+  ```python
+  guest_info_tool = Tool(
+    name="guest_info_retriever",
+    func=extract_text,
+    description="Retrieves detailed information about gala guests based on their name or relation.")
+   ```
+- 工具集成：
+  - Smolagent：`from smolagents import CodeAgent, InferenceClientModel`，初始化model，直接使用CodeAgent即可，`alfred = CodeAgent(tools=[guest_info_tool], model=model)`。
+  - llama-index：`from llama_index.core.agent.workflow import AgentWorkflow`，`from llama_index.llms.huggingface_api import HuggingFaceInferenceAPI`，初始化定义好llm，直接用Agentflow即可`alfred = AgentWorkflow.from_tools_or_functions([guest_info_tool],llm=llm,)`。
+  - langgraph：是个大工程。需要先初始化llm，工具列表，将llm与工具表绑定。初始化graph，定义node，定义edge。
