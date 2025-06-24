@@ -898,3 +898,74 @@ Based on the provided information, here are key points to prepare for the conver
 {{< /admonition >}}
 # 高级功能：记忆！
 为了让 Alfred 在晚会上提供更多帮助，我们可以启用对话记忆功能，以便他记住之前的互动：
+{{< admonition note "smolagents" false>}}
+```python
+# Create Alfred with conversation memory
+alfred_with_memory = CodeAgent(
+    tools=[guest_info_tool, weather_info_tool, hub_stats_tool, search_tool], 
+    model=model,
+    add_base_tools=True,
+    planning_interval=3 # 代理每执行 3 个工具调用 后，会基于当前记忆重新规划后续步骤。
+)
+
+# First interaction
+response1 = alfred_with_memory.run("Tell me about Lady Ada Lovelace.")
+print("🎩 Alfred's First Response:")
+print(response1)
+
+# Second interaction (referencing the first)
+response2 = alfred_with_memory.run("What projects is she currently working on?", reset=False)
+print("🎩 Alfred's Second Response:")
+print(response2)
+```
+{{< /admonition >}}
+
+{{< admonition note "llama-index" false>}}
+```python
+from llama_index.core.workflow import Context
+
+alfred = AgentWorkFlow.from_tools_or_functions(
+  [guest_info_tool, search_tool, weather_info_tool, hub_stats_tool],
+    llm=llm
+)
+
+# Remembering state
+ctx = Context(alfred)
+
+# First interaction
+response1 = await alfred.run("Tell me about Lady Ada Lovelace.", ctx=ctx)
+print("🎩 Alfred's First Response:")
+print(response1)
+
+# Second interaction (referencing the first)
+response2 = await alfred.run("What projects is she currently working on?", ctx=ctx)
+print("🎩 Alfred's Second Response:")
+print(response2)
+```
+{{< /admonition >}}
+
+{{< admonition note "langgraph" false>}}
+显式传递消息
+```python
+# First interaction
+response = alfred.invoke({"messages": [HumanMessage(content="Tell me about 'Lady Ada Lovelace'. What's her background and how is she related to me?")]})
+
+
+print("🎩 Alfred's Response:")
+print(response['messages'][-1].content)
+print()
+
+# Second interaction (referencing the first)
+response = alfred.invoke({"messages": response["messages"] + [HumanMessage(content="What projects is she currently working on?")]})
+
+print("🎩 Alfred's Response:")
+print(response['messages'][-1].content)
+```
+{{< /admonition >}}
+总结一下：
+- smolagents：内存不会在不同的执行运行中保留，您必须使用 reset=False 明确声明它。
+- LlamaIndex：需要在运行中明确添加用于内存管理的上下文对象。
+- LangGraph：提供检索以前的消息或使用专用 [MemorySaver ](https://langchain-ai.github.io/langgraph/concepts/why-langgraph/#part-3-adding-memory-to-the-chatbot)组件的选项。
+
+
+完结撒花~
