@@ -418,7 +418,7 @@ class WeatherInfoTool(Tool):
 # Initialize the tool
 weather_info_tool = WeatherInfoTool()
  ```
-{{< /admonition>}}
+{{< /admonition >}}
 
 {{< admonition type=note title="llama-index" open=false>}}
 ```python
@@ -440,7 +440,7 @@ def get_weather_info(location: str) -> str:
 # Initialize the tool
 weather_info_tool = FunctionTool.from_defaults(get_weather_info)
 ```
-{{< \admonition>}}
+{{< /admonition >}}
 
 {{< admonition type=note title="langgraph" open=false>}}
 ```python
@@ -466,7 +466,7 @@ weather_info_tool = Tool(
     description="Fetches dummy weather information for a given location."
 )
 ```
-{{< \admonition>}}
+{{< /admonition >}}
 
 ### 为AI Builders创建 Hub Stats Tool
 出席此次盛会的都是 AI 开发者的精英。Alfred 希望通过讨论他们最受欢迎的模型、数据集和空间来给他们留下深刻印象。我们将创建一个工具，根据用户名从 Hugging Face Hub 获取模型统计数据。
@@ -505,7 +505,7 @@ hub_stats_tool = HubStatsTool()
 print(hub_stats_tool("facebook")) # Example: Get the most downloaded model by Facebook
 # The most downloaded model by facebook is facebook/esmfold_v1 with 12,544,550 downloads.
 ```
-{{< \adminiton>}}
+{{< /adminiton >}}
 
 {{< admonition  type=note title="llama-index" open=false>}}
 ```python
@@ -533,6 +533,7 @@ hub_stats_tool = FunctionTool.from_defaults(get_hub_stats)
 # Example usage
 print(hub_stats_tool("facebook")) # Example: Get the most downloaded model by Facebook
 ```
+{{< /adminiton >}}
 {{< admonition type=note title="langgraph" open=false>}}
 ```python
 from langchain.tools import Tool
@@ -562,7 +563,7 @@ hub_stats_tool = Tool(
 # Example usage
 print(hub_stats_tool("facebook")) # Example: Get the most downloaded model by Facebook
 ```
-{{< \adminition>}}
+{{< /adminition >}}
 ### 工具集成
 现在我们已经拥有了所有的工具，让我们将它们集成到 Alfred 的代理中：
 {{< abminition type=note title="smolagents" open=false>}}
@@ -581,7 +582,7 @@ response = alfred.run("What is Facebook and what's their most popular model?")
 print("🎩 Alfred's Response:")
 print(response)
 ```
-{{< \admintion>}}
+{{< /admintion >}}
 {{< abminition type=note title="llama-index" open=false>}}
 ```python
 from llama_index.core.agent.workflow import AgentWorkflow
@@ -601,7 +602,7 @@ response = await alfred.run("What is Facebook and what's their most popular mode
 print("🎩 Alfred's Response:")
 print(response)
 ```
-{{< \admintion>}}
+{{< /admintion >}}
 {{< abminition type=note title="langgraph" open=false>}}
 ```python
 from typing import TypedDict, Annotated
@@ -655,4 +656,4 @@ response = alfred.invoke({"messages": messages})
 print("🎩 Alfred's Response:")
 print(response['messages'][-1].content)
 ```
-{{< \admintion>}}
+{{< /admintion >}}
