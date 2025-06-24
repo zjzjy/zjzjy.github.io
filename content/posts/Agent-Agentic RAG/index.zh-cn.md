@@ -48,7 +48,7 @@ toc:
 
 ### Step1: 加载并准备数据集
 我们提供了三种不同 Agent 库的实现方式，你可以展开下面的折叠框查看各自的代码。
-{{< admonition type=note title="smolagents" open=false >}}
+{{< admonition type=note title=smolagents open=false >}}
 我们将使用 Hugging Face datasets 集库来加载数据集并将其转换为来自 langchain.docstore.document 模块的 Document 对象列表。
 ```python
 import datasets
@@ -73,7 +73,7 @@ docs = [
 ```
 {{< /admonition >}}
 
-{{< admonition type=note title="llama-index" open=false >}}
+{{< admonition type=note title=llama-index open=false >}}
 我们将使用 Hugging Face datasets 集库来加载数据集并将其转换为来自 llama_index.core.schema 模块的 Document 对象列表。
 ```python
 import datasets
@@ -98,7 +98,7 @@ docs = [
 ```
 {{< /admonition >}}
 
-{{< admonition type=note title="langgraph" open=false >}}
+{{< admonition type=note title=langgraph open=false >}}
 我们将使用 Hugging Face datasets 集库来加载数据集并将其转换为来自 langchain.docstore.document 模块的 Document 对象列表。
 ```python
 import datasets
@@ -126,7 +126,7 @@ docs = [
 在上面的代码中，我们：加载数据集，将每个客人条目转换为具有格式化内容的 Document 对象，将 Document 对象存储在列表中。
 
 ### Step2: 创建检索工具
-{{< admonition type=note title="smolagents" open=false >}}
+{{< admonition type=note title=smolagents open=false >}}
 我们将使用 langchain_community.retrievers 模块中的 BM25Retriever 来创建检索工具。BM25是相关性搜索，如果要更高级的语义搜索，可以考虑embedding检索器，例如[sentence-transformers ](https://www.sbert.net/)。
 ```python
 from solagents import Tool
@@ -160,7 +160,7 @@ guest_info_tool = GuestInfoRetrieverTool(docs)
 ```
 {{< /admonition >}}
 
-{{< admonition type=note title="llama-index" open=false >}}
+{{< admonition type=note title=llama-index open=false >}}
 ```python
 from llama_index.core.tools import FunctionTool
 from llama_index.retrievers.bm25 import BM25Retriever
@@ -180,7 +180,7 @@ guest_info_tool = FunctionTool.from_defaults(get_guest_info_retriever)
 ```
 {{< /admonition >}}
 
-{{< admonition type=note title="langgraph" open=false >}}
+{{< admonition type=note title=langgraph open=false >}}
 ```python
 from langchain_community.retrievers import BM25Retriever
 from langchain.tools import Tool
@@ -205,7 +205,7 @@ guest_info_tool = Tool(
 
 ### Step3：将工具与Alfred集成
 最后，让我们通过创建代理并为其配备自定义工具来将所有内容整合在一起：
-{{< admonition type=note title="smolagents" open=false >}}
+{{< admonition type=note title=smolagents open=false >}}
 ```python
 from smolagents import CodeAgent, InferenceClientModel
 
@@ -225,7 +225,7 @@ print(response)
 ```
 {{< /admonition >}}
 
-{{< admonition type=note title="llama-index" open=false >}}
+{{< admonition type=note title=llama-index open=false >}}
 ```python
 from llama_index.core.agent.workflow import AgentWorkflow
 from llama_index.llms.huggingface_api import HuggingFaceInferenceAPI
@@ -249,7 +249,7 @@ print(response)
 ```
 {{< /admonition >}}
 
-{{< admonition type=note title="langgraph" open=false >}}
+{{< admonition type=note title=langgraph open=false >}}
 ```python
 from typing import TypedDict, Annotated
 from langgraph.graph.message import add_messages
@@ -343,7 +343,7 @@ print(response['messages'][-1].content)
 ### Give Your Agent Access to the Web
 我们需要确保Alfred德能够获取有关世界的最新新闻和信息。  
 让我们从为 Alfred 创建一个网络搜索工具开始吧！
-{{< admonition type=note title="solagents" open=false >}}
+{{< admonition type=note title=solagents open=false >}}
 ```python
 from smolagents import DuckDuckGoSearchTool
 
@@ -356,7 +356,7 @@ print(resultts)
 ```
 {{< /admonition >}}
 
-{{< admonition type=note title="llama-index" open=false >}}
+{{< admonition type=note title=llama-index open=false >}}
 ```python
 from llama_index.tools.duckduckgo import DuckDuckGoSearchToolSpec
 from llama_index.core.tools import FunctionTool
@@ -373,7 +373,7 @@ print(resultts.raw_output[-1]['body'])
 ```
 {{< /admonition >}}
 
-{{< admonition type=note title="langgraph" open=false >}}
+{{< admonition note "langgraph" false>}}
 ```python
 from langchain.community.tools import DuckDuckGoSearchRun
 
@@ -388,7 +388,7 @@ print(resultts)
 
 ### 创建自定义工具来获取天气信息以安排烟花表演
 完美的庆典应该是在晴朗的天空下燃放烟花，我们需要确保烟花不会因为恶劣的天气而取消。让我们创建一个自定义工具，可用于调用外部天气 API 并获取给定位置的天气信息。为了简单起见，我们在本例中使用了一一个虚拟天气API，如果您想用真实的天气API，可以使用OpenWeatherMap API等。
-{{< admonition type=note title="smolagents" open=false>}}
+{{< admonition note "smolagents" false>}}
 ```python
 from smolagents import Tool
 import random
@@ -420,7 +420,7 @@ weather_info_tool = WeatherInfoTool()
  ```
 {{< /admonition >}}
 
-{{< admonition type=note title="llama-index" open=false>}}
+{{< admonition note "llama-index" false>}}
 ```python
 import random
 from llama_index.core.tools import FunctionTool
@@ -442,7 +442,7 @@ weather_info_tool = FunctionTool.from_defaults(get_weather_info)
 ```
 {{< /admonition >}}
 
-{{< admonition type=note title="langgraph" open=false>}}
+{{< admonition note "langgraph" false>}}
 ```python
 from langchain.tools import Tool
 import random
@@ -470,7 +470,7 @@ weather_info_tool = Tool(
 
 ### 为AI Builders创建 Hub Stats Tool
 出席此次盛会的都是 AI 开发者的精英。Alfred 希望通过讨论他们最受欢迎的模型、数据集和空间来给他们留下深刻印象。我们将创建一个工具，根据用户名从 Hugging Face Hub 获取模型统计数据。
-{{< admonition type=note title="smolagents" open=false>}}
+{{< admonition note "smolagents" false>}}
 ```python
 from solagents import Tool
 from huggingface_hub import list_models
@@ -505,9 +505,9 @@ hub_stats_tool = HubStatsTool()
 print(hub_stats_tool("facebook")) # Example: Get the most downloaded model by Facebook
 # The most downloaded model by facebook is facebook/esmfold_v1 with 12,544,550 downloads.
 ```
-{{< /adminiton >}}
+{{< /admonition >}}
 
-{{< admonition  type=note title="llama-index" open=false>}}
+{{< admonition note "llama-index" false>}}
 ```python
 import random
 from llama_index.core.tools import FunctionTool
@@ -533,8 +533,8 @@ hub_stats_tool = FunctionTool.from_defaults(get_hub_stats)
 # Example usage
 print(hub_stats_tool("facebook")) # Example: Get the most downloaded model by Facebook
 ```
-{{< /adminiton >}}
-{{< admonition type=note title="langgraph" open=false>}}
+{{< /admonition >}}
+{{< admonition note "langgraph" false>}}
 ```python
 from langchain.tools import Tool
 from huggingface_hub import list_models
@@ -563,10 +563,10 @@ hub_stats_tool = Tool(
 # Example usage
 print(hub_stats_tool("facebook")) # Example: Get the most downloaded model by Facebook
 ```
-{{< /adminition >}}
+{{< /admonition >}}
 ### 工具集成
 现在我们已经拥有了所有的工具，让我们将它们集成到 Alfred 的代理中：
-{{< abminition type=note title="smolagents" open=false>}}
+{{< admonition note "smolagents" false>}}
 ```python
 from smolagents import CodeAgent, InferenceClientModel
 
@@ -582,8 +582,8 @@ response = alfred.run("What is Facebook and what's their most popular model?")
 print("🎩 Alfred's Response:")
 print(response)
 ```
-{{< /admintion >}}
-{{< abminition type=note title="llama-index" open=false>}}
+{{< /admonition >}}
+{{< admonition note "llama-index" false>}}
 ```python
 from llama_index.core.agent.workflow import AgentWorkflow
 from llama_index.llms.huggingface_api import HuggingFaceInferenceAPI
@@ -602,8 +602,8 @@ response = await alfred.run("What is Facebook and what's their most popular mode
 print("🎩 Alfred's Response:")
 print(response)
 ```
-{{< /admintion >}}
-{{< abminition type=note title="langgraph" open=false>}}
+{{< /admonition >}}
+{{< admonition note "langgraph" false>}}
 ```python
 from typing import TypedDict, Annotated
 from langgraph.graph.message import add_messages
@@ -656,4 +656,4 @@ response = alfred.invoke({"messages": messages})
 print("🎩 Alfred's Response:")
 print(response['messages'][-1].content)
 ```
-{{< /admintion >}}
+{{< /admonition >}}

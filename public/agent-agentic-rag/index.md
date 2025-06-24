@@ -22,7 +22,7 @@
 
 ### Step1: 加载并准备数据集
 我们提供了三种不同 Agent 库的实现方式，你可以展开下面的折叠框查看各自的代码。
-{{< admonition type=note title="smolagents" open=false >}}
+{{< admonition type=note title=smolagents open=false >}}
 我们将使用 Hugging Face datasets 集库来加载数据集并将其转换为来自 langchain.docstore.document 模块的 Document 对象列表。
 ```python
 import datasets
@@ -47,7 +47,7 @@ docs = [
 ```
 {{< /admonition >}}
 
-{{< admonition type=note title="llama-index" open=false >}}
+{{< admonition type=note title=llama-index open=false >}}
 我们将使用 Hugging Face datasets 集库来加载数据集并将其转换为来自 llama_index.core.schema 模块的 Document 对象列表。
 ```python
 import datasets
@@ -72,7 +72,7 @@ docs = [
 ```
 {{< /admonition >}}
 
-{{< admonition type=note title="langgraph" open=false >}}
+{{< admonition type=note title=langgraph open=false >}}
 我们将使用 Hugging Face datasets 集库来加载数据集并将其转换为来自 langchain.docstore.document 模块的 Document 对象列表。
 ```python
 import datasets
@@ -100,7 +100,7 @@ docs = [
 在上面的代码中，我们：加载数据集，将每个客人条目转换为具有格式化内容的 Document 对象，将 Document 对象存储在列表中。
 
 ### Step2: 创建检索工具
-{{< admonition type=note title="smolagents" open=false >}}
+{{< admonition type=note title=smolagents open=false >}}
 我们将使用 langchain_community.retrievers 模块中的 BM25Retriever 来创建检索工具。BM25是相关性搜索，如果要更高级的语义搜索，可以考虑embedding检索器，例如[sentence-transformers ](https://www.sbert.net/)。
 ```python
 from solagents import Tool
@@ -134,7 +134,7 @@ guest_info_tool = GuestInfoRetrieverTool(docs)
 ```
 {{< /admonition >}}
 
-{{< admonition type=note title="llama-index" open=false >}}
+{{< admonition type=note title=llama-index open=false >}}
 ```python
 from llama_index.core.tools import FunctionTool
 from llama_index.retrievers.bm25 import BM25Retriever
@@ -154,7 +154,7 @@ guest_info_tool = FunctionTool.from_defaults(get_guest_info_retriever)
 ```
 {{< /admonition >}}
 
-{{< admonition type=note title="langgraph" open=false >}}
+{{< admonition type=note title=langgraph open=false >}}
 ```python
 from langchain_community.retrievers import BM25Retriever
 from langchain.tools import Tool
@@ -179,7 +179,7 @@ guest_info_tool = Tool(
 
 ### Step3：将工具与Alfred集成
 最后，让我们通过创建代理并为其配备自定义工具来将所有内容整合在一起：
-{{< admonition type=note title="smolagents" open=false >}}
+{{< admonition type=note title=smolagents open=false >}}
 ```python
 from smolagents import CodeAgent, InferenceClientModel
 
@@ -199,7 +199,7 @@ print(response)
 ```
 {{< /admonition >}}
 
-{{< admonition type=note title="llama-index" open=false >}}
+{{< admonition type=note title=llama-index open=false >}}
 ```python
 from llama_index.core.agent.workflow import AgentWorkflow
 from llama_index.llms.huggingface_api import HuggingFaceInferenceAPI
@@ -223,7 +223,7 @@ print(response)
 ```
 {{< /admonition >}}
 
-{{< admonition type=note title="langgraph" open=false >}}
+{{< admonition type=note title=langgraph open=false >}}
 ```python
 from typing import TypedDict, Annotated
 from langgraph.graph.message import add_messages
@@ -293,4 +293,341 @@ print(response['messages'][-1].content)
 - 改进检索器以使用更复杂的算法，例如句子转换器
 - 实现对话记忆 ，以便 Alfred 记住之前的互动
 - 结合网络搜索获取陌生客人的最新信息
-- 整合多个索引 ，从经过验证的来源获取更完整的信息
+- 整合多个索引 ，从经过验证的来源获取更完整的信息。
+### 小结
+关于solagents,llama-index, langgraph 小TIPs:
+- 数据加载这块：smolagent和langgraph共用`from langchain.docstore.document import Document`，lamma-index用`from llama_index.core.schema import Document`加载document模块转化为Document object。
+- 创建检索工具：
+  - 检索工具导入：Smolagent和langgraph使用langchain的BM25检索工具；llama-index使用`from llama_index.retrievers.bm25 import BM25Retriever`
+  - Smolagent的Tool库，使用方法：定义一个工具类继承自`Tool`，添加工具的元数据描述(name, description, inputs)，定义`forward`方法。
+  - llama-index的`from llama_index.core.tools import FunctionTool`，直接定义python函数即可（注意要添加函数描述），最后`FunctionTool.from_defaults(get_guest_info_retriever) `初始化工具
+  - langgraph的`from langchain.tools import Tool`，定义python函数（注意要添加函数描述），初始化工具步骤需要手动描述(name, func,description), like
+  ```python
+  guest_info_tool = Tool(
+    name="guest_info_retriever",
+    func=extract_text,
+    description="Retrieves detailed information about gala guests based on their name or relation.")
+   ```
+- 工具集成：
+  - Smolagent：`from smolagents import CodeAgent, InferenceClientModel`，初始化model，直接使用CodeAgent即可，`alfred = CodeAgent(tools=[guest_info_tool], model=model)`。
+  - llama-index：`from llama_index.core.agent.workflow import AgentWorkflow`，`from llama_index.llms.huggingface_api import HuggingFaceInferenceAPI`，初始化定义好llm，直接用Agentflow即可`alfred = AgentWorkflow.from_tools_or_functions([guest_info_tool],llm=llm,)`。
+  - langgraph：是个大工程。需要先初始化llm，工具列表，将llm与工具表绑定。初始化graph，定义node，定义edge。
+## 为您的Agent构建和集成工具
+在本节中，我们将授予 Alfred 访问网络的权限，使他能够查找最新新闻和全球动态。此外，他还将能够访问天气数据和 Hugging Face 中心模型的下载统计数据，以便他就热门话题进行相关对话。
+### Give Your Agent Access to the Web
+我们需要确保Alfred德能够获取有关世界的最新新闻和信息。  
+让我们从为 Alfred 创建一个网络搜索工具开始吧！
+{{< admonition type=note title=solagents open=false >}}
+```python
+from smolagents import DuckDuckGoSearchTool
+
+search_tool = DuckDuckGoSearchTool()
+
+# Example usage
+results = search_tool("Who's the current President of France?")
+print(resultts)
+# The current President of France in Emmanuel Macron.
+```
+{{< /admonition >}}
+
+{{< admonition type=note title=llama-index open=false >}}
+```python
+from llama_index.tools.duckduckgo import DuckDuckGoSearchToolSpec
+from llama_index.core.tools import FunctionTool
+
+# Initialize the DuckDuckGo search  tool
+tool_spec = DuckDuckGoSearchToolSpec()
+
+search_tool = FunctionTool.from_defaults(tool_spec.duckduckgo_full_search)
+
+# Example usage
+results = search_tool("Who's the current President of France?")
+print(resultts.raw_output[-1]['body'])
+# The President of the French Republic is the head of state of France. The current President is Emmanuel Macron since 14 May 2017 defeating Marine Le Pen in the second round of the presidential election on 7 May 2017. List of French presidents (Fifth Republic) N° Portrait Name ...
+```
+{{< /admonition >}}
+
+{{< admonition note "langgraph" false>}}
+```python
+from langchain.community.tools import DuckDuckGoSearchRun
+
+search_tool = DuckDuckGoSearchRun()
+
+# Example usage
+results = search_tool.invoke("Who's the current President of France?")
+print(resultts)
+# Emmanuel Macron (born December 21, 1977, Amiens, France) is a French banker and politician who was elected president of France in 2017...
+```
+{{< /admonition >}}
+
+### 创建自定义工具来获取天气信息以安排烟花表演
+完美的庆典应该是在晴朗的天空下燃放烟花，我们需要确保烟花不会因为恶劣的天气而取消。让我们创建一个自定义工具，可用于调用外部天气 API 并获取给定位置的天气信息。为了简单起见，我们在本例中使用了一一个虚拟天气API，如果您想用真实的天气API，可以使用OpenWeatherMap API等。
+{{< admonition note "smolagents" false>}}
+```python
+from smolagents import Tool
+import random
+
+class WeatherInfoTool(Tool):
+  name = "weather_info"
+  description = "Fetches dummy weather information for a given location."
+  inputs = {
+    "location" : {
+      "type" : "string",
+      "description": "The location to get weather information for."
+    }
+  }
+  output_type = "string"
+
+  def forward(self, location:str):
+    # Dummy weather data
+    weather_conditions = [
+      {"condition": "Rainy", "temp_c": 15},
+      {"condition": "Clear", "temp_c": 25},
+      {"condition": "Windy", "temp_c": 20}
+    ]
+    # Randomly select a weather condition
+    data = random.choice(weather_conditions)
+    return f"Weather in {location}: {data['condition']}, {data['temp_c']}°C"
+
+# Initialize the tool
+weather_info_tool = WeatherInfoTool()
+ ```
+{{< /admonition >}}
+
+{{< admonition note "llama-index" false>}}
+```python
+import random
+from llama_index.core.tools import FunctionTool
+
+def get_weather_info(location: str) -> str:
+    """Fetches dummy weather information for a given location."""
+    # Dummy weather data
+    weather_conditions = [
+        {"condition": "Rainy", "temp_c": 15},
+        {"condition": "Clear", "temp_c": 25},
+        {"condition": "Windy", "temp_c": 20}
+    ]
+    # Randomly select a weather condition
+    data = random.choice(weather_conditions)
+    return f"Weather in {location}: {data['condition']}, {data['temp_c']}°C"
+
+# Initialize the tool
+weather_info_tool = FunctionTool.from_defaults(get_weather_info)
+```
+{{< /admonition >}}
+
+{{< admonition note "langgraph" false>}}
+```python
+from langchain.tools import Tool
+import random
+
+def get_weather_info(location: str) -> str:
+    """Fetches dummy weather information for a given location."""
+    # Dummy weather data
+    weather_conditions = [
+        {"condition": "Rainy", "temp_c": 15},
+        {"condition": "Clear", "temp_c": 25},
+        {"condition": "Windy", "temp_c": 20}
+    ]
+    # Randomly select a weather condition
+    data = random.choice(weather_conditions)
+    return f"Weather in {location}: {data['condition']}, {data['temp_c']}°C"
+
+# Initialize the tool
+weather_info_tool = Tool(
+    name="get_weather_info",
+    func=get_weather_info,
+    description="Fetches dummy weather information for a given location."
+)
+```
+{{< /admonition >}}
+
+### 为AI Builders创建 Hub Stats Tool
+出席此次盛会的都是 AI 开发者的精英。Alfred 希望通过讨论他们最受欢迎的模型、数据集和空间来给他们留下深刻印象。我们将创建一个工具，根据用户名从 Hugging Face Hub 获取模型统计数据。
+{{< admonition note "smolagents" false>}}
+```python
+from solagents import Tool
+from huggingface_hub import list_models
+
+class HubStatsTool(Tool):
+  name = "hub_stats"
+  description = "Fetches the most downloaded model from a specific author on the Hugging Face Hub."
+  inputs = {
+    "author":{
+      "type": "string",
+      "description": "The username of the model author/organization to find models from."
+    }
+  }
+  output_type = "string"
+
+  def forward(self, author: str):
+    try:
+      # List Models from the specified author, sorted by downloads
+      models = list(list_models(author = author, sort = "sdownloads", direction=-1, limit=1))
+
+      if models:
+        model = models[0]
+        return f"The most downloaded model by {author} is {model.id} with {model.downloads:,} downloads."
+      else:
+        return f"Nomodels found for author {author}"
+    except Exception as e:
+      return f"Error fetching models for {author}: {str(e)}"
+# Initialize the tool
+hub_stats_tool = HubStatsTool()
+
+# Example usage
+print(hub_stats_tool("facebook")) # Example: Get the most downloaded model by Facebook
+# The most downloaded model by facebook is facebook/esmfold_v1 with 12,544,550 downloads.
+```
+{{< /admonition >}}
+
+{{< admonition note "llama-index" false>}}
+```python
+import random
+from llama_index.core.tools import FunctionTool
+from huggingface_hub import list_models
+
+def get_hub_stats(author: str) -> str:
+    """Fetches the most downloaded model from a specific author on the Hugging Face Hub."""
+    try:
+        # List models from the specified author, sorted by downloads
+        models = list(list_models(author=author, sort="downloads", direction=-1, limit=1))
+
+        if models:
+            model = models[0]
+            return f"The most downloaded model by {author} is {model.id} with {model.downloads:,} downloads."
+        else:
+            return f"No models found for author {author}."
+    except Exception as e:
+        return f"Error fetching models for {author}: {str(e)}"
+
+# Initialize the tool
+hub_stats_tool = FunctionTool.from_defaults(get_hub_stats)
+
+# Example usage
+print(hub_stats_tool("facebook")) # Example: Get the most downloaded model by Facebook
+```
+{{< /admonition >}}
+{{< admonition note "langgraph" false>}}
+```python
+from langchain.tools import Tool
+from huggingface_hub import list_models
+
+def get_hub_stats(author: str) -> str:
+    """Fetches the most downloaded model from a specific author on the Hugging Face Hub."""
+    try:
+        # List models from the specified author, sorted by downloads
+        models = list(list_models(author=author, sort="downloads", direction=-1, limit=1))
+
+        if models:
+            model = models[0]
+            return f"The most downloaded model by {author} is {model.id} with {model.downloads:,} downloads."
+        else:
+            return f"No models found for author {author}."
+    except Exception as e:
+        return f"Error fetching models for {author}: {str(e)}"
+
+# Initialize the tool
+hub_stats_tool = Tool(
+    name="get_hub_stats",
+    func=get_hub_stats,
+    description="Fetches the most downloaded model from a specific author on the Hugging Face Hub."
+)
+
+# Example usage
+print(hub_stats_tool("facebook")) # Example: Get the most downloaded model by Facebook
+```
+{{< /admonition >}}
+### 工具集成
+现在我们已经拥有了所有的工具，让我们将它们集成到 Alfred 的代理中：
+{{< admonition note "smolagents" false>}}
+```python
+from smolagents import CodeAgent, InferenceClientModel
+
+model = InferenceModel()
+
+alfred = CodeAgent(
+  tools = [search_tool, weather_info_tool, hub_stats_tool], 
+  model = model
+)
+# Example query Alfred might receive during the gala
+response = alfred.run("What is Facebook and what's their most popular model?")
+
+print("🎩 Alfred's Response:")
+print(response)
+```
+{{< /admonition >}}
+{{< admonition note "llama-index" false>}}
+```python
+from llama_index.core.agent.workflow import AgentWorkflow
+from llama_index.llms.huggingface_api import HuggingFaceInferenceAPI
+
+# Initialize the Hugging Face model
+llm = HuggingFaceInferenceAPI(model_name="Qwen/Qwen2.5-Coder-32B-Instruct")
+# Create Alfred with all the tools
+alfred = AgentWorkflow.from_tools_or_functions(
+    [search_tool, weather_info_tool, hub_stats_tool],
+    llm=llm
+)
+
+# Example query Alfred might receive during the gala
+response = await alfred.run("What is Facebook and what's their most popular model?")
+
+print("🎩 Alfred's Response:")
+print(response)
+```
+{{< /admonition >}}
+{{< admonition note "langgraph" false>}}
+```python
+from typing import TypedDict, Annotated
+from langgraph.graph.message import add_messages
+from langchain_core.messages import AnyMessage, HumanMessage, AIMessage
+from langgraph.prebulit import ToolNode
+from langgraph.graph import START, StateGraph
+from langgraph.prebuilt import tools_condition
+from langchain_huggingface import HuggingFaceEndpoint, ChatHuggingFace
+
+# Generate the chat interface, including the tools
+llm = HuggingFaceEndpoint(
+    repo_id="Qwen/Qwen2.5-Coder-32B-Instruct",
+    huggingfacehub_api_token=HUGGINGFACEHUB_API_TOKEN,
+)
+
+chat = ChatHuggingFace(llm = llm, verbose = True)
+tools = [search_tool, weather_info_tool, hub_stats_tool]
+chat_with_tools = chat.bind_tools(tools)
+
+# Generate the AgentState and Agent graph
+class AgentState(TypedDict):
+  messages: Annotated[list[AnyMessage], add_messages]
+
+def assistant(state: AgentState):
+  return {
+    "messages": [chat_with_tools.invoke(state["messages"])],
+  }
+
+# The graph
+builder = StateGraph(AgentState)
+
+# Define nodes: these do the work
+builder.add_node("assistant", assistant)
+builder.add_node("tools", ToolNode(tools))
+
+# Define edges: these determine how control flow moves
+builder.add_edge(START, "assistant")
+builder.add_conditional_edges(
+    "assistant",
+    # If the latest message requires a tool, route to tools
+    # Otherwise, provide a direct response
+    tools_condition,
+)
+builder.add_edge("tools", "assistant")
+alfred = builder.compile()
+
+messages = [HumanMessages(content="Who is Facebook and what's their most popular model?")]
+response = alfred.invoke({"messages": messages})
+
+print("🎩 Alfred's Response:")
+print(response['messages'][-1].content)
+```
+{{< /admonition >}}
