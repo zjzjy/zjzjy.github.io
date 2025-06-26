@@ -7,7 +7,7 @@
         <title>LlamaIndex - Introduction - June&#39;s Island</title><meta name="Description" content="Hiro&#39;s Learning and Daily Records Island"><meta property="og:url" content="http://localhost:1313/agent-llamaindex/">
   <meta property="og:site_name" content="June&#39;s Island">
   <meta property="og:title" content="LlamaIndex - Introduction">
-  <meta property="og:description" content="本文根据Hugging Face上的Agent课程编写而成，包括 。
+  <meta property="og:description" content="本文根据Hugging Face上的Agent课程编写而成。
 什么是LlamaIndex？ LlamaIndex 是一个完整的工具包，用于使用索引和工作流创建基于LLM的Agent。
 LlamaIndex的关键部分以及它们如何帮助代理？ Components：在 LlamaIndex 中使用的基本构建块。 These include things like prompts, models, and databases.组件通常用于将 LlamaIndex 与其他工具和库连接起来。
 Tools: 工具是提供特定功能（例如搜索、计算或访问外部服务）的组件。
@@ -17,7 +17,7 @@ Workflows：是将逻辑整合在一起的逐步流程。工作流或代理工�
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
     <meta property="article:published_time" content="2025-06-19T14:38:53+08:00">
-    <meta property="article:modified_time" content="2025-06-21T11:40:46+08:00">
+    <meta property="article:modified_time" content="2025-06-26T14:11:16+08:00">
     <meta property="article:tag" content="Agent">
     <meta property="article:tag" content="LlamaIndex">
     <meta property="og:image" content="http://localhost:1313/agent-llamaindex/featured-image.jpg">
@@ -25,7 +25,7 @@ Workflows：是将逻辑整合在一起的逐步流程。工作流或代理工�
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="http://localhost:1313/agent-llamaindex/featured-image.jpg">
   <meta name="twitter:title" content="LlamaIndex - Introduction">
-  <meta name="twitter:description" content="本文根据Hugging Face上的Agent课程编写而成，包括 。
+  <meta name="twitter:description" content="本文根据Hugging Face上的Agent课程编写而成。
 什么是LlamaIndex？ LlamaIndex 是一个完整的工具包，用于使用索引和工作流创建基于LLM的Agent。
 LlamaIndex的关键部分以及它们如何帮助代理？ Components：在 LlamaIndex 中使用的基本构建块。 These include things like prompts, models, and databases.组件通常用于将 LlamaIndex 与其他工具和库连接起来。
 Tools: 工具是提供特定功能（例如搜索、计算或访问外部服务）的组件。
@@ -50,8 +50,8 @@ Workflows：是将逻辑整合在一起的逐步流程。工作流或代理工�
                             "url": "http:\/\/localhost:1313\/agent-llamaindex\/featured-image.jpg",
                             "width":  1549 ,
                             "height":  858 
-                        }],"genre": "posts","keywords": "Agent, LlamaIndex","wordcount":  6656 ,
-        "url": "http:\/\/localhost:1313\/agent-llamaindex\/","datePublished": "2025-06-19T14:38:53+08:00","dateModified": "2025-06-21T11:40:46+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+                        }],"genre": "posts","keywords": "Agent, LlamaIndex","wordcount":  6653 ,
+        "url": "http:\/\/localhost:1313\/agent-llamaindex\/","datePublished": "2025-06-19T14:38:53+08:00","dateModified": "2025-06-26T14:11:16+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "xxxx","logo": {
                     "@type": "ImageObject",
@@ -135,7 +135,7 @@ Workflows：是将逻辑整合在一起的逐步流程。工作流或代理工�
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">LlamaIndex - Introduction</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://github.com/zjzjy" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>June</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/agent/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Agent</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="191953-53-20">191953-53-20</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 6656 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="191953-53-20">191953-53-20</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 6653 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 14 分钟&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -197,7 +197,7 @@ Workflows：是将逻辑整合在一起的逐步流程。工作流或代理工�
     <li><a href="#automating-workflows-with-multi-agent-workflows">Automating workflows with Multi-Agent Workflows</a></li>
   </ul>
 </nav></div>
-            </div><div class="content" id="content"><p>本文根据<a href="https://huggingface.co/learn/agents-course/unit2/llama-index/introduction" target="_blank" rel="noopener noreffer ">Hugging Face上的Agent课程</a>编写而成，包括        。</p>
+            </div><div class="content" id="content"><p>本文根据<a href="https://huggingface.co/learn/agents-course/unit2/llama-index/introduction" target="_blank" rel="noopener noreffer ">Hugging Face上的Agent课程</a>编写而成。</p>
 <h1 id="什么是llamaindex">什么是LlamaIndex？</h1>
 <p>LlamaIndex 是一个完整的工具包，用于使用索引和工作流创建基于LLM的Agent。</p>
 <h2 id="llamaindex的关键部分以及它们如何帮助代理">LlamaIndex的关键部分以及它们如何帮助代理？</h2>
@@ -1316,8 +1316,8 @@ AgentWorkflow 使用工作 AgentWorkflow 代理，允许您创建一个由一个
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 212146-46-110&nbsp;<a class="git-hash" href="https://github.com/zjzjy/commit/4c98d1b9a759ed2ea3d49ad31b0eb6d84f0b25bb" target="_blank" title="commit by 郑钧尹(Zheng Junyin)(108924030&#43;zjzjy@users.noreply.github.com) 4c98d1b9a759ed2ea3d49ad31b0eb6d84f0b25bb: 28">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>4c98d1b</a></span>
+                <span>更新于 262616-16-20&nbsp;<a class="git-hash" href="https://github.com/zjzjy/commit/c69ed64b3cbf30197a76443eb65c0c1e070f3851" target="_blank" title="commit by 郑钧尹(Zheng Junyin)(108924030&#43;zjzjy@users.noreply.github.com) c69ed64b3cbf30197a76443eb65c0c1e070f3851: 44">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>c69ed64</a></span>
             </div><div class="post-info-license">
                 <span><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
             </div></div>

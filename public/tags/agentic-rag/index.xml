@@ -9,14 +9,14 @@
     <managingEditor>224040086@link.cuhk.edu.cn (Junyin Zheng)</managingEditor>
     <webMaster>224040086@link.cuhk.edu.cn (Junyin Zheng)</webMaster>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Tue, 24 Jun 2025 15:15:17 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 26 Jun 2025 14:11:16 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/tags/agentic-rag/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Agentic RAG - Usecase</title>
       <link>http://localhost:1313/agent-agentic-rag/</link>
       <pubDate>Sun, 22 Jun 2025 12:03:24 +0800</pubDate><author>224040086@link.cuhk.edu.cn (Junyin Zheng)</author>
       <guid>http://localhost:1313/agent-agentic-rag/</guid>
-      <description>&lt;p&gt;本文根据&lt;a href=&#34;https://huggingface.co/learn/agents-course/unit3/agentic-rag/introduction&#34; target=&#34;_blank&#34; rel=&#34;noopener noreffer &#34;&gt;Hugging Face上的Agent课程&lt;/a&gt;编写而成，包括        。&#xA;在本章节，我们将使用 Agentic RAG 创建一个工具来帮助主持晚会的友好经纪人 Alfred，该工具可用于回答有关晚会嘉宾的问题。&lt;/p&gt;</description>
+      <description>&lt;p&gt;本文根据&lt;a href=&#34;https://huggingface.co/learn/agents-course/unit3/agentic-rag/introduction&#34; target=&#34;_blank&#34; rel=&#34;noopener noreffer &#34;&gt;Hugging Face上的Agent课程&lt;/a&gt;编写而成。&#xA;在本章节，我们将使用 Agentic RAG 创建一个工具来帮助主持晚会的友好经纪人 Alfred，该工具可用于回答有关晚会嘉宾的问题。&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

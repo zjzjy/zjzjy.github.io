@@ -7,13 +7,13 @@
         <title>Smolagents - Introduction - June&#39;s Island</title><meta name="Description" content="Hiro&#39;s Learning and Daily Records Island"><meta property="og:url" content="http://localhost:1313/agent-smolagents/">
   <meta property="og:site_name" content="June&#39;s Island">
   <meta property="og:title" content="Smolagents - Introduction">
-  <meta property="og:description" content="本文根据Hugging Face上的Agent课程编写而成，包括 。 相关资源：
+  <meta property="og:description" content="本文根据Hugging Face上的Agent课程编写而成。 相关资源：
 smolagents Documentation - Official docs for the smolagents library Building Effective Agents - Research paper on agent architectures Agent Guidelines - Best practices for building reliable agents LangGraph Agents - Additional examples of agent implementations Function Calling Guide - Understanding function calling in LLMs RAG Best Practices - Guide to implementing effective RAG smolagents Blog - Introduction to smolagents and code interactions 什么是smolagents，为什么要使用smolagents？ smolagents 是一个 Hugging Face 库。smolagents 是一个简单但功能强大的 AI 代理构建框架。它为LLM提供了与现实世界交互的能力，例如搜索或生成图像。">
   <meta property="og:locale" content="zh_CN">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
     <meta property="article:published_time" content="2025-06-17T15:27:19+08:00">
-    <meta property="article:modified_time" content="2025-06-21T11:40:46+08:00">
+    <meta property="article:modified_time" content="2025-06-26T14:11:16+08:00">
     <meta property="article:tag" content="Agent">
     <meta property="article:tag" content="Smolagents">
     <meta property="og:image" content="http://localhost:1313/agent-smolagents/featured-image.jpg">
@@ -21,7 +21,7 @@ smolagents Documentation - Official docs for the smolagents library Building Eff
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="http://localhost:1313/agent-smolagents/featured-image.jpg">
   <meta name="twitter:title" content="Smolagents - Introduction">
-  <meta name="twitter:description" content="本文根据Hugging Face上的Agent课程编写而成，包括 。 相关资源：
+  <meta name="twitter:description" content="本文根据Hugging Face上的Agent课程编写而成。 相关资源：
 smolagents Documentation - Official docs for the smolagents library Building Effective Agents - Research paper on agent architectures Agent Guidelines - Best practices for building reliable agents LangGraph Agents - Additional examples of agent implementations Function Calling Guide - Understanding function calling in LLMs RAG Best Practices - Guide to implementing effective RAG smolagents Blog - Introduction to smolagents and code interactions 什么是smolagents，为什么要使用smolagents？ smolagents 是一个 Hugging Face 库。smolagents 是一个简单但功能强大的 AI 代理构建框架。它为LLM提供了与现实世界交互的能力，例如搜索或生成图像。">
 <meta name="application-name" content="June&#39;s Island">
 <meta name="apple-mobile-web-app-title" content="June&#39;s Island"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
@@ -42,8 +42,8 @@ smolagents Documentation - Official docs for the smolagents library Building Eff
                             "url": "http:\/\/localhost:1313\/agent-smolagents\/featured-image.jpg",
                             "width":  1920 ,
                             "height":  1080 
-                        }],"genre": "posts","keywords": "Agent, Smolagents","wordcount":  1396 ,
-        "url": "http:\/\/localhost:1313\/agent-smolagents\/","datePublished": "2025-06-17T15:27:19+08:00","dateModified": "2025-06-21T11:40:46+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+                        }],"genre": "posts","keywords": "Agent, Smolagents","wordcount":  1393 ,
+        "url": "http:\/\/localhost:1313\/agent-smolagents\/","datePublished": "2025-06-17T15:27:19+08:00","dateModified": "2025-06-26T14:11:16+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "xxxx","logo": {
                     "@type": "ImageObject",
@@ -127,7 +127,7 @@ smolagents Documentation - Official docs for the smolagents library Building Eff
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Smolagents - Introduction</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://github.com/zjzjy" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>June</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/agent/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Agent</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="171719-19-30">171719-19-30</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1396 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="171719-19-30">171719-19-30</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1393 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 3 分钟&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -171,7 +171,7 @@ smolagents Documentation - Official docs for the smolagents library Building Eff
     </li>
   </ul>
 </nav></div>
-            </div><div class="content" id="content"><p>本文根据<a href="https://huggingface.co/learn/agents-course/unit2/smolagents/introduction" target="_blank" rel="noopener noreffer ">Hugging Face上的Agent课程</a>编写而成，包括        。
+            </div><div class="content" id="content"><p>本文根据<a href="https://huggingface.co/learn/agents-course/unit2/smolagents/introduction" target="_blank" rel="noopener noreffer ">Hugging Face上的Agent课程</a>编写而成。
 相关资源：</p>
 <ul>
 <li><a href="https://huggingface.co/docs/smolagents" target="_blank" rel="noopener noreffer ">smolagents Documentation</a> - Official docs for the smolagents library</li>
@@ -379,8 +379,8 @@ CodeAgent 通过一系列步骤执行操作，将现有变量和知识纳入代�
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 212146-46-110&nbsp;<a class="git-hash" href="https://github.com/zjzjy/commit/4c98d1b9a759ed2ea3d49ad31b0eb6d84f0b25bb" target="_blank" title="commit by 郑钧尹(Zheng Junyin)(108924030&#43;zjzjy@users.noreply.github.com) 4c98d1b9a759ed2ea3d49ad31b0eb6d84f0b25bb: 28">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>4c98d1b</a></span>
+                <span>更新于 262616-16-20&nbsp;<a class="git-hash" href="https://github.com/zjzjy/commit/c69ed64b3cbf30197a76443eb65c0c1e070f3851" target="_blank" title="commit by 郑钧尹(Zheng Junyin)(108924030&#43;zjzjy@users.noreply.github.com) c69ed64b3cbf30197a76443eb65c0c1e070f3851: 44">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>c69ed64</a></span>
             </div><div class="post-info-license">
                 <span><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
             </div></div>

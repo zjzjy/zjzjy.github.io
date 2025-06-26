@@ -7,12 +7,12 @@
         <title>Agentic RAG - Usecase - June&#39;s Island</title><meta name="Description" content="Hiro&#39;s Learning and Daily Records Island"><meta property="og:url" content="http://localhost:1313/agent-agentic-rag/">
   <meta property="og:site_name" content="June&#39;s Island">
   <meta property="og:title" content="Agentic RAG - Usecase">
-  <meta property="og:description" content="本文根据Hugging Face上的Agent课程编写而成，包括 。 在本章节，我们将使用 Agentic RAG 创建一个工具来帮助主持晚会的友好经纪人 Alfred，该工具可用于回答有关晚会嘉宾的问题。">
+  <meta property="og:description" content="本文根据Hugging Face上的Agent课程编写而成。 在本章节，我们将使用 Agentic RAG 创建一个工具来帮助主持晚会的友好经纪人 Alfred，该工具可用于回答有关晚会嘉宾的问题。">
   <meta property="og:locale" content="zh_CN">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
     <meta property="article:published_time" content="2025-06-22T12:03:24+08:00">
-    <meta property="article:modified_time" content="2025-06-24T15:15:17+08:00">
+    <meta property="article:modified_time" content="2025-06-26T14:11:16+08:00">
     <meta property="article:tag" content="Agent">
     <meta property="article:tag" content="Agentic RAG">
     <meta property="og:image" content="http://localhost:1313/agent-agentic-rag/featured-image.jpg">
@@ -20,11 +20,11 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="http://localhost:1313/agent-agentic-rag/featured-image.jpg">
   <meta name="twitter:title" content="Agentic RAG - Usecase">
-  <meta name="twitter:description" content="本文根据Hugging Face上的Agent课程编写而成，包括 。 在本章节，我们将使用 Agentic RAG 创建一个工具来帮助主持晚会的友好经纪人 Alfred，该工具可用于回答有关晚会嘉宾的问题。">
+  <meta name="twitter:description" content="本文根据Hugging Face上的Agent课程编写而成。 在本章节，我们将使用 Agentic RAG 创建一个工具来帮助主持晚会的友好经纪人 Alfred，该工具可用于回答有关晚会嘉宾的问题。">
 <meta name="application-name" content="June&#39;s Island">
 <meta name="apple-mobile-web-app-title" content="June&#39;s Island"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/agent-agentic-rag/" /><link rel="prev" href="http://localhost:1313/agent-langgraph/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/agent-agentic-rag/" /><link rel="prev" href="http://localhost:1313/agent-langgraph/" /><link rel="next" href="http://localhost:1313/genrec-paper-recommender-systems-with-generative-retrieval/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
     {
@@ -40,8 +40,8 @@
                             "url": "http:\/\/localhost:1313\/agent-agentic-rag\/featured-image.jpg",
                             "width":  1606 ,
                             "height":  892 
-                        }],"genre": "posts","keywords": "Agent, Agentic RAG","wordcount":  5005 ,
-        "url": "http:\/\/localhost:1313\/agent-agentic-rag\/","datePublished": "2025-06-22T12:03:24+08:00","dateModified": "2025-06-24T15:15:17+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+                        }],"genre": "posts","keywords": "Agent, Agentic RAG","wordcount":  7359 ,
+        "url": "http:\/\/localhost:1313\/agent-agentic-rag\/","datePublished": "2025-06-22T12:03:24+08:00","dateModified": "2025-06-26T14:11:16+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "xxxx","logo": {
                     "@type": "ImageObject",
@@ -125,8 +125,8 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Agentic RAG - Usecase</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://github.com/zjzjy" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>June</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/agent/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Agent</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="222224-24-120">222224-24-120</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 5005 字&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 10 分钟&nbsp;</div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="222224-24-120">222224-24-120</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 7359 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 15 分钟&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
         src="/svg/loading.min.svg"
@@ -157,9 +157,10 @@
         <li><a href="#工具集成">工具集成</a></li>
       </ul>
     </li>
+    <li><a href="#creating-your-gala-agent">Creating Your Gala Agent</a></li>
   </ul>
 </nav></div>
-            </div><div class="content" id="content"><p>本文根据<a href="https://huggingface.co/learn/agents-course/unit3/agentic-rag/introduction" target="_blank" rel="noopener noreffer ">Hugging Face上的Agent课程</a>编写而成，包括        。
+            </div><div class="content" id="content"><p>本文根据<a href="https://huggingface.co/learn/agents-course/unit3/agentic-rag/introduction" target="_blank" rel="noopener noreffer ">Hugging Face上的Agent课程</a>编写而成。
 在本章节，我们将使用 Agentic RAG 创建一个工具来帮助主持晚会的友好经纪人 Alfred，该工具可用于回答有关晚会嘉宾的问题。</p>
 <h1 id="难忘的盛会">难忘的盛会</h1>
 <p>你决定举办一场本世纪最奢华、最奢华的派对。 这意味着丰盛的宴席、迷人的舞者、知名 DJ、精致的饮品、令人叹为观止的烟火表演等等。我们委托管家Alfred来全权举办这个盛会。为此，他需要掌握派对的所有信息，包括菜单、宾客、日程安排、天气预报等等！不仅如此，他还需要确保聚会取得成功，因此他需要能够在聚会期间回答有关聚会的任何问题 ，同时处理可能出现的意外情况。他无法独自完成这项工作，所以我们需要确保阿尔弗雷德能够获得他所需的所有信息和工具。<br>
@@ -1454,12 +1455,665 @@
 </div></div>
         </div>
     </div></p>
+<h2 id="creating-your-gala-agent">Creating Your Gala Agent</h2>
+<p>现在我们已经为 Alfred 构建了所有必要的组件，现在是时候将所有组件整合成一个完整的代理，以帮助我们举办奢华的盛会。<br>
+在本节中，我们将把客人信息检索、网络搜索、天气信息和 Hub 统计工具组合成一个强大的代理。<br>
+我们在之前已经实现了tools.py和retriever.py，接下来要导入它们。
+<div class="details admonition note">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-pencil-alt fa-fw" aria-hidden="true"></i>solagents<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># Import necessary libraries</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">random</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">smolagents</span> <span class="kn">import</span> <span class="n">CodeAgent</span><span class="p">,</span> <span class="n">InferenceClientModel</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Import our custom tools from their modules</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">tools</span> <span class="kn">import</span> <span class="n">DuckDuckGoSearchTool</span><span class="p">,</span> <span class="n">WeatherInfoTool</span><span class="p">,</span> <span class="n">HubStatsTool</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">retriever</span> <span class="kn">import</span> <span class="n">load_guest_dataset</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Initialize the Hugging Face model</span>
+</span></span><span class="line"><span class="cl"><span class="n">model</span> <span class="o">=</span> <span class="n">InferenceClientModel</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Initialize the web search tool</span>
+</span></span><span class="line"><span class="cl"><span class="n">search_tool</span> <span class="o">=</span> <span class="n">DuckDuckGoSearchTool</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Initialize the weather tool</span>
+</span></span><span class="line"><span class="cl"><span class="n">weather_info_tool</span> <span class="o">=</span> <span class="n">WeatherInfoTool</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Initialize the Hub stats tool</span>
+</span></span><span class="line"><span class="cl"><span class="n">hub_stats_tool</span> <span class="o">=</span> <span class="n">HubStatsTool</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Load the guest dataset and initialize the guest info tool</span>
+</span></span><span class="line"><span class="cl"><span class="n">guest_info_tool</span> <span class="o">=</span> <span class="n">load_guest_dataset</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Create Alfred with all the tools</span>
+</span></span><span class="line"><span class="cl"><span class="n">alfred</span> <span class="o">=</span> <span class="n">CodeAgent</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="n">tools</span><span class="o">=</span><span class="p">[</span><span class="n">guest_info_tool</span><span class="p">,</span> <span class="n">weather_info_tool</span><span class="p">,</span> <span class="n">hub_stats_tool</span><span class="p">,</span> <span class="n">search_tool</span><span class="p">],</span> 
+</span></span><span class="line"><span class="cl">    <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">add_base_tools</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># Add any additional base tools</span>
+</span></span><span class="line"><span class="cl">    <span class="n">planning_interval</span><span class="o">=</span><span class="mi">3</span>   <span class="c1"># Enable planning every 3 steps</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></div>
+        </div>
+    </div>
+<div class="details admonition note">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-pencil-alt fa-fw" aria-hidden="true"></i>llama-index<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># Import necessary libraries</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">llama_index.core.agent.workflow</span> <span class="kn">import</span> <span class="n">AgentWorkflow</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">llama_index.llms.huggingface_api</span> <span class="kn">import</span> <span class="n">HuggingFaceInferenceAPI</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">tools</span> <span class="kn">import</span> <span class="n">search_tool</span><span class="p">,</span> <span class="n">weather_info_tool</span><span class="p">,</span> <span class="n">hub_stats_tool</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">retriever</span> <span class="kn">import</span> <span class="n">guest_info_tool</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Initialize the Hugging Face model</span>
+</span></span><span class="line"><span class="cl"><span class="n">llm</span> <span class="o">=</span> <span class="n">HuggingFaceInferenceAPI</span><span class="p">(</span><span class="n">model_name</span><span class="o">=</span><span class="s2">&#34;Qwen/Qwen2.5-Coder-32B-Instruct&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Create Alfred with all the tools</span>
+</span></span><span class="line"><span class="cl"><span class="n">alfred</span> <span class="o">=</span> <span class="n">AgentWorkflow</span><span class="o">.</span><span class="n">from_tools_or_functions</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="n">guest_info_tool</span><span class="p">,</span> <span class="n">search_tool</span><span class="p">,</span> <span class="n">weather_info_tool</span><span class="p">,</span> <span class="n">hub_stats_tool</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">    <span class="n">llm</span><span class="o">=</span><span class="n">llm</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></div>
+        </div>
+    </div>
+<div class="details admonition note">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-pencil-alt fa-fw" aria-hidden="true"></i>langgraph<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TypedDict</span><span class="p">,</span> <span class="n">Annotated</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">langgraph.graph.message</span> <span class="kn">import</span> <span class="n">add_messages</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">langchain_core.messages</span> <span class="kn">import</span> <span class="n">AnyMessage</span><span class="p">,</span> <span class="n">HumanMessage</span><span class="p">,</span> <span class="n">AIMessage</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">langgraph.prebuilt</span> <span class="kn">import</span> <span class="n">ToolNode</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">langgraph.graph</span> <span class="kn">import</span> <span class="n">START</span><span class="p">,</span> <span class="n">StateGraph</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">langgraph.prebuilt</span> <span class="kn">import</span> <span class="n">tools_condition</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">langchain_huggingface</span> <span class="kn">import</span> <span class="n">HuggingFaceEndpoint</span><span class="p">,</span> <span class="n">ChatHuggingFace</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">tools</span> <span class="kn">import</span> <span class="n">DuckDuckGoSearchRun</span><span class="p">,</span> <span class="n">weather_info_tool</span><span class="p">,</span> <span class="n">hub_stats_tool</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">retriever</span> <span class="kn">import</span> <span class="n">guest_info_tool</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Initialize the web search tool</span>
+</span></span><span class="line"><span class="cl"><span class="n">search_tool</span> <span class="o">=</span> <span class="n">DuckDuckGoSearchRun</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Generate the chat interface, including the tools</span>
+</span></span><span class="line"><span class="cl"><span class="n">llm</span> <span class="o">=</span> <span class="n">HuggingFaceEndpoint</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="n">repo_id</span><span class="o">=</span><span class="s2">&#34;Qwen/Qwen2.5-Coder-32B-Instruct&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">huggingfacehub_api_token</span><span class="o">=</span><span class="n">HUGGINGFACEHUB_API_TOKEN</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">chat</span> <span class="o">=</span> <span class="n">ChatHuggingFace</span><span class="p">(</span><span class="n">llm</span><span class="o">=</span><span class="n">llm</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">tools</span> <span class="o">=</span> <span class="p">[</span><span class="n">guest_info_tool</span><span class="p">,</span> <span class="n">search_tool</span><span class="p">,</span> <span class="n">weather_info_tool</span><span class="p">,</span> <span class="n">hub_stats_tool</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">chat_with_tools</span> <span class="o">=</span> <span class="n">chat</span><span class="o">.</span><span class="n">bind_tools</span><span class="p">(</span><span class="n">tools</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Generate the AgentState and Agent graph</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">AgentState</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">messages</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AnyMessage</span><span class="p">],</span> <span class="n">add_messages</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">assistant</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">AgentState</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;messages&#34;</span><span class="p">:</span> <span class="p">[</span><span class="n">chat_with_tools</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&#34;messages&#34;</span><span class="p">])],</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">## The graph</span>
+</span></span><span class="line"><span class="cl"><span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">AgentState</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Define nodes: these do the work</span>
+</span></span><span class="line"><span class="cl"><span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&#34;assistant&#34;</span><span class="p">,</span> <span class="n">assistant</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&#34;tools&#34;</span><span class="p">,</span> <span class="n">ToolNode</span><span class="p">(</span><span class="n">tools</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Define edges: these determine how the control flow moves</span>
+</span></span><span class="line"><span class="cl"><span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&#34;assistant&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">builder</span><span class="o">.</span><span class="n">add_conditional_edges</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;assistant&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># If the latest message requires a tool, route to tools</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># Otherwise, provide a direct response</span>
+</span></span><span class="line"><span class="cl">    <span class="n">tools_condition</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&#34;tools&#34;</span><span class="p">,</span> <span class="s2">&#34;assistant&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">alfred</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></div>
+        </div>
+    </div></p>
+<h1 id="应用示范">应用示范</h1>
+<p>我们将使用刚刚创建的Alfred Agent完成三个工作：</p>
+<ol>
+<li>查找客人信息</li>
+<li>检查烟花天气</li>
+<li>给AI Builder 客人留下深刻印象</li>
+<li>使用多个工具与尼古拉斯博士进行对话
+<div class="details admonition note">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-pencil-alt fa-fw" aria-hidden="true"></i>smolagents<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># 1.查找客人信息</span>
+</span></span><span class="line"><span class="cl"><span class="n">query</span> <span class="o">=</span> <span class="s2">&#34;Tell me about &#39;Lady Ada Lovelace&#39;&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">response</span> <span class="o">=</span> <span class="n">alfred</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;🎩 Alfred&#39;s Response:&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 2.检查烟花天气</span>
+</span></span><span class="line"><span class="cl"><span class="n">query</span> <span class="o">=</span> <span class="s2">&#34;What&#39;s the weather like in Paris tonight? Will it be suitable for our fireworks display?&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">response</span> <span class="o">=</span> <span class="n">alfred</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;🎩 Alfred&#39;s Response:&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 3. 给AI Builder 客人留下深刻印象</span>
+</span></span><span class="line"><span class="cl"><span class="n">query</span> <span class="o">=</span> <span class="s2">&#34;One of our guests is from Qwen. What can you tell me about their most popular model?&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">response</span> <span class="o">=</span> <span class="n">alfred</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;🎩 Alfred&#39;s Response:&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 4. 使用多个工具与尼古拉斯博士进行对话</span>
+</span></span><span class="line"><span class="cl"><span class="n">query</span> <span class="o">=</span> <span class="s2">&#34;I need to speak with Dr. Nikola Tesla about recent advancements in wireless energy. Can you help me prepare for this conversation?&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">response</span> <span class="o">=</span> <span class="n">alfred</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;🎩 Alfred&#39;s Response:&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>ALfred的回答：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="err">🎩</span> <span class="nx">Alfred</span><span class="s1">&#39;s Response:
+</span></span></span><span class="line"><span class="cl"><span class="s1">I&#39;</span><span class="nx">ve</span> <span class="nx">gathered</span> <span class="nx">information</span> <span class="nx">to</span> <span class="nx">help</span> <span class="nx">you</span> <span class="nx">prepare</span> <span class="k">for</span> <span class="nx">your</span> <span class="nx">conversation</span> <span class="kd">with</span> <span class="nx">Dr</span><span class="p">.</span> <span class="nx">Nikola</span> <span class="nx">Tesla</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">Guest</span> <span class="nx">Information</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl"><span class="nx">Name</span><span class="o">:</span> <span class="nx">Dr</span><span class="p">.</span> <span class="nx">Nikola</span> <span class="nx">Tesla</span>
+</span></span><span class="line"><span class="cl"><span class="nx">Relation</span><span class="o">:</span> <span class="nx">old</span> <span class="nx">friend</span> <span class="nx">from</span> <span class="nx">university</span> <span class="nx">days</span>
+</span></span><span class="line"><span class="cl"><span class="nx">Description</span><span class="o">:</span> <span class="nx">Dr</span><span class="p">.</span> <span class="nx">Nikola</span> <span class="nx">Tesla</span> <span class="nx">is</span> <span class="nx">an</span> <span class="nx">old</span> <span class="nx">friend</span> <span class="nx">from</span> <span class="nx">your</span> <span class="nx">university</span> <span class="nx">days</span><span class="p">.</span> <span class="nx">He</span><span class="s1">&#39;s recently patented a new wireless energy transmission system and would be delighted to discuss it with you. Just remember he&#39;</span><span class="nx">s</span> <span class="nx">passionate</span> <span class="nx">about</span> <span class="nx">pigeons</span><span class="p">,</span> <span class="nx">so</span> <span class="nx">that</span> <span class="nx">might</span> <span class="nx">make</span> <span class="k">for</span> <span class="nx">good</span> <span class="nx">small</span> <span class="nx">talk</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl"><span class="nx">Email</span><span class="o">:</span> <span class="nx">nikola</span><span class="p">.</span><span class="nx">tesla</span><span class="err">@</span><span class="nx">gmail</span><span class="p">.</span><span class="nx">com</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">Recent</span> <span class="nx">Advancements</span> <span class="k">in</span> <span class="nx">Wireless</span> <span class="nx">Energy</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl"><span class="nx">Based</span> <span class="nx">on</span> <span class="nx">my</span> <span class="nx">web</span> <span class="nx">search</span><span class="p">,</span> <span class="nx">here</span> <span class="nx">are</span> <span class="nx">some</span> <span class="nx">recent</span> <span class="nx">developments</span> <span class="k">in</span> <span class="nx">wireless</span> <span class="nx">energy</span> <span class="nx">transmission</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl"><span class="mf">1.</span> <span class="nx">Researchers</span> <span class="nx">have</span> <span class="nx">made</span> <span class="nx">progress</span> <span class="k">in</span> <span class="kr">long</span><span class="o">-</span><span class="nx">range</span> <span class="nx">wireless</span> <span class="nx">power</span> <span class="nx">transmission</span> <span class="nx">using</span> <span class="nx">focused</span> <span class="nx">electromagnetic</span> <span class="nx">waves</span>
+</span></span><span class="line"><span class="cl"><span class="mf">2.</span> <span class="nx">Several</span> <span class="nx">companies</span> <span class="nx">are</span> <span class="nx">developing</span> <span class="nx">resonant</span> <span class="nx">inductive</span> <span class="nx">coupling</span> <span class="nx">technologies</span> <span class="k">for</span> <span class="nx">consumer</span> <span class="nx">electronics</span>
+</span></span><span class="line"><span class="cl"><span class="mf">3.</span> <span class="nx">There</span> <span class="nx">are</span> <span class="k">new</span> <span class="nx">applications</span> <span class="k">in</span> <span class="nx">electric</span> <span class="nx">vehicle</span> <span class="nx">charging</span> <span class="nx">without</span> <span class="nx">physical</span> <span class="nx">connections</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">Conversation</span> <span class="nx">Starters</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl"><span class="mf">1.</span> <span class="s2">&#34;I&#39;d love to hear about your new patent on wireless energy transmission. How does it compare to your original concepts from our university days?&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="mf">2.</span> <span class="s2">&#34;Have you seen the recent developments in resonant inductive coupling for consumer electronics? What do you think of their approach?&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="mf">3.</span> <span class="s2">&#34;How are your pigeons doing? I remember your fascination with them.&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">This</span> <span class="nx">should</span> <span class="nx">give</span> <span class="nx">you</span> <span class="nx">plenty</span> <span class="nx">to</span> <span class="nx">discuss</span> <span class="kd">with</span> <span class="nx">Dr</span><span class="p">.</span> <span class="nx">Tesla</span> <span class="k">while</span> <span class="nx">demonstrating</span> <span class="nx">your</span> <span class="nx">knowledge</span> <span class="k">of</span> <span class="nx">his</span> <span class="nx">interests</span> <span class="nx">and</span> <span class="nx">recent</span> <span class="nx">developments</span> <span class="k">in</span> <span class="nx">his</span> <span class="nx">field</span><span class="p">.</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></div>
+        </div>
+    </div></li>
+</ol>
+<div class="details admonition note">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-pencil-alt fa-fw" aria-hidden="true"></i>llama-index<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># 1.查找客人信息</span>
+</span></span><span class="line"><span class="cl"><span class="n">query</span> <span class="o">=</span> <span class="s2">&#34;Tell me about &#39;Lady Ada Lovelace&#39;&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">alfred</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;🎩 Alfred&#39;s Response:&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">blocks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 2.检查烟花天气</span>
+</span></span><span class="line"><span class="cl"><span class="n">query</span> <span class="o">=</span> <span class="s2">&#34;What&#39;s the weather like in Paris tonight? Will it be suitable for our fireworks display?&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">alfred</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;🎩 Alfred&#39;s Response:&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 3. 给AI Builder 客人留下深刻印象</span>
+</span></span><span class="line"><span class="cl"><span class="n">query</span> <span class="o">=</span> <span class="s2">&#34;One of our guests is from Google. What can you tell me about their most popular model?&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">alfred</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;🎩 Alfred&#39;s Response:&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 4. 使用多个工具与尼古拉斯博士进行对话</span>
+</span></span><span class="line"><span class="cl"><span class="n">query</span> <span class="o">=</span> <span class="s2">&#34;I need to speak with Dr. Nikola Tesla about recent advancements in wireless energy. Can you help me prepare for this conversation?&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">alfred</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;🎩 Alfred&#39;s Response:&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>ALfred的回答：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="err">🎩</span> <span class="err">Alfred&#39;s</span> <span class="err">Response:</span>
+</span></span><span class="line"><span class="cl"><span class="err">Here</span> <span class="err">are</span> <span class="err">some</span> <span class="err">recent</span> <span class="err">advancements</span> <span class="err">in</span> <span class="err">wireless</span> <span class="err">energy</span> <span class="err">that</span> <span class="err">you</span> <span class="err">might</span> <span class="err">find</span> <span class="err">useful</span> <span class="err">for</span> <span class="err">your</span> <span class="err">conversation</span> <span class="err">with</span> <span class="err">Dr.</span> <span class="err">Nikola</span> <span class="err">Tesla:</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="mi">1</span><span class="err">.</span> <span class="err">**Advancements</span> <span class="err">and</span> <span class="err">Challenges</span> <span class="err">in</span> <span class="err">Wireless</span> <span class="err">Power</span> <span class="err">Transfer**:</span> <span class="err">This</span> <span class="err">article</span> <span class="err">discusses</span> <span class="err">the</span> <span class="err">evolution</span> <span class="err">of</span> <span class="err">wireless</span> <span class="err">power</span> <span class="err">transfer</span> <span class="err">(WPT)</span> <span class="err">from</span> <span class="err">conventional</span> <span class="err">wired</span> <span class="err">methods</span> <span class="err">to</span> <span class="err">modern</span> <span class="err">applications,</span> <span class="err">including</span> <span class="err">solar</span> <span class="err">space</span> <span class="err">power</span> <span class="err">stations.</span> <span class="err">It</span> <span class="err">highlights</span> <span class="err">the</span> <span class="err">initial</span> <span class="err">focus</span> <span class="err">on</span> <span class="err">microwave</span> <span class="err">technology</span> <span class="err">and</span> <span class="err">the</span> <span class="err">current</span> <span class="err">demand</span> <span class="err">for</span> <span class="err">WPT</span> <span class="err">due</span> <span class="err">to</span> <span class="err">the</span> <span class="err">rise</span> <span class="err">of</span> <span class="err">electric</span> <span class="err">devices.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="mi">2</span><span class="err">.</span> <span class="err">**Recent</span> <span class="err">Advances</span> <span class="err">in</span> <span class="err">Wireless</span> <span class="err">Energy</span> <span class="err">Transfer</span> <span class="err">Technologies</span> <span class="err">for</span> <span class="err">Body-Interfaced</span> <span class="err">Electronics**:</span> <span class="err">This</span> <span class="err">article</span> <span class="err">explores</span> <span class="err">wireless</span> <span class="err">energy</span> <span class="err">transfer</span> <span class="err">(WET)</span> <span class="err">as</span> <span class="err">a</span> <span class="err">solution</span> <span class="err">for</span> <span class="err">powering</span> <span class="err">body-interfaced</span> <span class="err">electronics</span> <span class="err">without</span> <span class="err">the</span> <span class="err">need</span> <span class="err">for</span> <span class="err">batteries</span> <span class="err">or</span> <span class="err">lead</span> <span class="err">wires.</span> <span class="err">It</span> <span class="err">discusses</span> <span class="err">the</span> <span class="err">advantages</span> <span class="err">and</span> <span class="err">potential</span> <span class="err">applications</span> <span class="err">of</span> <span class="err">WET</span> <span class="err">in</span> <span class="err">this</span> <span class="err">context.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="mi">3</span><span class="err">.</span> <span class="err">**Wireless</span> <span class="err">Power</span> <span class="err">Transfer</span> <span class="err">and</span> <span class="err">Energy</span> <span class="err">Harvesting:</span> <span class="err">Current</span> <span class="err">Status</span> <span class="err">and</span> <span class="err">Future</span> <span class="err">Trends**:</span> <span class="err">This</span> <span class="err">article</span> <span class="err">provides</span> <span class="err">an</span> <span class="err">overview</span> <span class="err">of</span> <span class="err">recent</span> <span class="err">advances</span> <span class="err">in</span> <span class="err">wireless</span> <span class="err">power</span> <span class="err">supply</span> <span class="err">methods,</span> <span class="err">including</span> <span class="err">energy</span> <span class="err">harvesting</span> <span class="err">and</span> <span class="err">wireless</span> <span class="err">power</span> <span class="err">transfer.</span> <span class="err">It</span> <span class="err">presents</span> <span class="err">several</span> <span class="err">promising</span> <span class="err">applications</span> <span class="err">and</span> <span class="err">discusses</span> <span class="err">future</span> <span class="err">trends</span> <span class="err">in</span> <span class="err">the</span> <span class="err">field.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="mi">4</span><span class="err">.</span> <span class="err">**Wireless</span> <span class="err">Power</span> <span class="err">Transfer:</span> <span class="err">Applications,</span> <span class="err">Challenges,</span> <span class="err">Barriers,</span> <span class="err">and</span> <span class="err">the</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></div>
+        </div>
+    </div>
+<div class="details admonition note">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-pencil-alt fa-fw" aria-hidden="true"></i>langgraph<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># 1.查找客人信息</span>
+</span></span><span class="line"><span class="cl"><span class="n">response</span> <span class="o">=</span> <span class="n">alfred</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&#34;messages&#34;</span><span class="p">:</span> <span class="s2">&#34;Tell me about &#39;Lady Ada Lovelace&#39;&#34;</span><span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;🎩 Alfred&#39;s Response:&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;messages&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 2.检查烟花天气</span>
+</span></span><span class="line"><span class="cl"><span class="n">response</span> <span class="o">=</span> <span class="n">alfred</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&#34;messages&#34;</span><span class="p">:</span> <span class="s2">&#34;What&#39;s the weather like in Paris tonight? Will it be suitable for our fireworks display?&#34;</span><span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;🎩 Alfred&#39;s Response:&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;messages&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 3. 给AI Builder 客人留下深刻印象</span>
+</span></span><span class="line"><span class="cl"><span class="n">response</span> <span class="o">=</span> <span class="n">alfred</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&#34;messages&#34;</span><span class="p">:</span> <span class="s2">&#34;One of our guests is from Qwen. What can you tell me about their most popular model?&#34;</span><span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;🎩 Alfred&#39;s Response:&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;messages&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 4. 使用多个工具与尼古拉斯博士进行对话</span>
+</span></span><span class="line"><span class="cl"><span class="n">response</span> <span class="o">=</span> <span class="n">alfred</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&#34;messages&#34;</span><span class="p">:</span><span class="s2">&#34;I need to speak with &#39;Dr. Nikola Tesla&#39; about recent advancements in wireless energy. Can you help me prepare for this conversation?&#34;</span><span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;🎩 Alfred&#39;s Response:&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;messages&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>ALfred的回答：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="err">Based</span> <span class="err">on</span> <span class="err">the</span> <span class="err">provided</span> <span class="err">information,</span> <span class="err">here</span> <span class="err">are</span> <span class="err">key</span> <span class="err">points</span> <span class="err">to</span> <span class="err">prepare</span> <span class="err">for</span> <span class="err">the</span> <span class="err">conversation</span> <span class="err">with</span> <span class="err">&#39;Dr.</span> <span class="err">Nikola</span> <span class="err">Tesla&#39;</span> <span class="err">about</span> <span class="err">recent</span> <span class="err">advancements</span> <span class="err">in</span> <span class="err">wireless</span> <span class="err">energy:\n</span><span class="mi">1</span><span class="err">.</span> <span class="err">**Wireless</span> <span class="err">Power</span> <span class="err">Transmission</span> <span class="err">(WPT):**</span> <span class="err">Discuss</span> <span class="err">how</span> <span class="err">WPT</span> <span class="err">revolutionizes</span> <span class="err">energy</span> <span class="err">transfer</span> <span class="err">by</span> <span class="err">eliminating</span> <span class="err">the</span> <span class="err">need</span> <span class="err">for</span> <span class="err">cords</span> <span class="err">and</span> <span class="err">leveraging</span> <span class="err">mechanisms</span> <span class="err">like</span> <span class="err">inductive</span> <span class="err">and</span> <span class="err">resonant</span> <span class="err">coupling.\n</span><span class="mi">2</span><span class="err">.</span> <span class="err">**Advancements</span> <span class="err">in</span> <span class="err">Wireless</span> <span class="err">Charging:**</span> <span class="err">Highlight</span> <span class="err">improvements</span> <span class="err">in</span> <span class="err">efficiency,</span> <span class="err">faster</span> <span class="err">charging</span> <span class="err">speeds,</span> <span class="err">and</span> <span class="err">the</span> <span class="err">rise</span> <span class="err">of</span> <span class="err">Qi/Qi</span><span class="mi">2</span> <span class="err">certified</span> <span class="err">wireless</span> <span class="err">charging</span> <span class="err">solutions.\n</span><span class="mi">3</span><span class="err">.</span> <span class="err">**</span><span class="mi">5</span><span class="err">G-Advanced</span> <span class="err">Innovations</span> <span class="err">and</span> <span class="err">NearLink</span> <span class="err">Wireless</span> <span class="err">Protocol:**</span> <span class="err">Mention</span> <span class="err">these</span> <span class="err">as</span> <span class="err">developments</span> <span class="err">that</span> <span class="err">enhance</span> <span class="err">speed,</span> <span class="err">security,</span> <span class="err">and</span> <span class="err">efficiency</span> <span class="err">in</span> <span class="err">wireless</span> <span class="err">networks,</span> <span class="err">which</span> <span class="err">can</span> <span class="err">support</span> <span class="err">advanced</span> <span class="err">wireless</span> <span class="err">energy</span> <span class="err">technologies.\n</span><span class="mi">4</span><span class="err">.</span> <span class="err">**AI</span> <span class="err">and</span> <span class="err">ML</span> <span class="err">at</span> <span class="err">the</span> <span class="err">Edge:**</span> <span class="err">Talk</span> <span class="err">about</span> <span class="err">how</span> <span class="err">AI</span> <span class="err">and</span> <span class="err">machine</span> <span class="err">learning</span> <span class="err">will</span> <span class="err">rely</span> <span class="err">on</span> <span class="err">wireless</span> <span class="err">networks</span> <span class="err">to</span> <span class="err">bring</span> <span class="err">intelligence</span> <span class="err">to</span> <span class="err">the</span> <span class="err">edge,</span> <span class="err">enhancing</span> <span class="err">automation</span> <span class="err">and</span> <span class="err">intelligence</span> <span class="err">in</span> <span class="err">smart</span> <span class="err">homes</span> <span class="err">and</span> <span class="err">buildings.\n</span><span class="mi">5</span><span class="err">.</span> <span class="err">**Matter,</span> <span class="err">Thread,</span> <span class="err">and</span> <span class="err">Security</span> <span class="err">Advancements:**</span> <span class="err">Discuss</span> <span class="err">these</span> <span class="err">as</span> <span class="err">key</span> <span class="err">innovations</span> <span class="err">that</span> <span class="err">drive</span> <span class="err">connectivity,</span> <span class="err">efficiency,</span> <span class="err">and</span> <span class="err">security</span> <span class="err">in</span> <span class="err">IoT</span> <span class="err">devices</span> <span class="err">and</span> <span class="err">systems.\n</span><span class="mi">6</span><span class="err">.</span> <span class="err">**Breakthroughs</span> <span class="err">in</span> <span class="err">Wireless</span> <span class="err">Charging</span> <span class="err">Technology:**</span> <span class="err">Include</span> <span class="err">any</span> <span class="err">recent</span> <span class="err">breakthroughs</span> <span class="err">or</span> <span class="err">studies,</span> <span class="err">such</span> <span class="err">as</span> <span class="err">the</span> <span class="err">one</span> <span class="err">from</span> <span class="err">Incheon</span> <span class="err">National</span> <span class="err">University,</span> <span class="err">to</span> <span class="err">substantiate</span> <span class="err">the</span> <span class="err">advancements</span> <span class="err">in</span> <span class="err">wireless</span> <span class="err">charging.</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></div>
+        </div>
+    </div>
+<h1 id="高级功能记忆">高级功能：记忆！</h1>
+<p>为了让 Alfred 在晚会上提供更多帮助，我们可以启用对话记忆功能，以便他记住之前的互动：
+<div class="details admonition note">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-pencil-alt fa-fw" aria-hidden="true"></i>smolagents<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># Create Alfred with conversation memory</span>
+</span></span><span class="line"><span class="cl"><span class="n">alfred_with_memory</span> <span class="o">=</span> <span class="n">CodeAgent</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="n">tools</span><span class="o">=</span><span class="p">[</span><span class="n">guest_info_tool</span><span class="p">,</span> <span class="n">weather_info_tool</span><span class="p">,</span> <span class="n">hub_stats_tool</span><span class="p">,</span> <span class="n">search_tool</span><span class="p">],</span> 
+</span></span><span class="line"><span class="cl">    <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">add_base_tools</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">planning_interval</span><span class="o">=</span><span class="mi">3</span> <span class="c1"># 代理每执行 3 个工具调用 后，会基于当前记忆重新规划后续步骤。</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># First interaction</span>
+</span></span><span class="line"><span class="cl"><span class="n">response1</span> <span class="o">=</span> <span class="n">alfred_with_memory</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&#34;Tell me about Lady Ada Lovelace.&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;🎩 Alfred&#39;s First Response:&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">response1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Second interaction (referencing the first)</span>
+</span></span><span class="line"><span class="cl"><span class="n">response2</span> <span class="o">=</span> <span class="n">alfred_with_memory</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&#34;What projects is she currently working on?&#34;</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;🎩 Alfred&#39;s Second Response:&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">response2</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></div>
+        </div>
+    </div></p>
+<div class="details admonition note">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-pencil-alt fa-fw" aria-hidden="true"></i>llama-index<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">llama_index.core.workflow</span> <span class="kn">import</span> <span class="n">Context</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">alfred</span> <span class="o">=</span> <span class="n">AgentWorkFlow</span><span class="o">.</span><span class="n">from_tools_or_functions</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="n">guest_info_tool</span><span class="p">,</span> <span class="n">search_tool</span><span class="p">,</span> <span class="n">weather_info_tool</span><span class="p">,</span> <span class="n">hub_stats_tool</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">    <span class="n">llm</span><span class="o">=</span><span class="n">llm</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Remembering state</span>
+</span></span><span class="line"><span class="cl"><span class="n">ctx</span> <span class="o">=</span> <span class="n">Context</span><span class="p">(</span><span class="n">alfred</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># First interaction</span>
+</span></span><span class="line"><span class="cl"><span class="n">response1</span> <span class="o">=</span> <span class="k">await</span> <span class="n">alfred</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&#34;Tell me about Lady Ada Lovelace.&#34;</span><span class="p">,</span> <span class="n">ctx</span><span class="o">=</span><span class="n">ctx</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;🎩 Alfred&#39;s First Response:&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">response1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Second interaction (referencing the first)</span>
+</span></span><span class="line"><span class="cl"><span class="n">response2</span> <span class="o">=</span> <span class="k">await</span> <span class="n">alfred</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&#34;What projects is she currently working on?&#34;</span><span class="p">,</span> <span class="n">ctx</span><span class="o">=</span><span class="n">ctx</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;🎩 Alfred&#39;s Second Response:&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">response2</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></div>
+        </div>
+    </div>
+<p><div class="details admonition note">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-pencil-alt fa-fw" aria-hidden="true"></i>langgraph<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><p>显式传递消息</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># First interaction</span>
+</span></span><span class="line"><span class="cl"><span class="n">response</span> <span class="o">=</span> <span class="n">alfred</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&#34;messages&#34;</span><span class="p">:</span> <span class="p">[</span><span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&#34;Tell me about &#39;Lady Ada Lovelace&#39;. What&#39;s her background and how is she related to me?&#34;</span><span class="p">)]})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;🎩 Alfred&#39;s Response:&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;messages&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Second interaction (referencing the first)</span>
+</span></span><span class="line"><span class="cl"><span class="n">response</span> <span class="o">=</span> <span class="n">alfred</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&#34;messages&#34;</span><span class="p">:</span> <span class="n">response</span><span class="p">[</span><span class="s2">&#34;messages&#34;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&#34;What projects is she currently working on?&#34;</span><span class="p">)]})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;🎩 Alfred&#39;s Response:&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;messages&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></div>
+        </div>
+    </div>
+总结一下：</p>
+<ul>
+<li>smolagents：内存不会在不同的执行运行中保留，您必须使用 reset=False 明确声明它。</li>
+<li>LlamaIndex：需要在运行中明确添加用于内存管理的上下文对象。</li>
+<li>LangGraph：提供检索以前的消息或使用专用 <a href="https://langchain-ai.github.io/langgraph/concepts/why-langgraph/#part-3-adding-memory-to-the-chatbot" target="_blank" rel="noopener noreffer ">MemorySaver </a>组件的选项。</li>
+</ul>
+<p>完结撒花~</p>
 </div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 242417-17-30&nbsp;<a class="git-hash" href="https://github.com/zjzjy/commit/e7379ebcedcb0632723de8037be679b833c8f41d" target="_blank" title="commit by 郑钧尹(Zheng Junyin)(108924030&#43;zjzjy@users.noreply.github.com) e7379ebcedcb0632723de8037be679b833c8f41d: 39">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>e7379eb</a></span>
+                <span>更新于 262616-16-20&nbsp;<a class="git-hash" href="https://github.com/zjzjy/commit/c69ed64b3cbf30197a76443eb65c0c1e070f3851" target="_blank" title="commit by 郑钧尹(Zheng Junyin)(108924030&#43;zjzjy@users.noreply.github.com) c69ed64b3cbf30197a76443eb65c0c1e070f3851: 44">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>c69ed64</a></span>
             </div><div class="post-info-license">
                 <span><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
             </div></div>
@@ -1480,7 +2134,8 @@
         </section>
     </div>
 
-    <div class="post-nav"><a href="/agent-langgraph/" class="prev" rel="prev" title="LangGraph - Introduction"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>LangGraph - Introduction</a></div>
+    <div class="post-nav"><a href="/agent-langgraph/" class="prev" rel="prev" title="LangGraph - Introduction"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>LangGraph - Introduction</a>
+            <a href="/genrec-paper-recommender-systems-with-generative-retrieval/" class="next" rel="next" title="Try">Try<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
 </article></div>
             </main><footer class="footer">

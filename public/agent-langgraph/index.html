@@ -7,12 +7,12 @@
         <title>LangGraph - Introduction - June&#39;s Island</title><meta name="Description" content="Hiro&#39;s Learning and Daily Records Island"><meta property="og:url" content="http://localhost:1313/agent-langgraph/">
   <meta property="og:site_name" content="June&#39;s Island">
   <meta property="og:title" content="LangGraph - Introduction">
-  <meta property="og:description" content="本文根据Hugging Face上的Agent课程编写而成，包括 。 在本章节您将学习如何使用 LangGraph 框架构建应用程序，该框架旨在帮助您构建和协调复杂的 LLM 工作流程。LangGraph 是一个框架，它通过为您提供代理流程的控制工具，允许您构建可用于生产的应用程序。 相关资源：">
+  <meta property="og:description" content="本文根据Hugging Face上的Agent课程编写而成。 在本章节您将学习如何使用 LangGraph 框架构建应用程序，该框架旨在帮助您构建和协调复杂的 LLM 工作流程。LangGraph 是一个框架，它通过为您提供代理流程的控制工具，允许您构建可用于生产的应用程序。 相关资源：">
   <meta property="og:locale" content="zh_CN">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
     <meta property="article:published_time" content="2025-06-21T10:21:11+08:00">
-    <meta property="article:modified_time" content="2025-06-21T17:38:45+08:00">
+    <meta property="article:modified_time" content="2025-06-26T14:11:16+08:00">
     <meta property="article:tag" content="Agent">
     <meta property="article:tag" content="LangGraph">
     <meta property="og:image" content="http://localhost:1313/agent-langgraph/featured-image.jpg">
@@ -20,7 +20,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="http://localhost:1313/agent-langgraph/featured-image.jpg">
   <meta name="twitter:title" content="LangGraph - Introduction">
-  <meta name="twitter:description" content="本文根据Hugging Face上的Agent课程编写而成，包括 。 在本章节您将学习如何使用 LangGraph 框架构建应用程序，该框架旨在帮助您构建和协调复杂的 LLM 工作流程。LangGraph 是一个框架，它通过为您提供代理流程的控制工具，允许您构建可用于生产的应用程序。 相关资源：">
+  <meta name="twitter:description" content="本文根据Hugging Face上的Agent课程编写而成。 在本章节您将学习如何使用 LangGraph 框架构建应用程序，该框架旨在帮助您构建和协调复杂的 LLM 工作流程。LangGraph 是一个框架，它通过为您提供代理流程的控制工具，允许您构建可用于生产的应用程序。 相关资源：">
 <meta name="application-name" content="June&#39;s Island">
 <meta name="apple-mobile-web-app-title" content="June&#39;s Island"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -40,8 +40,8 @@
                             "url": "http:\/\/localhost:1313\/agent-langgraph\/featured-image.jpg",
                             "width":  1598 ,
                             "height":  870 
-                        }],"genre": "posts","keywords": "Agent, LangGraph","wordcount":  4347 ,
-        "url": "http:\/\/localhost:1313\/agent-langgraph\/","datePublished": "2025-06-21T10:21:11+08:00","dateModified": "2025-06-21T17:38:45+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+                        }],"genre": "posts","keywords": "Agent, LangGraph","wordcount":  4344 ,
+        "url": "http:\/\/localhost:1313\/agent-langgraph\/","datePublished": "2025-06-21T10:21:11+08:00","dateModified": "2025-06-26T14:11:16+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "xxxx","logo": {
                     "@type": "ImageObject",
@@ -125,7 +125,7 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">LangGraph - Introduction</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://github.com/zjzjy" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>June</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/agent/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Agent</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="212111-11-100">212111-11-100</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 4347 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="212111-11-100">212111-11-100</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 4344 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 9 分钟&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -164,7 +164,7 @@
     <li><a href="#the-react-pattern-how-i-assist-mr-wayne">The ReAct Pattern: How I Assist Mr. Wayne?</a></li>
   </ul>
 </nav></div>
-            </div><div class="content" id="content"><p>本文根据<a href="https://huggingface.co/learn/agents-course/unit2/langgraph/introduction" target="_blank" rel="noopener noreffer ">Hugging Face上的Agent课程</a>编写而成，包括        。
+            </div><div class="content" id="content"><p>本文根据<a href="https://huggingface.co/learn/agents-course/unit2/langgraph/introduction" target="_blank" rel="noopener noreffer ">Hugging Face上的Agent课程</a>编写而成。
 在本章节您将学习如何使用 <a href="https://github.com/langchain-ai/langgraph" target="_blank" rel="noopener noreffer ">LangGraph</a> 框架构建应用程序，该框架旨在帮助您构建和协调复杂的 LLM 工作流程。LangGraph 是一个框架，它通过为您提供代理流程的控制工具，允许您构建可用于生产的应用程序。
 相关资源：</p>
 <ul>
@@ -1330,8 +1330,8 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 212145-45-50&nbsp;<a class="git-hash" href="https://github.com/zjzjy/commit/638e5c60305cd5d305ec97e512a4b226578cca7b" target="_blank" title="commit by 郑钧尹(Zheng Junyin)(108924030&#43;zjzjy@users.noreply.github.com) 638e5c60305cd5d305ec97e512a4b226578cca7b: 30">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>638e5c6</a></span>
+                <span>更新于 262616-16-20&nbsp;<a class="git-hash" href="https://github.com/zjzjy/commit/c69ed64b3cbf30197a76443eb65c0c1e070f3851" target="_blank" title="commit by 郑钧尹(Zheng Junyin)(108924030&#43;zjzjy@users.noreply.github.com) c69ed64b3cbf30197a76443eb65c0c1e070f3851: 44">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>c69ed64</a></span>
             </div><div class="post-info-license">
                 <span><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
             </div></div>

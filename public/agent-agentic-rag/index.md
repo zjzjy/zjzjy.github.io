@@ -1,6 +1,6 @@
 # Agentic RAG - Usecase
 
-本文根据[Hugging Face上的Agent课程](https://huggingface.co/learn/agents-course/unit3/agentic-rag/introduction)编写而成，包括        。
+本文根据[Hugging Face上的Agent课程](https://huggingface.co/learn/agents-course/unit3/agentic-rag/introduction)编写而成。
 在本章节，我们将使用 Agentic RAG 创建一个工具来帮助主持晚会的友好经纪人 Alfred，该工具可用于回答有关晚会嘉宾的问题。
 # 难忘的盛会
 你决定举办一场本世纪最奢华、最奢华的派对。 这意味着丰盛的宴席、迷人的舞者、知名 DJ、精致的饮品、令人叹为观止的烟火表演等等。我们委托管家Alfred来全权举办这个盛会。为此，他需要掌握派对的所有信息，包括菜单、宾客、日程安排、天气预报等等！不仅如此，他还需要确保聚会取得成功，因此他需要能够在聚会期间回答有关聚会的任何问题 ，同时处理可能出现的意外情况。他无法独自完成这项工作，所以我们需要确保阿尔弗雷德能够获得他所需的所有信息和工具。  
@@ -631,3 +631,315 @@ print("🎩 Alfred's Response:")
 print(response['messages'][-1].content)
 ```
 {{< /admonition >}}
+
+## Creating Your Gala Agent  
+现在我们已经为 Alfred 构建了所有必要的组件，现在是时候将所有组件整合成一个完整的代理，以帮助我们举办奢华的盛会。  
+在本节中，我们将把客人信息检索、网络搜索、天气信息和 Hub 统计工具组合成一个强大的代理。  
+我们在之前已经实现了tools.py和retriever.py，接下来要导入它们。
+{{< admonition note "solagents" false>}}
+```python
+# Import necessary libraries
+import random
+from smolagents import CodeAgent, InferenceClientModel
+
+# Import our custom tools from their modules
+from tools import DuckDuckGoSearchTool, WeatherInfoTool, HubStatsTool
+from retriever import load_guest_dataset
+
+# Initialize the Hugging Face model
+model = InferenceClientModel()
+
+# Initialize the web search tool
+search_tool = DuckDuckGoSearchTool()
+
+# Initialize the weather tool
+weather_info_tool = WeatherInfoTool()
+
+# Initialize the Hub stats tool
+hub_stats_tool = HubStatsTool()
+
+# Load the guest dataset and initialize the guest info tool
+guest_info_tool = load_guest_dataset()
+
+# Create Alfred with all the tools
+alfred = CodeAgent(
+    tools=[guest_info_tool, weather_info_tool, hub_stats_tool, search_tool], 
+    model=model,
+    add_base_tools=True,  # Add any additional base tools
+    planning_interval=3   # Enable planning every 3 steps
+)
+```
+{{< /admonition >}}
+{{< admonition note "llama-index" false>}}
+```python
+# Import necessary libraries
+from llama_index.core.agent.workflow import AgentWorkflow
+from llama_index.llms.huggingface_api import HuggingFaceInferenceAPI
+
+from tools import search_tool, weather_info_tool, hub_stats_tool
+from retriever import guest_info_tool
+
+# Initialize the Hugging Face model
+llm = HuggingFaceInferenceAPI(model_name="Qwen/Qwen2.5-Coder-32B-Instruct")
+
+# Create Alfred with all the tools
+alfred = AgentWorkflow.from_tools_or_functions(
+    [guest_info_tool, search_tool, weather_info_tool, hub_stats_tool],
+    llm=llm,
+)
+```
+{{< /admonition >}}
+{{< admonition note "langgraph" false>}}
+```python
+from typing import TypedDict, Annotated
+from langgraph.graph.message import add_messages
+from langchain_core.messages import AnyMessage, HumanMessage, AIMessage
+from langgraph.prebuilt import ToolNode
+from langgraph.graph import START, StateGraph
+from langgraph.prebuilt import tools_condition
+from langchain_huggingface import HuggingFaceEndpoint, ChatHuggingFace
+
+from tools import DuckDuckGoSearchRun, weather_info_tool, hub_stats_tool
+from retriever import guest_info_tool
+
+# Initialize the web search tool
+search_tool = DuckDuckGoSearchRun()
+
+# Generate the chat interface, including the tools
+llm = HuggingFaceEndpoint(
+    repo_id="Qwen/Qwen2.5-Coder-32B-Instruct",
+    huggingfacehub_api_token=HUGGINGFACEHUB_API_TOKEN,
+)
+
+chat = ChatHuggingFace(llm=llm, verbose=True)
+tools = [guest_info_tool, search_tool, weather_info_tool, hub_stats_tool]
+chat_with_tools = chat.bind_tools(tools)
+
+# Generate the AgentState and Agent graph
+class AgentState(TypedDict):
+    messages: Annotated[list[AnyMessage], add_messages]
+
+def assistant(state: AgentState):
+    return {
+        "messages": [chat_with_tools.invoke(state["messages"])],
+    }
+
+## The graph
+builder = StateGraph(AgentState)
+
+# Define nodes: these do the work
+builder.add_node("assistant", assistant)
+builder.add_node("tools", ToolNode(tools))
+
+# Define edges: these determine how the control flow moves
+builder.add_edge(START, "assistant")
+builder.add_conditional_edges(
+    "assistant",
+    # If the latest message requires a tool, route to tools
+    # Otherwise, provide a direct response
+    tools_condition,
+)
+builder.add_edge("tools", "assistant")
+alfred = builder.compile()
+```
+{{< /admonition >}}
+# 应用示范
+我们将使用刚刚创建的Alfred Agent完成三个工作：
+1. 查找客人信息
+2. 检查烟花天气
+3. 给AI Builder 客人留下深刻印象
+4. 使用多个工具与尼古拉斯博士进行对话
+{{< admonition note "smolagents" false>}}
+```python 
+# 1.查找客人信息
+query = "Tell me about 'Lady Ada Lovelace'"
+response = alfred.run(query)
+print("🎩 Alfred's Response:")
+print(response)
+# 2.检查烟花天气
+query = "What's the weather like in Paris tonight? Will it be suitable for our fireworks display?"
+response = alfred.run(query)
+
+print("🎩 Alfred's Response:")
+print(response)
+# 3. 给AI Builder 客人留下深刻印象
+query = "One of our guests is from Qwen. What can you tell me about their most popular model?"
+response = alfred.run(query)
+
+print("🎩 Alfred's Response:")
+print(response)
+# 4. 使用多个工具与尼古拉斯博士进行对话
+query = "I need to speak with Dr. Nikola Tesla about recent advancements in wireless energy. Can you help me prepare for this conversation?"
+response = alfred.run(query)
+
+print("🎩 Alfred's Response:")
+print(response)
+```
+ALfred的回答：
+```js
+🎩 Alfred's Response:
+I've gathered information to help you prepare for your conversation with Dr. Nikola Tesla.
+
+Guest Information:
+Name: Dr. Nikola Tesla
+Relation: old friend from university days
+Description: Dr. Nikola Tesla is an old friend from your university days. He's recently patented a new wireless energy transmission system and would be delighted to discuss it with you. Just remember he's passionate about pigeons, so that might make for good small talk.
+Email: nikola.tesla@gmail.com
+
+Recent Advancements in Wireless Energy:
+Based on my web search, here are some recent developments in wireless energy transmission:
+1. Researchers have made progress in long-range wireless power transmission using focused electromagnetic waves
+2. Several companies are developing resonant inductive coupling technologies for consumer electronics
+3. There are new applications in electric vehicle charging without physical connections
+
+Conversation Starters:
+1. "I'd love to hear about your new patent on wireless energy transmission. How does it compare to your original concepts from our university days?"
+2. "Have you seen the recent developments in resonant inductive coupling for consumer electronics? What do you think of their approach?"
+3. "How are your pigeons doing? I remember your fascination with them."
+
+This should give you plenty to discuss with Dr. Tesla while demonstrating your knowledge of his interests and recent developments in his field.
+```
+{{< /admonition >}}
+
+{{< admonition note "llama-index" false>}}
+```python 
+# 1.查找客人信息
+query = "Tell me about 'Lady Ada Lovelace'"
+response = await alfred.run(query)
+print("🎩 Alfred's Response:")
+print(response.response.blocks[0].text)
+# 2.检查烟花天气
+query = "What's the weather like in Paris tonight? Will it be suitable for our fireworks display?"
+response = await alfred.run(query)
+
+print("🎩 Alfred's Response:")
+print(response)
+# 3. 给AI Builder 客人留下深刻印象
+query = "One of our guests is from Google. What can you tell me about their most popular model?"
+response = await alfred.run(query)
+
+print("🎩 Alfred's Response:")
+print(response)
+# 4. 使用多个工具与尼古拉斯博士进行对话
+query = "I need to speak with Dr. Nikola Tesla about recent advancements in wireless energy. Can you help me prepare for this conversation?"
+response = await alfred.run(query)
+
+print("🎩 Alfred's Response:")
+print(response)
+```
+ALfred的回答：
+```json
+🎩 Alfred's Response:
+Here are some recent advancements in wireless energy that you might find useful for your conversation with Dr. Nikola Tesla:
+
+1. **Advancements and Challenges in Wireless Power Transfer**: This article discusses the evolution of wireless power transfer (WPT) from conventional wired methods to modern applications, including solar space power stations. It highlights the initial focus on microwave technology and the current demand for WPT due to the rise of electric devices.
+
+2. **Recent Advances in Wireless Energy Transfer Technologies for Body-Interfaced Electronics**: This article explores wireless energy transfer (WET) as a solution for powering body-interfaced electronics without the need for batteries or lead wires. It discusses the advantages and potential applications of WET in this context.
+
+3. **Wireless Power Transfer and Energy Harvesting: Current Status and Future Trends**: This article provides an overview of recent advances in wireless power supply methods, including energy harvesting and wireless power transfer. It presents several promising applications and discusses future trends in the field.
+
+4. **Wireless Power Transfer: Applications, Challenges, Barriers, and the
+```
+{{< /admonition >}}
+
+{{< admonition note "langgraph" false>}}
+```python 
+# 1.查找客人信息
+response = alfred.invoke({"messages": "Tell me about 'Lady Ada Lovelace'"})
+
+print("🎩 Alfred's Response:")
+print(response['messages'][-1].content)
+# 2.检查烟花天气
+response = alfred.invoke({"messages": "What's the weather like in Paris tonight? Will it be suitable for our fireworks display?"})
+
+print("🎩 Alfred's Response:")
+print(response['messages'][-1].content)
+# 3. 给AI Builder 客人留下深刻印象
+response = alfred.invoke({"messages": "One of our guests is from Qwen. What can you tell me about their most popular model?"})
+
+print("🎩 Alfred's Response:")
+print(response['messages'][-1].content)
+# 4. 使用多个工具与尼古拉斯博士进行对话
+response = alfred.invoke({"messages":"I need to speak with 'Dr. Nikola Tesla' about recent advancements in wireless energy. Can you help me prepare for this conversation?"})
+
+print("🎩 Alfred's Response:")
+print(response['messages'][-1].content)
+```
+ALfred的回答：
+```json
+Based on the provided information, here are key points to prepare for the conversation with 'Dr. Nikola Tesla' about recent advancements in wireless energy:\n1. **Wireless Power Transmission (WPT):** Discuss how WPT revolutionizes energy transfer by eliminating the need for cords and leveraging mechanisms like inductive and resonant coupling.\n2. **Advancements in Wireless Charging:** Highlight improvements in efficiency, faster charging speeds, and the rise of Qi/Qi2 certified wireless charging solutions.\n3. **5G-Advanced Innovations and NearLink Wireless Protocol:** Mention these as developments that enhance speed, security, and efficiency in wireless networks, which can support advanced wireless energy technologies.\n4. **AI and ML at the Edge:** Talk about how AI and machine learning will rely on wireless networks to bring intelligence to the edge, enhancing automation and intelligence in smart homes and buildings.\n5. **Matter, Thread, and Security Advancements:** Discuss these as key innovations that drive connectivity, efficiency, and security in IoT devices and systems.\n6. **Breakthroughs in Wireless Charging Technology:** Include any recent breakthroughs or studies, such as the one from Incheon National University, to substantiate the advancements in wireless charging.
+```
+{{< /admonition >}}
+# 高级功能：记忆！
+为了让 Alfred 在晚会上提供更多帮助，我们可以启用对话记忆功能，以便他记住之前的互动：
+{{< admonition note "smolagents" false>}}
+```python
+# Create Alfred with conversation memory
+alfred_with_memory = CodeAgent(
+    tools=[guest_info_tool, weather_info_tool, hub_stats_tool, search_tool], 
+    model=model,
+    add_base_tools=True,
+    planning_interval=3 # 代理每执行 3 个工具调用 后，会基于当前记忆重新规划后续步骤。
+)
+
+# First interaction
+response1 = alfred_with_memory.run("Tell me about Lady Ada Lovelace.")
+print("🎩 Alfred's First Response:")
+print(response1)
+
+# Second interaction (referencing the first)
+response2 = alfred_with_memory.run("What projects is she currently working on?", reset=False)
+print("🎩 Alfred's Second Response:")
+print(response2)
+```
+{{< /admonition >}}
+
+{{< admonition note "llama-index" false>}}
+```python
+from llama_index.core.workflow import Context
+
+alfred = AgentWorkFlow.from_tools_or_functions(
+  [guest_info_tool, search_tool, weather_info_tool, hub_stats_tool],
+    llm=llm
+)
+
+# Remembering state
+ctx = Context(alfred)
+
+# First interaction
+response1 = await alfred.run("Tell me about Lady Ada Lovelace.", ctx=ctx)
+print("🎩 Alfred's First Response:")
+print(response1)
+
+# Second interaction (referencing the first)
+response2 = await alfred.run("What projects is she currently working on?", ctx=ctx)
+print("🎩 Alfred's Second Response:")
+print(response2)
+```
+{{< /admonition >}}
+
+{{< admonition note "langgraph" false>}}
+显式传递消息
+```python
+# First interaction
+response = alfred.invoke({"messages": [HumanMessage(content="Tell me about 'Lady Ada Lovelace'. What's her background and how is she related to me?")]})
+
+
+print("🎩 Alfred's Response:")
+print(response['messages'][-1].content)
+print()
+
+# Second interaction (referencing the first)
+response = alfred.invoke({"messages": response["messages"] + [HumanMessage(content="What projects is she currently working on?")]})
+
+print("🎩 Alfred's Response:")
+print(response['messages'][-1].content)
+```
+{{< /admonition >}}
+总结一下：
+- smolagents：内存不会在不同的执行运行中保留，您必须使用 reset=False 明确声明它。
+- LlamaIndex：需要在运行中明确添加用于内存管理的上下文对象。
+- LangGraph：提供检索以前的消息或使用专用 [MemorySaver ](https://langchain-ai.github.io/langgraph/concepts/why-langgraph/#part-3-adding-memory-to-the-chatbot)组件的选项。
+
+
+完结撒花~

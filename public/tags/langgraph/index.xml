@@ -9,14 +9,14 @@
     <managingEditor>224040086@link.cuhk.edu.cn (Junyin Zheng)</managingEditor>
     <webMaster>224040086@link.cuhk.edu.cn (Junyin Zheng)</webMaster>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Sat, 21 Jun 2025 17:38:45 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 26 Jun 2025 14:11:16 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/tags/langgraph/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>LangGraph - Introduction</title>
       <link>http://localhost:1313/agent-langgraph/</link>
       <pubDate>Sat, 21 Jun 2025 10:21:11 +0800</pubDate><author>224040086@link.cuhk.edu.cn (Junyin Zheng)</author>
       <guid>http://localhost:1313/agent-langgraph/</guid>
-      <description>&lt;p&gt;本文根据&lt;a href=&#34;https://huggingface.co/learn/agents-course/unit2/langgraph/introduction&#34; target=&#34;_blank&#34; rel=&#34;noopener noreffer &#34;&gt;Hugging Face上的Agent课程&lt;/a&gt;编写而成，包括        。&#xA;在本章节您将学习如何使用 &lt;a href=&#34;https://github.com/langchain-ai/langgraph&#34; target=&#34;_blank&#34; rel=&#34;noopener noreffer &#34;&gt;LangGraph&lt;/a&gt; 框架构建应用程序，该框架旨在帮助您构建和协调复杂的 LLM 工作流程。LangGraph 是一个框架，它通过为您提供代理流程的控制工具，允许您构建可用于生产的应用程序。&#xA;相关资源：&lt;/p&gt;</description>
+      <description>&lt;p&gt;本文根据&lt;a href=&#34;https://huggingface.co/learn/agents-course/unit2/langgraph/introduction&#34; target=&#34;_blank&#34; rel=&#34;noopener noreffer &#34;&gt;Hugging Face上的Agent课程&lt;/a&gt;编写而成。&#xA;在本章节您将学习如何使用 &lt;a href=&#34;https://github.com/langchain-ai/langgraph&#34; target=&#34;_blank&#34; rel=&#34;noopener noreffer &#34;&gt;LangGraph&lt;/a&gt; 框架构建应用程序，该框架旨在帮助您构建和协调复杂的 LLM 工作流程。LangGraph 是一个框架，它通过为您提供代理流程的控制工具，允许您构建可用于生产的应用程序。&#xA;相关资源：&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

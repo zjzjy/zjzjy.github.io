@@ -1,6 +1,6 @@
 # LangGraph - Introduction
 
-本文根据[Hugging Face上的Agent课程](https://huggingface.co/learn/agents-course/unit2/langgraph/introduction)编写而成，包括        。
+本文根据[Hugging Face上的Agent课程](https://huggingface.co/learn/agents-course/unit2/langgraph/introduction)编写而成。
 在本章节您将学习如何使用 [LangGraph](https://github.com/langchain-ai/langgraph) 框架构建应用程序，该框架旨在帮助您构建和协调复杂的 LLM 工作流程。LangGraph 是一个框架，它通过为您提供代理流程的控制工具，允许您构建可用于生产的应用程序。
 相关资源：
 - [LangGraph 代理](https://langchain-ai.github.io/langgraph/) - LangGraph 代理示例

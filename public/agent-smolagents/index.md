@@ -1,6 +1,6 @@
 # Smolagents - Introduction
 
-本文根据[Hugging Face上的Agent课程](https://huggingface.co/learn/agents-course/unit2/smolagents/introduction)编写而成，包括        。
+本文根据[Hugging Face上的Agent课程](https://huggingface.co/learn/agents-course/unit2/smolagents/introduction)编写而成。
 相关资源：
 - [smolagents Documentation](https://huggingface.co/docs/smolagents) - Official docs for the smolagents library
 - [Building Effective Agents](https://www.anthropic.com/engineering/building-effective-agents) - Research paper on agent architectures

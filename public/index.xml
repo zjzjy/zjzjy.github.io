@@ -4,15 +4,23 @@
         <link>http://localhost:1313/</link>
         <description>Hiro&#39;s Learning and Daily Records Island</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>224040086@link.cuhk.edu.cn (Junyin Zheng)</managingEditor>
-            <webMaster>224040086@link.cuhk.edu.cn (Junyin Zheng)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 22 Jun 2025 12:03:24 &#43;0800</lastBuildDate>
+            <webMaster>224040086@link.cuhk.edu.cn (Junyin Zheng)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 26 Jun 2025 14:18:22 &#43;0800</lastBuildDate>
             <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>GenRec - Recommender Systems with Generative Retrieval</title>
+    <link>http://localhost:1313/genrec-paper-recommender-systems-with-generative-retrieval/</link>
+    <pubDate>Thu, 26 Jun 2025 14:18:22 &#43;0800</pubDate>
+    <author>June</author>
+    <guid>http://localhost:1313/genrec-paper-recommender-systems-with-generative-retrieval/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>Agentic RAG - Usecase</title>
     <link>http://localhost:1313/agent-agentic-rag/</link>
     <pubDate>Sun, 22 Jun 2025 12:03:24 &#43;0800</pubDate>
     <author>June</author>
     <guid>http://localhost:1313/agent-agentic-rag/</guid>
-    <description><![CDATA[<p>本文根据<a href="https://huggingface.co/learn/agents-course/unit3/agentic-rag/introduction" target="_blank" rel="noopener noreffer ">Hugging Face上的Agent课程</a>编写而成，包括        。
+    <description><![CDATA[<p>本文根据<a href="https://huggingface.co/learn/agents-course/unit3/agentic-rag/introduction" target="_blank" rel="noopener noreffer ">Hugging Face上的Agent课程</a>编写而成。
 在本章节，我们将使用 Agentic RAG 创建一个工具来帮助主持晚会的友好经纪人 Alfred，该工具可用于回答有关晚会嘉宾的问题。</p>]]></description>
 </item>
 <item>
@@ -21,7 +29,7 @@
     <pubDate>Sat, 21 Jun 2025 10:21:11 &#43;0800</pubDate>
     <author>June</author>
     <guid>http://localhost:1313/agent-langgraph/</guid>
-    <description><![CDATA[<p>本文根据<a href="https://huggingface.co/learn/agents-course/unit2/langgraph/introduction" target="_blank" rel="noopener noreffer ">Hugging Face上的Agent课程</a>编写而成，包括        。
+    <description><![CDATA[<p>本文根据<a href="https://huggingface.co/learn/agents-course/unit2/langgraph/introduction" target="_blank" rel="noopener noreffer ">Hugging Face上的Agent课程</a>编写而成。
 在本章节您将学习如何使用 <a href="https://github.com/langchain-ai/langgraph" target="_blank" rel="noopener noreffer ">LangGraph</a> 框架构建应用程序，该框架旨在帮助您构建和协调复杂的 LLM 工作流程。LangGraph 是一个框架，它通过为您提供代理流程的控制工具，允许您构建可用于生产的应用程序。
 相关资源：</p>]]></description>
 </item>
@@ -31,7 +39,7 @@
     <pubDate>Thu, 19 Jun 2025 14:38:53 &#43;0800</pubDate>
     <author>June</author>
     <guid>http://localhost:1313/agent-llamaindex/</guid>
-    <description><![CDATA[<p>本文根据<a href="https://huggingface.co/learn/agents-course/unit2/llama-index/introduction" target="_blank" rel="noopener noreffer ">Hugging Face上的Agent课程</a>编写而成，包括        。</p>
+    <description><![CDATA[<p>本文根据<a href="https://huggingface.co/learn/agents-course/unit2/llama-index/introduction" target="_blank" rel="noopener noreffer ">Hugging Face上的Agent课程</a>编写而成。</p>
 <h1 id="什么是llamaindex">什么是LlamaIndex？</h1>
 <p>LlamaIndex 是一个完整的工具包，用于使用索引和工作流创建基于LLM的Agent。</p>
 <h2 id="llamaindex的关键部分以及它们如何帮助代理">LlamaIndex的关键部分以及它们如何帮助代理？</h2>
@@ -46,7 +54,7 @@
     <pubDate>Tue, 17 Jun 2025 15:27:19 &#43;0800</pubDate>
     <author>June</author>
     <guid>http://localhost:1313/agent-smolagents/</guid>
-    <description><![CDATA[<p>本文根据<a href="https://huggingface.co/learn/agents-course/unit2/smolagents/introduction" target="_blank" rel="noopener noreffer ">Hugging Face上的Agent课程</a>编写而成，包括        。
+    <description><![CDATA[<p>本文根据<a href="https://huggingface.co/learn/agents-course/unit2/smolagents/introduction" target="_blank" rel="noopener noreffer ">Hugging Face上的Agent课程</a>编写而成。
 相关资源：</p>
 <ul>
 <li><a href="https://huggingface.co/docs/smolagents" target="_blank" rel="noopener noreffer ">smolagents Documentation</a> - Official docs for the smolagents library</li>
@@ -75,38 +83,6 @@
     <author>June</author>
     <guid>http://localhost:1313/reading-factfulness/</guid>
     <description><![CDATA[<p>听了Tako的推荐，决定读一读这本书。果然带给我极大的收获。可以这么说，这本书一定程度上修正了我的世界观和价值观，重塑了我对待事物的态度。花了五个半小时读完中了中译版，我想再过一段时间经历更多的事情之后，我会再读一遍英文原版，看看是否会有观念的变化。</p>]]></description>
-</item>
-<item>
-    <title>主题文档 - 基本概念</title>
-    <link>http://localhost:1313/theme-documentation-basics/</link>
-    <pubDate>Fri, 06 Mar 2020 21:40:32 &#43;0800</pubDate>
-    <author>Dillon</author>
-    <guid>http://localhost:1313/theme-documentation-basics/</guid>
-    <description><![CDATA[<p>探索 Hugo - <strong>LoveIt</strong> 主题的全部内容和背后的核心概念.</p>]]></description>
-</item>
-<item>
-    <title>主题文档 - 内容</title>
-    <link>http://localhost:1313/theme-documentation-content/</link>
-    <pubDate>Thu, 05 Mar 2020 16:30:05 &#43;0800</pubDate>
-    <author>Dillon</author>
-    <guid>http://localhost:1313/theme-documentation-content/</guid>
-    <description><![CDATA[<p>了解如何在 <strong>LoveIt</strong> 主题中快速, 直观地创建和组织内容.</p>]]></description>
-</item>
-<item>
-    <title>主题文档 - 内置 Shortcodes</title>
-    <link>http://localhost:1313/theme-documentation-built-in-shortcodes/</link>
-    <pubDate>Wed, 04 Mar 2020 16:29:59 &#43;0800</pubDate>
-    <author>Dillon</author>
-    <guid>http://localhost:1313/theme-documentation-built-in-shortcodes/</guid>
-    <description><![CDATA[<p><strong>Hugo</strong> 提供了多个内置的 Shortcodes, 以方便作者保持 Markdown 内容的整洁.</p>]]></description>
-</item>
-<item>
-    <title>主题文档 - 扩展 Shortcodes</title>
-    <link>http://localhost:1313/theme-documentation-extended-shortcodes/</link>
-    <pubDate>Tue, 03 Mar 2020 16:29:59 &#43;0800</pubDate>
-    <author>Dillon</author>
-    <guid>http://localhost:1313/theme-documentation-extended-shortcodes/</guid>
-    <description><![CDATA[<p><strong>LoveIt</strong> 主题在 Hugo 内置的 shortcode 的基础上提供多个扩展的 shortcode.</p>]]></description>
 </item>
 </channel>
 </rss>
