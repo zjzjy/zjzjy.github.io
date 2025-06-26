@@ -26,7 +26,7 @@ license: '<a rel="license external nofollow noopener noreffer" href="https://cre
 toc:
   auto: false
 ---
-本文根据[Hugging Face上的Agent课程](https://huggingface.co/learn/agents-course/unit2/llama-index/introduction)编写而成，包括        。
+本文根据[Hugging Face上的Agent课程](https://huggingface.co/learn/agents-course/unit2/llama-index/introduction)编写而成。
 # 什么是LlamaIndex？
 LlamaIndex 是一个完整的工具包，用于使用索引和工作流创建基于LLM的Agent。
 ## LlamaIndex的关键部分以及它们如何帮助代理？
