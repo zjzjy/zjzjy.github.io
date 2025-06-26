@@ -12,7 +12,8 @@
     <pubDate>Thu, 26 Jun 2025 14:18:22 &#43;0800</pubDate>
     <author>June</author>
     <guid>http://localhost:1313/genrec-paper-recommender-systems-with-generative-retrieval/</guid>
-    <description><![CDATA[]]></description>
+    <description><![CDATA[<h1 id="related-work">Related Work</h1>
+<p><strong>Sequential Recommenders</strong>：序列推荐系统旨在根据用户过去的交互行为序列来预测用户接下来可能与之交互的项目。早期方法常依赖于马尔可夫链技术来基于历史交互建模用户行为。近年来，基于Transformer的模型被广泛应用于序列推荐系统中，这些模型能够捕捉用户交互序列中的长距离依赖关系。在使用时，首先需要收集用户与项目的交互数据，并按照时间顺序构建用户的行为序列。然后，选择合适的序列模型（如GRU、LSTM、Transformer等）来学习用户的行为模式。在训练过程中，模型会根据用户的历史行为序列来预测用户接下来可能感兴趣的项目。最后，在实际应用中，根据模型的预测结果为用户生成推荐列表。</p>]]></description>
 </item>
 <item>
     <title>Agentic RAG - Usecase</title>
