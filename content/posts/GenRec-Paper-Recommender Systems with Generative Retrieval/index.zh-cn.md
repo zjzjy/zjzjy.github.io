@@ -45,7 +45,16 @@ toc:
   自回归（Autoregressive）是一种生成模型的常见方法，它通过逐步生成序列中的下一个元素来构建输出。在生成式检索中，模型会根据用户的历史行为序列，逐步生成目标项目的索引。
 
 ## 框架介绍
-
+![TIGER Overview](/assets/images/genrec-google-overview.png)
+1. **生成语义ID**：这一步涉及将项目的内容特征（例如标题、描述或图片）编码成嵌入向量，然后通过量化方案将这些嵌入向量转换成codewords元组，具体来说：
+  - 使用预训练的内容编码器（如 Sentence-T5 或 BERT）来生成项目的语义嵌入。
+  - 应用量化方法（例如 RQ-VAE）来生成语义ID，这通常涉及将连续的嵌入向量映射到离散的代码字空间。
+2. **训练生成式推荐系统**：这一步涉及使用基于 Transformer 的序列到序列模型，并在语义ID上进行训练，以预测用户接下来可能交互的项目。
+## Semantic ID 怎么生成？
+![RQ-VAE Overview](/assets/images/RQ-VAE.png)
+**RQ-VAE**：通过更新codebook和DNN encoder-decoder参数共同训练自动编码器。
+RQ-VAE首先通过编码器$\mathcal{E}$编码输入x，以学习潜在表示z：= $\mathcal{E}$（x）。在d = 0时，初始残差简单地定义为r0：= z。在每个level的d中，我们都有一个CodeBook $\mathcal{C}_d$：= $\{e_k\}_{k=1}^{K}$ = 1，其中k是codebook的大小。然后，通过将r0映射到该level的codebook中closest的嵌入来量化r0。 d = 0时，$e_{c_d}$的索引，即$c_0 = arg min_{i}∥r0-e_{k}∥$。对于下一个d = 1，残差定义为r1：= r0  -  $e_{c_0}$。然后，类似于level 0，通过找到最接近r1的嵌入方式来计算第一级的代码。该过程是递归的M次重复，以获取代表语义ID的M codeWord元组。这种递归方法近似于从粗到细粒度的输入。请注意，我们选择为每个M级别使用大小K的单独代码簿，而不是使用单个MK大小的代码簿。之所以这样做，是因为residue的范数倾向于随着水平的增加而降低，因此允许不同水平的不同粒度。  
+我们有语义ID$(c_0,...,c_{m-1})$，z的量化表示为$\hat{z}:=\Sigma^{m-1}_{d=0}e_{c_i}$，再把$\hat{z}$传递给decoder。RQ-VAE的loss定义为$\mathcal{L}(x):=\mathcal{L}_{recon}+\mathcal{L}_{rqvae},\text{     } \mathcal{L}_{recon}:=∥x-\hat{x}∥^2,\mathcal{L}_{rqvae}:=\Sigma^{m-1}_{d=0}∥sg[r_i]-e_{c_i}∥^2+\beta∥r_i-sg[e_{c_i}]∥^2$。sg是stop-gradient，以做到分部分不打扰地参数更新。基于K-Means聚集的初始化为codebook。  
 
 ## 做了哪些实验？
 

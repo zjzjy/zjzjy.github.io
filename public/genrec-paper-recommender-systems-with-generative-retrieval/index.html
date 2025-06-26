@@ -39,7 +39,7 @@
                             "url": "http:\/\/localhost:1313\/genrec-paper-recommender-systems-with-generative-retrieval\/featured-image.jpg",
                             "width":  1094 ,
                             "height":  502 
-                        }],"genre": "posts","keywords": "GenRec","wordcount":  1963 ,
+                        }],"genre": "posts","keywords": "GenRec","wordcount":  3017 ,
         "url": "http:\/\/localhost:1313\/genrec-paper-recommender-systems-with-generative-retrieval\/","datePublished": "2025-06-26T14:18:22+08:00","dateModified": "2025-06-26T14:18:22+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "xxxx","logo": {
@@ -124,8 +124,8 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">GenRec - Recommender Systems with Generative Retrieval</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://github.com/zjzjy" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>June</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/genrec/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>GenRec</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="262622-22-20">262622-22-20</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1963 字&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 4 分钟&nbsp;</div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="262622-22-20">262622-22-20</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3017 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 7 分钟&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
         src="/svg/loading.min.svg"
@@ -142,6 +142,7 @@
   <ul>
     <li><a href="#related-work">Related Work</a></li>
     <li><a href="#框架介绍">框架介绍</a></li>
+    <li><a href="#semantic-id-怎么生成">Semantic ID 怎么生成？</a></li>
     <li><a href="#做了哪些实验">做了哪些实验？</a></li>
     <li><a href="#解决什么问题怎么解决的">解决什么问题？怎么解决的？</a></li>
     <li><a href="#有什么未来改进方向">有什么未来改进方向？</a></li>
@@ -169,6 +170,36 @@
 自回归（Autoregressive）是一种生成模型的常见方法，它通过逐步生成序列中的下一个元素来构建输出。在生成式检索中，模型会根据用户的历史行为序列，逐步生成目标项目的索引。</li>
 </ul>
 <h2 id="框架介绍">框架介绍</h2>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/assets/images/genrec-google-overview.png"
+        data-srcset="/assets/images/genrec-google-overview.png, /assets/images/genrec-google-overview.png 1.5x, /assets/images/genrec-google-overview.png 2x"
+        data-sizes="auto"
+        alt="/assets/images/genrec-google-overview.png"
+        title="TIGER Overview" /></p>
+<ol>
+<li><strong>生成语义ID</strong>：这一步涉及将项目的内容特征（例如标题、描述或图片）编码成嵌入向量，然后通过量化方案将这些嵌入向量转换成codewords元组，具体来说：</li>
+</ol>
+<ul>
+<li>使用预训练的内容编码器（如 Sentence-T5 或 BERT）来生成项目的语义嵌入。</li>
+<li>应用量化方法（例如 RQ-VAE）来生成语义ID，这通常涉及将连续的嵌入向量映射到离散的代码字空间。</li>
+</ul>
+<ol start="2">
+<li><strong>训练生成式推荐系统</strong>：这一步涉及使用基于 Transformer 的序列到序列模型，并在语义ID上进行训练，以预测用户接下来可能交互的项目。</li>
+</ol>
+<h2 id="semantic-id-怎么生成">Semantic ID 怎么生成？</h2>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/assets/images/RQ-VAE.png"
+        data-srcset="/assets/images/RQ-VAE.png, /assets/images/RQ-VAE.png 1.5x, /assets/images/RQ-VAE.png 2x"
+        data-sizes="auto"
+        alt="/assets/images/RQ-VAE.png"
+        title="RQ-VAE Overview" />
+<strong>RQ-VAE</strong>：通过更新codebook和DNN encoder-decoder参数共同训练自动编码器。
+RQ-VAE首先通过编码器$\mathcal{E}$编码输入x，以学习潜在表示z：= $\mathcal{E}$（x）。在d = 0时，初始残差简单地定义为r0：= z。在每个level的d中，我们都有一个CodeBook $\mathcal{C}<em>d$：= ${e_k}</em>{k=1}^{K}$ = 1，其中k是codebook的大小。然后，通过将r0映射到该level的codebook中closest的嵌入来量化r0。 d = 0时，$e_{c_d}$的索引，即$c_0 = arg min_{i}∥r0-e_{k}∥$。对于下一个d = 1，残差定义为r1：= r0  -  $e_{c_0}$。然后，类似于level 0，通过找到最接近r1的嵌入方式来计算第一级的代码。该过程是递归的M次重复，以获取代表语义ID的M codeWord元组。这种递归方法近似于从粗到细粒度的输入。请注意，我们选择为每个M级别使用大小K的单独代码簿，而不是使用单个MK大小的代码簿。之所以这样做，是因为residue的范数倾向于随着水平的增加而降低，因此允许不同水平的不同粒度。<br>
+我们有语义ID$(c_0,&hellip;,c_{m-1})$，z的量化表示为$\hat{z}:=\Sigma^{m-1}<em>{d=0}e</em>{c_i}$，再把$\hat{z}$传递给decoder。RQ-VAE的loss定义为$\mathcal{L}(x):=\mathcal{L}<em>{recon}+\mathcal{L}</em>{rqvae},\text{     } \mathcal{L}<em>{recon}:=∥x-\hat{x}∥^2,\mathcal{L}</em>{rqvae}:=\Sigma^{m-1}<em>{d=0}∥sg[r_i]-e</em>{c_i}∥^2+\beta∥r_i-sg[e_{c_i}]∥^2$。sg是stop-gradient，以做到分部分不打扰地参数更新。基于K-Means聚集的初始化为codebook。</p>
 <h2 id="做了哪些实验">做了哪些实验？</h2>
 <h2 id="解决什么问题怎么解决的">解决什么问题？怎么解决的？</h2>
 <h2 id="有什么未来改进方向">有什么未来改进方向？</h2>
