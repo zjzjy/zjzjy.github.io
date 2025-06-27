@@ -121,3 +121,5 @@ Inference：为什么能做的块？没有在online的时候inference，而是�
 表12：尝试不同的embedding？LLM embedding+timestep 表现更好。  item ID反而表现更差。
 
 表13，14：sequence length越大，表现越好；模型越大，表现越好。item影响更大。
+
+内容来自[b站up主酸果酿](https://www.bilibili.com/video/BV1uXoBY3E8B?spm_id_from=333.788.videopod.sections&vd_source=dcd6c275fe4ed979bb96cd340654e13c)。
