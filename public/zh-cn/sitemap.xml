@@ -2,35 +2,15 @@
     xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     ><url>
-            <loc>http://localhost:1313/genrec-paper-recommender-systems-with-generative-retrieval/</loc><lastmod>2025-06-26T14:18:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>http://localhost:1313/rec-paper-actions-speak-louder-than-words-trillion-parameter-sequential-transducers-for-generative-recommendations/</loc><lastmod>2025-06-27T10:08:40&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>http://localhost:1313/rec-paper-recommender-systems-with-generative-retrieval/</loc><lastmod>2025-06-26T14:18:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>http://localhost:1313/agent-agentic-rag/</loc><lastmod>2025-06-26T14:11:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>http://localhost:1313/agent-langgraph/</loc><lastmod>2025-06-26T14:11:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>http://localhost:1313/agent-llamaindex/</loc><lastmod>2025-06-26T14:11:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>http://localhost:1313/agent-smolagents/</loc><lastmod>2025-06-26T14:11:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>http://localhost:1313/application-v0/</loc><lastmod>2025-06-09T14:53:49&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url><url>
             <loc>http://localhost:1313/reading-factfulness/</loc><lastmod>2025-06-20T20:50:24&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>http://localhost:1313/</loc><lastmod>2025-06-26T14:18:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
-                        rel="alternate"
-                        hreflang="en"
-                        href="http://localhost:1313/en/"
-                        /><xhtml:link
-                    rel="alternate"
-                    hreflang="zh-cn"
-                    href="http://localhost:1313/"
-                    /></url><url>
-            <loc>http://localhost:1313/posts/</loc><lastmod>2025-06-26T14:18:22&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
-                        rel="alternate"
-                        hreflang="en"
-                        href="http://localhost:1313/en/posts/"
-                        /><xhtml:link
-                    rel="alternate"
-                    hreflang="zh-cn"
-                    href="http://localhost:1313/posts/"
-                    /></url><url>
-            <loc>http://localhost:1313/categories/agent/</loc><lastmod>2025-06-26T14:11:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>http://localhost:1313/tags/agent/</loc><lastmod>2025-06-26T14:11:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>http://localhost:1313/tags/agentic-rag/</loc><lastmod>2025-06-26T14:11:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>http://localhost:1313/categories/</loc><lastmod>2025-06-26T14:11:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>http://localhost:1313/categories/</loc><lastmod>2025-06-27T10:08:40&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="http://localhost:1313/en/categories/"
@@ -39,7 +19,27 @@
                     hreflang="zh-cn"
                     href="http://localhost:1313/categories/"
                     /></url><url>
-            <loc>http://localhost:1313/tags/</loc><lastmod>2025-06-26T14:11:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>http://localhost:1313/categories/genrec/</loc><lastmod>2025-06-27T10:08:40&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>http://localhost:1313/tags/genrec/</loc><lastmod>2025-06-27T10:08:40&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>http://localhost:1313/</loc><lastmod>2025-06-27T10:08:40&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+                        rel="alternate"
+                        hreflang="en"
+                        href="http://localhost:1313/en/"
+                        /><xhtml:link
+                    rel="alternate"
+                    hreflang="zh-cn"
+                    href="http://localhost:1313/"
+                    /></url><url>
+            <loc>http://localhost:1313/posts/</loc><lastmod>2025-06-27T10:08:40&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+                        rel="alternate"
+                        hreflang="en"
+                        href="http://localhost:1313/en/posts/"
+                        /><xhtml:link
+                    rel="alternate"
+                    hreflang="zh-cn"
+                    href="http://localhost:1313/posts/"
+                    /></url><url>
+            <loc>http://localhost:1313/tags/</loc><lastmod>2025-06-27T10:08:40&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="http://localhost:1313/en/tags/"
@@ -48,6 +48,9 @@
                     hreflang="zh-cn"
                     href="http://localhost:1313/tags/"
                     /></url><url>
+            <loc>http://localhost:1313/categories/agent/</loc><lastmod>2025-06-26T14:11:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>http://localhost:1313/tags/agent/</loc><lastmod>2025-06-26T14:11:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>http://localhost:1313/tags/agentic-rag/</loc><lastmod>2025-06-26T14:11:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>http://localhost:1313/tags/langgraph/</loc><lastmod>2025-06-26T14:11:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>http://localhost:1313/tags/llamaindex/</loc><lastmod>2025-06-26T14:11:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>http://localhost:1313/tags/smolagents/</loc><lastmod>2025-06-26T14:11:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>

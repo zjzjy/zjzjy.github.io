@@ -4,13 +4,22 @@
         <link>http://localhost:1313/posts/</link>
         <description>所有文章 | June&#39;s Island</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>224040086@link.cuhk.edu.cn (Junyin Zheng)</managingEditor>
-            <webMaster>224040086@link.cuhk.edu.cn (Junyin Zheng)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 26 Jun 2025 14:18:22 &#43;0800</lastBuildDate><atom:link href="http://localhost:1313/posts/" rel="self" type="application/rss+xml" /><item>
-    <title>Try</title>
-    <link>http://localhost:1313/genrec-paper-recommender-systems-with-generative-retrieval/</link>
+            <webMaster>224040086@link.cuhk.edu.cn (Junyin Zheng)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 27 Jun 2025 10:08:40 &#43;0800</lastBuildDate><atom:link href="http://localhost:1313/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>Rec - Actions Speak Louder than Words: Trillion-Parameter Sequential Transducers  for Generative Recommendations</title>
+    <link>http://localhost:1313/rec-paper-actions-speak-louder-than-words-trillion-parameter-sequential-transducers-for-generative-recommendations/</link>
+    <pubDate>Fri, 27 Jun 2025 10:08:40 &#43;0800</pubDate>
+    <author>June</author>
+    <guid>http://localhost:1313/rec-paper-actions-speak-louder-than-words-trillion-parameter-sequential-transducers-for-generative-recommendations/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Rec - Recommender Systems with Generative Retrieval</title>
+    <link>http://localhost:1313/rec-paper-recommender-systems-with-generative-retrieval/</link>
     <pubDate>Thu, 26 Jun 2025 14:18:22 &#43;0800</pubDate>
     <author>June</author>
-    <guid>http://localhost:1313/genrec-paper-recommender-systems-with-generative-retrieval/</guid>
-    <description><![CDATA[]]></description>
+    <guid>http://localhost:1313/rec-paper-recommender-systems-with-generative-retrieval/</guid>
+    <description><![CDATA[<h2 id="related-work">Related Work</h2>
+<p><strong>Sequential Recommenders</strong>：序列推荐系统旨在根据用户过去的交互行为序列来预测用户接下来可能与之交互的项目。早期方法常依赖于马尔可夫链技术来基于历史交互建模用户行为。近年来，基于Transformer的模型被广泛应用于序列推荐系统中，这些模型能够捕捉用户交互序列中的长距离依赖关系。在使用时，首先需要收集用户与项目的交互数据，并按照时间顺序构建用户的行为序列。然后，选择合适的序列模型（如GRU、LSTM、Transformer等）来学习用户的行为模式。在训练过程中，模型会根据用户的历史行为序列来预测用户接下来可能感兴趣的项目。最后，在实际应用中，根据模型的预测结果为用户生成推荐列表。</p>]]></description>
 </item>
 <item>
     <title>Agentic RAG - Usecase</title>

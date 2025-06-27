@@ -9,14 +9,21 @@
     <managingEditor>224040086@link.cuhk.edu.cn (Junyin Zheng)</managingEditor>
     <webMaster>224040086@link.cuhk.edu.cn (Junyin Zheng)</webMaster>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Thu, 26 Jun 2025 14:18:22 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 27 Jun 2025 10:08:40 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/categories/genrec/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>GenRec - Recommender Systems with Generative Retrieval</title>
-      <link>http://localhost:1313/genrec-paper-recommender-systems-with-generative-retrieval/</link>
-      <pubDate>Thu, 26 Jun 2025 14:18:22 +0800</pubDate><author>224040086@link.cuhk.edu.cn (Junyin Zheng)</author>
-      <guid>http://localhost:1313/genrec-paper-recommender-systems-with-generative-retrieval/</guid>
+      <title>Rec - Actions Speak Louder than Words: Trillion-Parameter Sequential Transducers  for Generative Recommendations</title>
+      <link>http://localhost:1313/rec-paper-actions-speak-louder-than-words-trillion-parameter-sequential-transducers-for-generative-recommendations/</link>
+      <pubDate>Fri, 27 Jun 2025 10:08:40 +0800</pubDate><author>224040086@link.cuhk.edu.cn (Junyin Zheng)</author>
+      <guid>http://localhost:1313/rec-paper-actions-speak-louder-than-words-trillion-parameter-sequential-transducers-for-generative-recommendations/</guid>
       <description></description>
+    </item>
+    <item>
+      <title>Rec - Recommender Systems with Generative Retrieval</title>
+      <link>http://localhost:1313/rec-paper-recommender-systems-with-generative-retrieval/</link>
+      <pubDate>Thu, 26 Jun 2025 14:18:22 +0800</pubDate><author>224040086@link.cuhk.edu.cn (Junyin Zheng)</author>
+      <guid>http://localhost:1313/rec-paper-recommender-systems-with-generative-retrieval/</guid>
+      <description>&lt;h2 id=&#34;related-work&#34;&gt;Related Work&lt;/h2&gt;&#xA;&lt;p&gt;&lt;strong&gt;Sequential Recommenders&lt;/strong&gt;：序列推荐系统旨在根据用户过去的交互行为序列来预测用户接下来可能与之交互的项目。早期方法常依赖于马尔可夫链技术来基于历史交互建模用户行为。近年来，基于Transformer的模型被广泛应用于序列推荐系统中，这些模型能够捕捉用户交互序列中的长距离依赖关系。在使用时，首先需要收集用户与项目的交互数据，并按照时间顺序构建用户的行为序列。然后，选择合适的序列模型（如GRU、LSTM、Transformer等）来学习用户的行为模式。在训练过程中，模型会根据用户的历史行为序列来预测用户接下来可能感兴趣的项目。最后，在实际应用中，根据模型的预测结果为用户生成推荐列表。&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

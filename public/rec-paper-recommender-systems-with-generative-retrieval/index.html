@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Rec - Recommender Systems with Generative Retrieval - June&#39;s Island</title><meta name="Description" content="Hiro&#39;s Learning and Daily Records Island"><meta property="og:url" content="http://localhost:1313/rec-paper-recommender-systems-with-generative-retrieval/">
+  <meta property="og:site_name" content="June&#39;s Island">
+  <meta property="og:title" content="Rec - Recommender Systems with Generative Retrieval">
+  <meta property="og:description" content="Related Work Sequential Recommenders：序列推荐系统旨在根据用户过去的交互行为序列来预测用户接下来可能与之交互的项目。早期方法常依赖于马尔可夫链技术来基于历史交互建模用户行为。近年来，基于Transformer的模型被广泛应用于序列推荐系统中，这些模型能够捕捉用户交互序列中的长距离依赖关系。在使用时，首先需要收集用户与项目的交互数据，并按照时间顺序构建用户的行为序列。然后，选择合适的序列模型（如GRU、LSTM、Transformer等）来学习用户的行为模式。在训练过程中，模型会根据用户的历史行为序列来预测用户接下来可能感兴趣的项目。最后，在实际应用中，根据模型的预测结果为用户生成推荐列表。">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-06-26T14:18:22+08:00">
+    <meta property="article:modified_time" content="2025-06-26T14:18:22+08:00">
+    <meta property="article:tag" content="GenRec">
+    <meta property="og:image" content="http://localhost:1313/rec-paper-recommender-systems-with-generative-retrieval/featured-image.jpg">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="http://localhost:1313/rec-paper-recommender-systems-with-generative-retrieval/featured-image.jpg">
+  <meta name="twitter:title" content="Rec - Recommender Systems with Generative Retrieval">
+  <meta name="twitter:description" content="Related Work Sequential Recommenders：序列推荐系统旨在根据用户过去的交互行为序列来预测用户接下来可能与之交互的项目。早期方法常依赖于马尔可夫链技术来基于历史交互建模用户行为。近年来，基于Transformer的模型被广泛应用于序列推荐系统中，这些模型能够捕捉用户交互序列中的长距离依赖关系。在使用时，首先需要收集用户与项目的交互数据，并按照时间顺序构建用户的行为序列。然后，选择合适的序列模型（如GRU、LSTM、Transformer等）来学习用户的行为模式。在训练过程中，模型会根据用户的历史行为序列来预测用户接下来可能感兴趣的项目。最后，在实际应用中，根据模型的预测结果为用户生成推荐列表。">
+<meta name="application-name" content="June&#39;s Island">
+<meta name="apple-mobile-web-app-title" content="June&#39;s Island"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/rec-paper-recommender-systems-with-generative-retrieval/" /><link rel="prev" href="http://localhost:1313/agent-agentic-rag/" /><link rel="next" href="http://localhost:1313/rec-paper-actions-speak-louder-than-words-trillion-parameter-sequential-transducers-for-generative-recommendations/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Rec - Recommender Systems with Generative Retrieval",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/rec-paper-recommender-systems-with-generative-retrieval\/"
+        },"image": [{
+                            "@type": "ImageObject",
+                            "url": "http:\/\/localhost:1313\/rec-paper-recommender-systems-with-generative-retrieval\/featured-image.jpg",
+                            "width":  1094 ,
+                            "height":  502 
+                        }],"genre": "posts","keywords": "GenRec","wordcount":  3021 ,
+        "url": "http:\/\/localhost:1313\/rec-paper-recommender-systems-with-generative-retrieval\/","datePublished": "2025-06-26T14:18:22+08:00","dateModified": "2025-06-26T14:18:22+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": {
+                    "@type": "ImageObject",
+                    "url": "http:\/\/localhost:1313\/images\/avatar.png",
+                    "width":  1164 ,
+                    "height":  819 
+                }},"author": {
+                "@type": "Person",
+                "name": "June"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="June&#39;s Island"><span class="header-title-pre"><img src='/favicon.ico' style='height:1.5em;vertical-align:-0.25em;margin-right:0.2em;'/></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/zjzjy" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/rec-paper-recommender-systems-with-generative-retrieval/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="June&#39;s Island"><span class="header-title-pre"><img src='/favicon.ico' style='height:1.5em;vertical-align:-0.25em;margin-right:0.2em;'/></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/zjzjy" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/rec-paper-recommender-systems-with-generative-retrieval/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Rec - Recommender Systems with Generative Retrieval</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/zjzjy" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>June</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/genrec/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>GenRec</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="262622-22-20">262622-22-20</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3021 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 7 分钟&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/rec-paper-recommender-systems-with-generative-retrieval/featured-image.jpg"
+        data-srcset="/rec-paper-recommender-systems-with-generative-retrieval/featured-image.jpg, /rec-paper-recommender-systems-with-generative-retrieval/featured-image.jpg 1.5x, /rec-paper-recommender-systems-with-generative-retrieval/featured-image.jpg 2x"
+        data-sizes="auto"
+        alt="/rec-paper-recommender-systems-with-generative-retrieval/featured-image.jpg"
+        title="/rec-paper-recommender-systems-with-generative-retrieval/featured-image.jpg" /></div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#related-work">Related Work</a></li>
+    <li><a href="#框架介绍">框架介绍</a></li>
+    <li><a href="#semantic-id-怎么生成">Semantic ID 怎么生成？</a></li>
+    <li><a href="#做了哪些实验">做了哪些实验？</a></li>
+    <li><a href="#解决什么问题怎么解决的">解决什么问题？怎么解决的？</a></li>
+    <li><a href="#有什么未来改进方向">有什么未来改进方向？</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="related-work">Related Work</h2>
+<p><strong>Sequential Recommenders</strong>：序列推荐系统旨在根据用户过去的交互行为序列来预测用户接下来可能与之交互的项目。早期方法常依赖于马尔可夫链技术来基于历史交互建模用户行为。近年来，基于Transformer的模型被广泛应用于序列推荐系统中，这些模型能够捕捉用户交互序列中的长距离依赖关系。在使用时，首先需要收集用户与项目的交互数据，并按照时间顺序构建用户的行为序列。然后，选择合适的序列模型（如GRU、LSTM、Transformer等）来学习用户的行为模式。在训练过程中，模型会根据用户的历史行为序列来预测用户接下来可能感兴趣的项目。最后，在实际应用中，根据模型的预测结果为用户生成推荐列表。</p>
+<ul>
+<li><a href="https://arxiv.org/abs/1511.06939" target="_blank" rel="noopener noreffer ">GRU4REC</a>：本文提出的TIGER框架在序列推荐任务中，借鉴了GRU4REC的思想，但采用了更先进的Transformer架构来建模用户的行为序列，从而提高了推荐性能。</li>
+<li><a href="https://arxiv.org/abs/1808.09781" target="_blank" rel="noopener noreffer ">SASRec</a>：TIGER框架在建模用户行为序列时，借鉴了SASRec中自注意力机制的思想，但进一步通过生成式检索方法直接预测项目的语义ID，从而实现了更高效的检索和推荐。</li>
+<li><a href="https://arxiv.org/pdf/1904.06690v2" target="_blank" rel="noopener noreffer ">BERT4Rec</a>：TIGER框架在建模用户行为序列时，借鉴了BERT4Rec中Transformer架构的思想，但通过生成式检索方法直接预测项目的语义ID，从而实现了更高效的检索和推荐。</li>
+</ul>
+<p><strong>Semantic IDs</strong>：语义ID是一种用于表示项目的序列，它由一系列离散的标记组成，能够捕捉项目的语义信息。生成语义ID的过程通常包括两个步骤：首先，使用预训练的文本编码器（如BERT、Sentence-T5等）将项目的文本描述编码为嵌入向量；然后，通过自编码器框架（如RQ-VAE）对嵌入向量进行量化，生成语义ID。在推荐系统中使用语义ID时，首先需要为数据集中的每个项目生成语义ID。然后，在训练推荐模型时，将项目的语义ID作为输入，而不是传统的项目ID。这样，模型能够学习到项目之间的语义相似性，从而提高推荐的准确性和多样性。此外，语义ID的层次化特性还可以用于解决推荐系统中的冷启动问题。</p>
+<ul>
+<li><a href="https://arxiv.org/abs/2210.12316" target="_blank" rel="noopener noreffer ">VQ-Rec</a>：TIGER框架在生成语义ID时，借鉴了VQ-Rec中矢量量化技术的思想，但采用了更先进的RQ-VAE方法来生成层次化的语义ID，从而提高了推荐的准确性和多样性。</li>
+<li><a href="https://arxiv.org/abs/2107.03312" target="_blank" rel="noopener noreffer ">RQ-VAE</a>：TIGER框架在生成语义ID时，采用了RQ-VAE方法来量化项目的嵌入向量，从而生成层次化的语义ID。这种方法不仅提高了推荐的准确性和多样性，还减少了存储需求。</li>
+</ul>
+<p><strong>Generative Retrieval</strong>：生成式检索是一种信息检索方法，它利用生成模型直接预测目标项目的索引。与传统的基于嵌入的检索方法不同，生成式检索不需要为每个项目生成和存储单独的嵌入向量。在生成式检索中，项目通过语义ID来表示，模型通过自回归的方式预测用户接下来可能交互的项目的语义ID。在推荐系统中实现生成式检索时，首先需要训练一个生成模型（如基于Transformer的序列到序列模型），该模型能够根据用户的历史行为序列生成目标项目的语义ID。在检索阶段，模型会根据用户的交互历史自回归地解码目标项目的语义ID，然后通过查找表将语义ID映射回实际的项目。此外，通过调整生成过程中的温度参数，可以控制推荐结果的多样性。</p>
+<ul>
+<li><a href="https://arxiv.org/abs/2202.06991" target="_blank" rel="noopener noreffer ">DSI</a>：DSI是第一个将端到端Transformer用于检索应用的系统。它通过为每个文档分配结构化的语义DocID，并在给定查询时自回归地返回DocID，实现了高效的检索。TIGER框架在生成式检索方面，借鉴了DSI中Transformer用于检索的思想，但进一步通过生成项目的语义ID来实现更高效的检索和推荐。</li>
+<li><span style="background: #d4fcbc; color: black;">概念理解：什么叫直接预测目标项目的索引？什么叫“不需要为每个项目生成和存储单独的嵌入向量？</span>
+在传统的基于嵌入的检索方法中，推荐系统通常会将查询（用户的意图）和候选项目都映射到同一个高维空间中。然后，通过计算查询嵌入和候选项目嵌入之间的相似度（如余弦相似度或内积），来找到最相关的候选项目。这种方法需要为每个项目生成一个嵌入向量，并将这些嵌入向量存储在一个索引结构中，以便快速检索。
+而在生成式检索中，模型的目标是直接生成目标项目的索引（或标识符）。这里的“索引”可以理解为项目的唯一标识符，例如项目的ID。模型通过学习用户行为序列的模式，直接预测用户接下来可能交互的项目的ID，而不是先生成嵌入向量再进行相似度计算。这种方法避免了为每个项目生成和存储嵌入向量的需要，从而减少了存储需求。</li>
+<li><span style="background: #d4fcbc; color: black;">概念理解：什么叫以自回归方式预测？</span>
+自回归（Autoregressive）是一种生成模型的常见方法，它通过逐步生成序列中的下一个元素来构建输出。在生成式检索中，模型会根据用户的历史行为序列，逐步生成目标项目的索引。</li>
+</ul>
+<h2 id="框架介绍">框架介绍</h2>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/assets/images/genrec-google-overview.png"
+        data-srcset="/assets/images/genrec-google-overview.png, /assets/images/genrec-google-overview.png 1.5x, /assets/images/genrec-google-overview.png 2x"
+        data-sizes="auto"
+        alt="/assets/images/genrec-google-overview.png"
+        title="TIGER Overview" /></p>
+<ol>
+<li><strong>生成语义ID</strong>：这一步涉及将项目的内容特征（例如标题、描述或图片）编码成嵌入向量，然后通过量化方案将这些嵌入向量转换成codewords元组，具体来说：</li>
+</ol>
+<ul>
+<li>使用预训练的内容编码器（如 Sentence-T5 或 BERT）来生成项目的语义嵌入。</li>
+<li>应用量化方法（例如 RQ-VAE）来生成语义ID，这通常涉及将连续的嵌入向量映射到离散的代码字空间。</li>
+</ul>
+<ol start="2">
+<li><strong>训练生成式推荐系统</strong>：这一步涉及使用基于 Transformer 的序列到序列模型，并在语义ID上进行训练，以预测用户接下来可能交互的项目。</li>
+</ol>
+<h2 id="semantic-id-怎么生成">Semantic ID 怎么生成？</h2>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/assets/images/RQ-VAE.png"
+        data-srcset="/assets/images/RQ-VAE.png, /assets/images/RQ-VAE.png 1.5x, /assets/images/RQ-VAE.png 2x"
+        data-sizes="auto"
+        alt="/assets/images/RQ-VAE.png"
+        title="RQ-VAE Overview" />
+<strong>RQ-VAE</strong>：通过更新codebook和DNN encoder-decoder参数共同训练自动编码器。
+RQ-VAE首先通过编码器$\mathcal{E}$编码输入x，以学习潜在表示z：= $\mathcal{E}$（x）。在d = 0时，初始残差简单地定义为r0：= z。在每个level的d中，我们都有一个CodeBook $\mathcal{C}<em>d$：= ${e_k}</em>{k=1}^{K}$ = 1，其中k是codebook的大小。然后，通过将r0映射到该level的codebook中closest的嵌入来量化r0。 d = 0时，$e_{c_d}$的索引，即$c_0 = arg min_{i}∥r0-e_{k}∥$。对于下一个d = 1，残差定义为r1：= r0  -  $e_{c_0}$。然后，类似于level 0，通过找到最接近r1的嵌入方式来计算第一级的代码。该过程是递归的M次重复，以获取代表语义ID的M codeWord元组。这种递归方法近似于从粗到细粒度的输入。请注意，我们选择为每个M级别使用大小K的单独代码簿，而不是使用单个MK大小的代码簿。之所以这样做，是因为residue的范数倾向于随着水平的增加而降低，因此允许不同水平的不同粒度。<br>
+我们有语义ID$(c_0,&hellip;,c_{m-1})$，z的量化表示为$\hat{z}:=\Sigma^{m-1}<em>{d=0}e</em>{c_i}$，再把$\hat{z}$传递给decoder。RQ-VAE的loss定义为$\mathcal{L}(x):=\mathcal{L}<em>{recon}+\mathcal{L}</em>{rqvae},\text{     } \mathcal{L}<em>{recon}:=∥x-\hat{x}∥^2,\mathcal{L}</em>{rqvae}:=\Sigma^{m-1}<em>{d=0}∥sg[r_i]-e</em>{c_i}∥^2+\beta∥r_i-sg[e_{c_i}]∥^2$。sg是stop-gradient，以做到分部分不打扰地参数更新。基于K-Means聚集的初始化为codebook。<br>
+实验细节</p>
+<h2 id="做了哪些实验">做了哪些实验？</h2>
+<h2 id="解决什么问题怎么解决的">解决什么问题？怎么解决的？</h2>
+<h2 id="有什么未来改进方向">有什么未来改进方向？</h2>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 262622-22-20</span>
+            </div><div class="post-info-license">
+                <span><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/rec-paper-recommender-systems-with-generative-retrieval/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="http://localhost:1313/rec-paper-recommender-systems-with-generative-retrieval/" data-title="Rec - Recommender Systems with Generative Retrieval" data-hashtags="GenRec"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="http://localhost:1313/rec-paper-recommender-systems-with-generative-retrieval/" data-hashtag="GenRec"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="http://localhost:1313/rec-paper-recommender-systems-with-generative-retrieval/" data-title="Rec - Recommender Systems with Generative Retrieval"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="http://localhost:1313/rec-paper-recommender-systems-with-generative-retrieval/" data-title="Rec - Recommender Systems with Generative Retrieval"><i data-svg-src="/lib/simple-icons/icons/line.min.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="http://localhost:1313/rec-paper-recommender-systems-with-generative-retrieval/" data-title="Rec - Recommender Systems with Generative Retrieval" data-ralateuid="xxxx"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/genrec/">GenRec</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/agent-agentic-rag/" class="prev" rel="prev" title="Agentic RAG - Usecase"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Agentic RAG - Usecase</a>
+            <a href="/rec-paper-actions-speak-louder-than-words-trillion-parameter-sequential-transducers-for-generative-recommendations/" class="next" rel="next" title="Rec - Actions Speak Louder than Words: Trillion-Parameter Sequential Transducers  for Generative Recommendations">Rec - Actions Speak Louder than Words: Trillion-Parameter Sequential Transducers  for Generative Recommendations<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.147.6">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.0"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">Junyin Zheng</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/algoliasearch/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lightgallery.min.js"></script><script type="text/javascript" src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/typeit/index.umd.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"data":{"id-1":"June's Island","id-2":"June's Island"},"lightgallery":true,"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html> 
