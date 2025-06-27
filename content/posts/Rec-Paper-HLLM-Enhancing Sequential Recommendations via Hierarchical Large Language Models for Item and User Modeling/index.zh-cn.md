@@ -87,24 +87,24 @@ Late Fusion：在最后做了一个user special token得到一个embedding，与
 Dataset: Pixel8M(max sequence length 10), Amazon Book Reviews(max sequence length 50).
 trick1: max sequene length太小了，做的和其他模型的对比实验也是控制了max sequence length 10 or 50。
 
-EX1：在文本上pretrain再迁移到rec会不会更好？
+**EX1**：在文本上pretrain再迁移到rec会不会更好？
 A： 从表2的结果看，是的。
 
-EX2： 见过文本的数量会不会影响？
+**EX2**： 见过文本的数量会不会影响？
 A：从表3来看，见过token更多效果更好。注意到，1T+chat的效果比较差。1T+chat 表示在预训练阶段使用了1万亿个token进行训练，并且在微调阶段对对话数据进行了监督式微调。这里的 +chat 表示在微调阶段特别针对对话数据进行了优化。某种意义上，可能说明了SFT作为对齐的一种方法，不适用于迁移任务。表四表示item llm和user llm上都是可学习的参数更新微调，效果最好（item llm更核心，适合任务的embedding space比较重要，这也说明了如果直接拿大模型直接用的话效果不会太好，需要在自己的任务上进行微调）。
 
-EX3：user-llm和item-llm参数大小的影响？
+**EX3**：user-llm和item-llm参数大小的影响？
 A：表5，随着更好的item llm，会有更好的表现。表6同样也有相似的表现，但是差距很小。
 
-EX4：数据量的影响？
+**EX4**：数据量的影响？
 A：图三，数据更大，效果更好。跟HSTU对比，但还是sequence 10的。虽然说HSTU 1B模型，但是大部分参数（600M左右）在embedding table上，实际上可以算400M。
 
-EX5：比起其他模型？
+**EX5**：比起其他模型？
 A：表7，大多数模型都是固定max seq，作者重新训练的。HSTU-large(2024)的数据并非重新训练，而是直接拿的HSTU论文中的数据。Amazon Books来说，max seq=50能carry所有数据。
 
 这里有一点值得注意，retriever并没有一个public数据量比较大的数据集。
 
-EX6：在一部分数据集上联合训练user-llm和item-llm和在全部数据集上freeze item-llm，只训练user-llm，这样子会好吗？（目的是在seq很长的情况下，由于memory limits，不可能handle所有的数据）
+**EX6**：在一部分数据集上联合训练user-llm和item-llm和在全部数据集上freeze item-llm，只训练user-llm，这样子会好吗？（目的是在seq很长的情况下，由于memory limits，不可能handle所有的数据）
 A：表8，确实也可以表现得不错。
 ### Ranking
 没有public dataset，大家都在通过online A/B test进行测试 ，在关键指标上绝对值提升0.7%。
@@ -115,6 +115,9 @@ Inference：为什么能做的块？没有在online的时候inference，而是�
 
 ### 补充材料
 表10：怎么更好地提取item的embedding？ average pooling    和   item special token（自回归）。
+
 表11：在public数据集上增大sequence会更好吗？会
+
 表12：尝试不同的embedding？LLM embedding+timestep 表现更好。  item ID反而表现更差。
+
 表13，14：sequence length越大，表现越好；模型越大，表现越好。item影响更大。
