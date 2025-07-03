@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Rec - HLLM Enhancing Sequential Recommendations via Hierarchical Large Language Models for Item and User Modeling - June&#39;s Island</title><meta name="Description" content="Hiro&#39;s Learning and Daily Records Island"><meta property="og:url" content="http://localhost:1313/rec-paper-hllm-enhancing-sequential-recommendations-via-hierarchical-large-language-models-for-item-and-user-modeling/">
+  <meta property="og:site_name" content="June&#39;s Island">
+  <meta property="og:title" content="Rec - HLLM Enhancing Sequential Recommendations via Hierarchical Large Language Models for Item and User Modeling">
+  <meta property="og:description" content="这篇论文试图解决的问题是如何在推荐系统中有效地利用大型语言模型（LLMs）来提升序列推荐的准确性和效率。具体来说，论文探讨了以下几个关键问题：">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-06-27T14:04:14+08:00">
+    <meta property="article:modified_time" content="2025-06-27T20:36:49+08:00">
+    <meta property="article:tag" content="GenRec">
+    <meta property="og:image" content="http://localhost:1313/rec-paper-hllm-enhancing-sequential-recommendations-via-hierarchical-large-language-models-for-item-and-user-modeling/featured-image.jpg">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="http://localhost:1313/rec-paper-hllm-enhancing-sequential-recommendations-via-hierarchical-large-language-models-for-item-and-user-modeling/featured-image.jpg">
+  <meta name="twitter:title" content="Rec - HLLM Enhancing Sequential Recommendations via Hierarchical Large Language Models for Item and User Modeling">
+  <meta name="twitter:description" content="这篇论文试图解决的问题是如何在推荐系统中有效地利用大型语言模型（LLMs）来提升序列推荐的准确性和效率。具体来说，论文探讨了以下几个关键问题：">
+<meta name="application-name" content="June&#39;s Island">
+<meta name="apple-mobile-web-app-title" content="June&#39;s Island"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/rec-paper-hllm-enhancing-sequential-recommendations-via-hierarchical-large-language-models-for-item-and-user-modeling/" /><link rel="prev" href="http://localhost:1313/rec-paper-recommender-systems-with-generative-retrieval/" /><link rel="next" href="http://localhost:1313/embedding-multimodal-alignment-and-fusion_a-survey/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Rec - HLLM Enhancing Sequential Recommendations via Hierarchical Large Language Models for Item and User Modeling",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/rec-paper-hllm-enhancing-sequential-recommendations-via-hierarchical-large-language-models-for-item-and-user-modeling\/"
+        },"image": [{
+                            "@type": "ImageObject",
+                            "url": "http:\/\/localhost:1313\/rec-paper-hllm-enhancing-sequential-recommendations-via-hierarchical-large-language-models-for-item-and-user-modeling\/featured-image.jpg",
+                            "width":  2430 ,
+                            "height":  552 
+                        }],"genre": "posts","keywords": "GenRec","wordcount":  3948 ,
+        "url": "http:\/\/localhost:1313\/rec-paper-hllm-enhancing-sequential-recommendations-via-hierarchical-large-language-models-for-item-and-user-modeling\/","datePublished": "2025-06-27T14:04:14+08:00","dateModified": "2025-06-27T20:36:49+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": {
+                    "@type": "ImageObject",
+                    "url": "http:\/\/localhost:1313\/images\/avatar.png",
+                    "width":  1164 ,
+                    "height":  819 
+                }},"author": {
+                "@type": "Person",
+                "name": "June"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="June&#39;s Island"><span class="header-title-pre"><img src='/favicon.ico' style='height:1.5em;vertical-align:-0.25em;margin-right:0.2em;'/></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/zjzjy" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/rec-paper-hllm-enhancing-sequential-recommendations-via-hierarchical-large-language-models-for-item-and-user-modeling/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="June&#39;s Island"><span class="header-title-pre"><img src='/favicon.ico' style='height:1.5em;vertical-align:-0.25em;margin-right:0.2em;'/></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/zjzjy" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/rec-paper-hllm-enhancing-sequential-recommendations-via-hierarchical-large-language-models-for-item-and-user-modeling/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Rec - HLLM Enhancing Sequential Recommendations via Hierarchical Large Language Models for Item and User Modeling</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/zjzjy" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>June</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/genrec/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>GenRec</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="272714-14-20">272714-14-20</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3948 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 8 分钟&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/rec-paper-hllm-enhancing-sequential-recommendations-via-hierarchical-large-language-models-for-item-and-user-modeling/featured-image.jpg"
+        data-srcset="/rec-paper-hllm-enhancing-sequential-recommendations-via-hierarchical-large-language-models-for-item-and-user-modeling/featured-image.jpg, /rec-paper-hllm-enhancing-sequential-recommendations-via-hierarchical-large-language-models-for-item-and-user-modeling/featured-image.jpg 1.5x, /rec-paper-hllm-enhancing-sequential-recommendations-via-hierarchical-large-language-models-for-item-and-user-modeling/featured-image.jpg 2x"
+        data-sizes="auto"
+        alt="/rec-paper-hllm-enhancing-sequential-recommendations-via-hierarchical-large-language-models-for-item-and-user-modeling/featured-image.jpg"
+        title="/rec-paper-hllm-enhancing-sequential-recommendations-via-hierarchical-large-language-models-for-item-and-user-modeling/featured-image.jpg" /></div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#基础背景">基础背景</a></li>
+    <li><a href="#贡献">贡献</a></li>
+    <li><a href="#模型">模型</a></li>
+    <li><a href="#实验细节">实验细节</a>
+      <ul>
+        <li><a href="#retriever">Retriever</a></li>
+        <li><a href="#ranking">Ranking</a></li>
+        <li><a href="#补充材料">补充材料</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>这篇论文试图解决的问题是如何在推荐系统中有效地利用大型语言模型（LLMs）来提升序列推荐的准确性和效率。具体来说，论文探讨了以下几个关键问题：</p>
+<ul>
+<li>
+<p>预训练权重的实际价值：研究预训练的大型语言模型（LLMs）中包含的世界知识和推理能力在推荐系统任务中的具体价值。</p>
+</li>
+<li>
+<p>微调的必要性：探讨是否需要对推荐任务进行特定的微调（fine-tuning），以提高模型在推荐系统上的性能。</p>
+</li>
+<li>
+<p>模型的可扩展性：验证大型语言模型在推荐系统中是否能够展现出与其他领域相似的良好扩展性，即模型性能是否随着模型参数数量的增加而提升。</p>
+</li>
+</ul>
+<p>论文通过提出一种新颖的层次化大型语言模型（HLLM）架构来解决上述问题，该架构通过两个层次的模型来分别提取项目特征和预测用户的未来兴趣。这种方法有效地利用了开源LLMs的预训练能力，并通过进一步的微调显著提高了性能。此外，HLLM在两个大规模数据集上的实验表明，它在训练和服务质量上都取得了良好的效果，并在在线A/B测试中验证了其在现实世界推荐场景中的实用影响。</p>
+<h2 id="基础背景">基础背景</h2>
+<p>推荐的三个基础部分：</p>
+<ul>
+<li>Retriever（召回）：一般有多个召回模型，从不同多样的scource召回数据。比如一些rule-based召回，基于用户是否最近浏览、用户是否关注等等。大量的CG来源被整合作为召回层的输出。</li>
+<li>排序：有粗排和精排，本质上是一样的，只是数据量大小不一样。输入是每一个item，输出是business metric。按b站举例，每个item输出点赞、转发、投币的概率。结合起来进行一个排序这是一个一对一的过程，一个item一个score。如果只有两层会有个什么问题呢？比如说你经常查看关于LLM的学术视频，那么系统可能会一直推送关于LLM和学术视频，但是用户可能会厌倦，我希望能推送一些多样化的视频。</li>
+<li>重排：listwise，把所有item的list进行输入，进行整体的考虑重排。比如精排之后前面是个视频都是广告（因为广告权重比较大），那么在重排会减少广告视频的概率。</li>
+</ul>
+<p>HLLM应用到召回和排序这两步。1.在召回这一步增加一个CG，推荐更加personalized内容，会更有潜意识的推荐，而不是根据过去历史直接推荐（这也是为什么选择使用LLM的原因，LLM可以通过一些word knowledge进行浅层学习。那word knowledge为什么不能通过其他召回层实现？因为召回层只见过自己的dataset，比如字节公司的召回只见过抖音、今日头条的数据，但是LLM用来pretrained data会有更广的数据，会有跳出平台的行为。）2.排序：针对于去看粗排/精排的模型的classification是不是更准。</p>
+<p>之前也有尝试将LLM融入到推荐系统中，主要有三种approch：</p>
+<ol>
+<li>RLMRec：将item的信息（title,description,&hellip;,user feedback等）用LLM来reasoning，special token去输出embedding。通过这些输出的embedding进行对比学习，
+<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/RLMRec.png"
+        data-srcset="/images/RLMRec.png, /images/RLMRec.png 1.5x, /images/RLMRec.png 2x"
+        data-sizes="auto"
+        alt="/images/RLMRec.png"
+        title="RLMRec" width="1516" height="310" /></li>
+<li>User-LLM：把item的信息传入到encoder，将encoder的输出传入到decoder，并不会直接推荐下一个视频，而是通过问答的形式（用户更喜欢哪个类型？之类的问题）。用output跑sql做search。LLM用在Xformer Stack, 作为一个hidden states。
+<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/User-LLM.png"
+        data-srcset="/images/User-LLM.png, /images/User-LLM.png 1.5x, /images/User-LLM.png 2x"
+        data-sizes="auto"
+        alt="/images/User-LLM.png"
+        title="User-LLM" width="1346" height="484" /></li>
+<li>LLARA：text token, behavior token（单独的feature extractor），通过一个实时训练的projector投到LLM的embedding上，concatenate一起做为LLM输入。
+<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/LARA.png"
+        data-srcset="/images/LARA.png, /images/LARA.png 1.5x, /images/LARA.png 2x"
+        data-sizes="auto"
+        alt="/images/LARA.png"
+        title="LLARA" width="1328" height="716" /></li>
+</ol>
+<p>缺陷：成本难度比较大，难以落地。实时性达不到。</p>
+<h2 id="贡献">贡献</h2>
+<p>文章的三个主要贡献如下：</p>
+<ol>
+<li><strong>提出了一个新颖的层次化大型语言模型（HLLM）框架</strong>，用于序列推荐。该框架在大规模学术数据集上显著优于经典的基于ID的模型，并在现实世界的工业环境中得到了验证，展现出实际效益。此外，该方法还具有出色的训练和服务效率。</li>
+<li><strong>有效地将预训练阶段编码的世界知识转移到推荐模型中</strong>，涵盖了项目特征提取和用户兴趣建模。然而，针对推荐目标的任务特定微调是必不可少的。</li>
+<li><strong>HLLM展现出优秀的可扩展性</strong>，随着数据量和模型参数的增加，性能持续提升。这种可扩展性突显了该方法在应用于更大规模数据集和模型尺寸时的潜力。</li>
+</ol>
+<h2 id="模型">模型</h2>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/HLLM-fig1.png"
+        data-srcset="/images/HLLM-fig1.png, /images/HLLM-fig1.png 1.5x, /images/HLLM-fig1.png 2x"
+        data-sizes="auto"
+        alt="/images/HLLM-fig1.png"
+        title="HLLM-Fig1" width="1014" height="1354" />
+分为两个部分：1.item level的特征提取，通过item LLM。2. 学习用户和item交互的行为数据，也就是通过user item的history个iteraction history学习数据，通过user LLM。相比于双塔，这样设计考虑到了时序信息。</p>
+<p>Retrieval Part：
+item LLM：输入是文本信息。会有个类似system prompt的task指引：compress the following sentence into embedding。最后加一个special token，special token的输出是我们想知道的embedding。</p>
+<p>user LLM：每个输入都是由item LLM embedding来的。</p>
+<p>loss相当于一个对比学习，正样本是预测的$E&rsquo;_{n+1}$，负样本是pool中ID不相同的item的embedding。
+这里注意到没有使用user profile，也 make sense。消除了刻板印象，用交互行为作为用户的profile。
+Ranking Part：
+<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/HLLM-Fig2.png"
+        data-srcset="/images/HLLM-Fig2.png, /images/HLLM-Fig2.png 1.5x, /images/HLLM-Fig2.png 2x"
+        data-sizes="auto"
+        alt="/images/HLLM-Fig2.png"
+        title="HLLM-Fig2" width="1070" height="692" />
+item LLM不再训练了，user LMM重新训练。<br>
+Early Fusion：target是从pool（candidate）里拿的每个项目，查看在这个用户的行为下，target是a这个item的转化率、点击率等为多少。
+Late Fusion：在最后做了一个user special token得到一个embedding，与target的embedding结合，通过一个MLP输出logits。
+<strong>区别</strong>：Early Fusin比较慢，Late Fusion生成的user embedding只生成一次就可以。一般来说，early fusion效果更好。不太好做实时。
+<strong>Loss</strong>：multitask loss + 权重*第一部分autoregression loss</p>
+<h2 id="实验细节">实验细节</h2>
+<p>回答以下问题：</p>
+<ol>
+<li>LLM在文本上pretrain的知识是否能够迁移到recommandation上？</li>
+<li>有没有scaling law？</li>
+<li>HLLM比起其他方法由哪些优势？</li>
+<li>如何实现train和inference？</li>
+</ol>
+<h3 id="retriever">Retriever</h3>
+<p>Dataset: Pixel8M(max sequence length 10), Amazon Book Reviews(max sequence length 50).
+trick1: max sequene length太小了，做的和其他模型的对比实验也是控制了max sequence length 10 or 50。</p>
+<p><strong>EX1</strong>：在文本上pretrain再迁移到rec会不会更好？
+A： 从表2的结果看，是的。</p>
+<p><strong>EX2</strong>： 见过文本的数量会不会影响？
+A：从表3来看，见过token更多效果更好。注意到，1T+chat的效果比较差。1T+chat 表示在预训练阶段使用了1万亿个token进行训练，并且在微调阶段对对话数据进行了监督式微调。这里的 +chat 表示在微调阶段特别针对对话数据进行了优化。某种意义上，可能说明了SFT作为对齐的一种方法，不适用于迁移任务。表四表示item llm和user llm上都是可学习的参数更新微调，效果最好（item llm更核心，适合任务的embedding space比较重要，这也说明了如果直接拿大模型直接用的话效果不会太好，需要在自己的任务上进行微调）。</p>
+<p><strong>EX3</strong>：user-llm和item-llm参数大小的影响？
+A：表5，随着更好的item llm，会有更好的表现。表6同样也有相似的表现，但是差距很小。</p>
+<p><strong>EX4</strong>：数据量的影响？
+A：图三，数据更大，效果更好。跟HSTU对比，但还是sequence 10的。虽然说HSTU 1B模型，但是大部分参数（600M左右）在embedding table上，实际上可以算400M。</p>
+<p><strong>EX5</strong>：比起其他模型？
+A：表7，大多数模型都是固定max seq，作者重新训练的。HSTU-large(2024)的数据并非重新训练，而是直接拿的HSTU论文中的数据。Amazon Books来说，max seq=50能carry所有数据。</p>
+<p>这里有一点值得注意，retriever并没有一个public数据量比较大的数据集。</p>
+<p><strong>EX6</strong>：在一部分数据集上联合训练user-llm和item-llm和在全部数据集上freeze item-llm，只训练user-llm，这样子会好吗？（目的是在seq很长的情况下，由于memory limits，不可能handle所有的数据）
+A：表8，确实也可以表现得不错。</p>
+<h3 id="ranking">Ranking</h3>
+<p>没有public dataset，大家都在通过online A/B test进行测试 ，在关键指标上绝对值提升0.7%。
+<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/HLLM-online.png"
+        data-srcset="/images/HLLM-online.png, /images/HLLM-online.png 1.5x, /images/HLLM-online.png 2x"
+        data-sizes="auto"
+        alt="/images/HLLM-online.png"
+        title="Online" width="1028" height="488" />
+训练：endtoend，联合训练。sequence length截到150。为了在更长得sequence上有更好得表现，把item llm freeze，只在user llm上训练，把150拉到1000（直接在item-llm提取得特征上训练）。</p>
+<p>Inference：为什么能做的块？没有在online的时候inference，而是把item llm, user llm做成embedding的提取器。当一个item被创造出来，call item llm生成这个item的embedding，save。每一天，update user的时序信息的embedding存到datavase。实际上得到两个表，在做ranking的时候，把这两个表拿进来做MLP。所以只有MLP，非常快。</p>
+<h3 id="补充材料">补充材料</h3>
+<p>表10：怎么更好地提取item的embedding？ average pooling    和   item special token（自回归）。</p>
+<p>表11：在public数据集上增大sequence会更好吗？会</p>
+<p>表12：尝试不同的embedding？LLM embedding+timestep 表现更好。  item ID反而表现更差。</p>
+<p>表13，14：sequence length越大，表现越好；模型越大，表现越好。item影响更大。</p>
+<p>内容来自<a href="https://www.bilibili.com/video/BV1uXoBY3E8B?spm_id_from=333.788.videopod.sections&amp;vd_source=dcd6c275fe4ed979bb96cd340654e13c" target="_blank" rel="noopener noreffer ">b站up主酸果酿</a>。</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 272749-49-80&nbsp;<a class="git-hash" href="https://github.com/zjzjy/commit/44a8ce501f239eaa448c7aa84706197d6d0448fa" target="_blank" title="commit by 郑钧尹(Zheng Junyin)(108924030&#43;zjzjy@users.noreply.github.com) 44a8ce501f239eaa448c7aa84706197d6d0448fa: 50">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>44a8ce5</a></span>
+            </div><div class="post-info-license">
+                <span><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/rec-paper-hllm-enhancing-sequential-recommendations-via-hierarchical-large-language-models-for-item-and-user-modeling/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="http://localhost:1313/rec-paper-hllm-enhancing-sequential-recommendations-via-hierarchical-large-language-models-for-item-and-user-modeling/" data-title="Rec - HLLM Enhancing Sequential Recommendations via Hierarchical Large Language Models for Item and User Modeling" data-hashtags="GenRec"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="http://localhost:1313/rec-paper-hllm-enhancing-sequential-recommendations-via-hierarchical-large-language-models-for-item-and-user-modeling/" data-hashtag="GenRec"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="http://localhost:1313/rec-paper-hllm-enhancing-sequential-recommendations-via-hierarchical-large-language-models-for-item-and-user-modeling/" data-title="Rec - HLLM Enhancing Sequential Recommendations via Hierarchical Large Language Models for Item and User Modeling"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="http://localhost:1313/rec-paper-hllm-enhancing-sequential-recommendations-via-hierarchical-large-language-models-for-item-and-user-modeling/" data-title="Rec - HLLM Enhancing Sequential Recommendations via Hierarchical Large Language Models for Item and User Modeling"><i data-svg-src="/lib/simple-icons/icons/line.min.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="http://localhost:1313/rec-paper-hllm-enhancing-sequential-recommendations-via-hierarchical-large-language-models-for-item-and-user-modeling/" data-title="Rec - HLLM Enhancing Sequential Recommendations via Hierarchical Large Language Models for Item and User Modeling" data-ralateuid="xxxx"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/genrec/">GenRec</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/rec-paper-recommender-systems-with-generative-retrieval/" class="prev" rel="prev" title="Rec - Recommender Systems with Generative Retrieval"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Rec - Recommender Systems with Generative Retrieval</a>
+            <a href="/embedding-multimodal-alignment-and-fusion_a-survey/" class="next" rel="next" title="Embedding - MULTIMODAL FUSION">Embedding - MULTIMODAL FUSION<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.147.6">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.0"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">Junyin Zheng</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/algoliasearch/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lightgallery.min.js"></script><script type="text/javascript" src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/typeit/index.umd.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"data":{"id-1":"June's Island","id-2":"June's Island"},"lightgallery":true,"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html> 

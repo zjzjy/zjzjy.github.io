@@ -12,7 +12,7 @@
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
     <meta property="article:published_time" content="2025-06-26T14:18:22+08:00">
-    <meta property="article:modified_time" content="2025-06-26T14:18:22+08:00">
+    <meta property="article:modified_time" content="2025-06-27T18:42:26+08:00">
     <meta property="article:tag" content="GenRec">
     <meta property="og:image" content="http://localhost:1313/rec-paper-recommender-systems-with-generative-retrieval/featured-image.jpg">
 
@@ -23,7 +23,7 @@
 <meta name="application-name" content="June&#39;s Island">
 <meta name="apple-mobile-web-app-title" content="June&#39;s Island"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/rec-paper-recommender-systems-with-generative-retrieval/" /><link rel="prev" href="http://localhost:1313/agent-agentic-rag/" /><link rel="next" href="http://localhost:1313/rec-paper-actions-speak-louder-than-words-trillion-parameter-sequential-transducers-for-generative-recommendations/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/rec-paper-recommender-systems-with-generative-retrieval/" /><link rel="prev" href="http://localhost:1313/agent-agentic-rag/" /><link rel="next" href="http://localhost:1313/rec-paper-hllm-enhancing-sequential-recommendations-via-hierarchical-large-language-models-for-item-and-user-modeling/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
     {
@@ -40,7 +40,7 @@
                             "width":  1094 ,
                             "height":  502 
                         }],"genre": "posts","keywords": "GenRec","wordcount":  3021 ,
-        "url": "http:\/\/localhost:1313\/rec-paper-recommender-systems-with-generative-retrieval\/","datePublished": "2025-06-26T14:18:22+08:00","dateModified": "2025-06-26T14:18:22+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+        "url": "http:\/\/localhost:1313\/rec-paper-recommender-systems-with-generative-retrieval\/","datePublished": "2025-06-26T14:18:22+08:00","dateModified": "2025-06-27T18:42:26+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "xxxx","logo": {
                     "@type": "ImageObject",
@@ -173,11 +173,11 @@
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src="/assets/images/genrec-google-overview.png"
-        data-srcset="/assets/images/genrec-google-overview.png, /assets/images/genrec-google-overview.png 1.5x, /assets/images/genrec-google-overview.png 2x"
+        data-src="/images/genrec-google-overview.png"
+        data-srcset="/images/genrec-google-overview.png, /images/genrec-google-overview.png 1.5x, /images/genrec-google-overview.png 2x"
         data-sizes="auto"
-        alt="/assets/images/genrec-google-overview.png"
-        title="TIGER Overview" /></p>
+        alt="/images/genrec-google-overview.png"
+        title="TIGER Overview" width="1614" height="738" /></p>
 <ol>
 <li><strong>生成语义ID</strong>：这一步涉及将项目的内容特征（例如标题、描述或图片）编码成嵌入向量，然后通过量化方案将这些嵌入向量转换成codewords元组，具体来说：</li>
 </ol>
@@ -192,11 +192,11 @@
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src="/assets/images/RQ-VAE.png"
-        data-srcset="/assets/images/RQ-VAE.png, /assets/images/RQ-VAE.png 1.5x, /assets/images/RQ-VAE.png 2x"
+        data-src="/images/RQ-VAE.png"
+        data-srcset="/images/RQ-VAE.png, /images/RQ-VAE.png 1.5x, /images/RQ-VAE.png 2x"
         data-sizes="auto"
-        alt="/assets/images/RQ-VAE.png"
-        title="RQ-VAE Overview" />
+        alt="/images/RQ-VAE.png"
+        title="RQ-VAE Overview" width="1258" height="826" />
 <strong>RQ-VAE</strong>：通过更新codebook和DNN encoder-decoder参数共同训练自动编码器。
 RQ-VAE首先通过编码器$\mathcal{E}$编码输入x，以学习潜在表示z：= $\mathcal{E}$（x）。在d = 0时，初始残差简单地定义为r0：= z。在每个level的d中，我们都有一个CodeBook $\mathcal{C}<em>d$：= ${e_k}</em>{k=1}^{K}$ = 1，其中k是codebook的大小。然后，通过将r0映射到该level的codebook中closest的嵌入来量化r0。 d = 0时，$e_{c_d}$的索引，即$c_0 = arg min_{i}∥r0-e_{k}∥$。对于下一个d = 1，残差定义为r1：= r0  -  $e_{c_0}$。然后，类似于level 0，通过找到最接近r1的嵌入方式来计算第一级的代码。该过程是递归的M次重复，以获取代表语义ID的M codeWord元组。这种递归方法近似于从粗到细粒度的输入。请注意，我们选择为每个M级别使用大小K的单独代码簿，而不是使用单个MK大小的代码簿。之所以这样做，是因为residue的范数倾向于随着水平的增加而降低，因此允许不同水平的不同粒度。<br>
 我们有语义ID$(c_0,&hellip;,c_{m-1})$，z的量化表示为$\hat{z}:=\Sigma^{m-1}<em>{d=0}e</em>{c_i}$，再把$\hat{z}$传递给decoder。RQ-VAE的loss定义为$\mathcal{L}(x):=\mathcal{L}<em>{recon}+\mathcal{L}</em>{rqvae},\text{     } \mathcal{L}<em>{recon}:=∥x-\hat{x}∥^2,\mathcal{L}</em>{rqvae}:=\Sigma^{m-1}<em>{d=0}∥sg[r_i]-e</em>{c_i}∥^2+\beta∥r_i-sg[e_{c_i}]∥^2$。sg是stop-gradient，以做到分部分不打扰地参数更新。基于K-Means聚集的初始化为codebook。<br>
@@ -208,7 +208,8 @@ RQ-VAE首先通过编码器$\mathcal{E}$编码输入x，以学习潜在表示z�
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 262622-22-20</span>
+                <span>更新于 272726-26-60&nbsp;<a class="git-hash" href="https://github.com/zjzjy/commit/779b140ec494586f483f15dab31884aa367725d3" target="_blank" title="commit by 郑钧尹(Zheng Junyin)(108924030&#43;zjzjy@users.noreply.github.com) 779b140ec494586f483f15dab31884aa367725d3: 48">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>779b140</a></span>
             </div><div class="post-info-license">
                 <span><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
             </div></div>
@@ -230,7 +231,7 @@ RQ-VAE首先通过编码器$\mathcal{E}$编码输入x，以学习潜在表示z�
     </div>
 
     <div class="post-nav"><a href="/agent-agentic-rag/" class="prev" rel="prev" title="Agentic RAG - Usecase"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Agentic RAG - Usecase</a>
-            <a href="/rec-paper-actions-speak-louder-than-words-trillion-parameter-sequential-transducers-for-generative-recommendations/" class="next" rel="next" title="Rec - Actions Speak Louder than Words: Trillion-Parameter Sequential Transducers  for Generative Recommendations">Rec - Actions Speak Louder than Words: Trillion-Parameter Sequential Transducers  for Generative Recommendations<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+            <a href="/rec-paper-hllm-enhancing-sequential-recommendations-via-hierarchical-large-language-models-for-item-and-user-modeling/" class="next" rel="next" title="Rec - HLLM Enhancing Sequential Recommendations via Hierarchical Large Language Models for Item and User Modeling">Rec - HLLM Enhancing Sequential Recommendations via Hierarchical Large Language Models for Item and User Modeling<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
 </article></div>
             </main><footer class="footer">

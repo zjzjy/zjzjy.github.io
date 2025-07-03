@@ -20,7 +20,7 @@
                     hreflang="en"
                     href="http://localhost:1313/en/posts/"
                     /></url><url>
-            <loc>http://localhost:1313/en/about/</loc><lastmod>2025-05-30T17:06:32&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.7</priority><xhtml:link
+            <loc>http://localhost:1313/en/about/</loc><lastmod>2025-05-30T17:06:32&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority><xhtml:link
                         rel="alternate"
                         hreflang="zh-cn"
                         href="http://localhost:1313/about/"

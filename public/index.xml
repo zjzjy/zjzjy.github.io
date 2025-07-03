@@ -4,9 +4,25 @@
         <link>http://localhost:1313/</link>
         <description>Hiro&#39;s Learning and Daily Records Island</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>224040086@link.cuhk.edu.cn (Junyin Zheng)</managingEditor>
-            <webMaster>224040086@link.cuhk.edu.cn (Junyin Zheng)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 27 Jun 2025 10:08:40 &#43;0800</lastBuildDate>
+            <webMaster>224040086@link.cuhk.edu.cn (Junyin Zheng)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 01 Jul 2025 17:44:49 &#43;0800</lastBuildDate>
             <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>Embedding - MULTIMODAL FUSION</title>
+    <link>http://localhost:1313/embedding-multimodal-alignment-and-fusion_a-survey/</link>
+    <pubDate>Tue, 01 Jul 2025 17:44:49 &#43;0800</pubDate>
+    <author>June</author>
+    <guid>http://localhost:1313/embedding-multimodal-alignment-and-fusion_a-survey/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Rec - HLLM Enhancing Sequential Recommendations via Hierarchical Large Language Models for Item and User Modeling</title>
+    <link>http://localhost:1313/rec-paper-hllm-enhancing-sequential-recommendations-via-hierarchical-large-language-models-for-item-and-user-modeling/</link>
+    <pubDate>Fri, 27 Jun 2025 14:04:14 &#43;0800</pubDate>
+    <author>June</author>
+    <guid>http://localhost:1313/rec-paper-hllm-enhancing-sequential-recommendations-via-hierarchical-large-language-models-for-item-and-user-modeling/</guid>
+    <description><![CDATA[<p>这篇论文试图解决的问题是如何在推荐系统中有效地利用大型语言模型（LLMs）来提升序列推荐的准确性和效率。具体来说，论文探讨了以下几个关键问题：</p>]]></description>
+</item>
+<item>
     <title>Rec - Recommender Systems with Generative Retrieval</title>
     <link>http://localhost:1313/rec-paper-recommender-systems-with-generative-retrieval/</link>
     <pubDate>Thu, 26 Jun 2025 14:18:22 &#43;0800</pubDate>
