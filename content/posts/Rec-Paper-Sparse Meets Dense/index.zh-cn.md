@@ -49,8 +49,28 @@ COBRA的输入是一系列级联表示，由稀疏ID和与用户交互历史中�
 **Cascaded Representation**：将稀疏ID和密集向量集成在统一的生成模型中。稀疏ID通过离散约束提供了稳定的分类基础，而密集向量保持了连续的特征分辨率，确保模型既能捕获高级语义，又能捕获细粒度细节。
 -`'稀疏ID通过离散约束提供了稳定的分类基础，而密集向量保持了连续的特征分辨率，确保模型既能捕获高级语义，又能捕获细粒度细节'，怎么做到的？`
 ### Sequential Modeling
+**Probabilistic Decomposition**目标项的概率分布建模被分解为两个阶段，利用稀疏表示和密集表示的互补优势。具体来说，COBRA不是直接根据历史交互序列$S_{1:t}$预测下一个项目$s_{t+1}$，而是分别预测稀疏ID $ID_{t+1}$和密集向量$v_{T+1}$：  
+$P(ID_{t+1},v_{t+1}|S_{1:t})=P(ID_{t+1}|S_{1:t})P(v_{t+1}|ID_{t+1},S_{1:t})$  
+其中，$P(ID_{t+1}|S_{1:t})$表示基于历史交互序列$S_{1:t}$预测$ID_{t+1}$，即捕获下一项的分类本质。$P(v_{t+1}|ID_{t+1},S_{1:t})$则捕获下一项的细颗粒细节。
+**Sequential Modeling with a Unified Generative Model**
+- Embedding Sparse IDs：稀疏ID，通过emdedding层转化为dense vector：$e_{t} = Embed(ID_{t})$，连接$e_{t},v_{t}$形成模型再每个时间步的输入:  
+    $h_t=[e_t:v_t].$
+- Tansformer Modeling：Transformer Decoder模型包括多个层，每个层都具有自注意机制和前馈网络。如图上半部分所示，解码器的输入序列由级联表示组成。为了增强序列和上下文信息的建模，这些表示被增加了项目位置和类型嵌入。为了简洁起见，下面几节中的数学公式集中在级联序列表示上，省略了位置和类型嵌入的显式符号。解码器处理该丰富的输入以生成用于预测后续稀疏ID和密集向量的上下文化表示。
+- Sparse ID Prediction：给定历史交互序列$S_{1:t}$预测稀疏$ID_{t+1}$，transformer的输入序列是：  
+  $S_{1:t}=[h_1,h_2,...,h_t]=[e_1,v_1,e_2,v_2,...e_t,v_t].$  
+  Transformer decoder处理$S
+_{1:t}$产生一系列向量$y_t=TransformerDecoder(S_{1:t})$，稀疏ID的预测推导为：  
+$z_{t+1}=SparseHead(y_t)$   
+其中，$z_{t+1}表示$ID_{t+1}的概率。$$
+- Dense Vector Prediction：为了预测$v_{t+1}$，Transformer 输入序列为：  
+- $\bar{S}_{1:t}=[S_{1:t},e_{t+1}]=[e_1,v_1,e_2,v_2,...e_t,v_t,e_{t+1}]$  
+- Transformer decoder处理$\bar{S}_{1:t}$产生对于$v_{t+1}$的预测：  
+  $\hat{v}_{t+1}=TransformerDecode(\bar{S}_{1:t})$
+### End-to-End Training
+端到端训练过程旨在联合优化稀疏和密集表示预测。训练过程由组合稀疏ID预测和密集向量预测的损失的复合损失函数控制。稀疏ID预测损失：$L_{sparse}=-\Sigma_{t=1}^{T-1}log(\frac{exp(z_{t+1}^{ID_{t+1}})}{\Sigma_{j=1}^{C}exp(z^{j}_{t+1})})$。密集向量预测损失$L_{dense}$专注于细化密集向量，使它们能够区分相似和不相似的项目,$L_{dense} = -\Sigma_{t=1}^{T-1}log\frac{exp(cos(\hat{v}_{t+1}\dot v_{t+1}))}{\Sigma_{item_{j\in Batch}exp(cos(\hat{v}_{t+1},v_{item_{j}}))]}}$。密集矢量由端到端可训练编码器Encoder生成，该编码器在训练过程中进行了优化。这确保了密集向量被动态地细化并适应推荐任务的特定要求。
+## Coarse-to-Fine Generation
 
-## 想要解决什么问题？
+### 想要解决什么问题？
 
 ## 如何解决的？
 
