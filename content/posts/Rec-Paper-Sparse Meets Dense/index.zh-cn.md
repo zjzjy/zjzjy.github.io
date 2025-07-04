@@ -52,50 +52,50 @@ COBRA的输入是一系列级联表示，由稀疏ID和与用户交互历史中�
 -`'稀疏ID通过离散约束提供了稳定的分类基础，而密集向量保持了连续的特征分辨率，确保模型既能捕获高级语义，又能捕获细粒度细节'，怎么做到的？`
 ### Sequential Modeling
 **Probabilistic Decomposition**目标项的概率分布建模被分解为两个阶段，利用稀疏表示和密集表示的互补优势。具体来说，COBRA不是直接根据历史交互序列$S_{1:t}$预测下一个项目$s_{t+1}$，而是分别预测稀疏ID $ID_{t+1}$和密集向量$v_{T+1}$：  
-$P(ID_{t+1},v_{t+1}|S_{1:t})=P(ID_{t+1}|S_{1:t})P(v_{t+1}|ID_{t+1},S_{1:t})$  
+$$P(ID_{t+1},v_{t+1}|S_{1:t})=P(ID_{t+1}|S_{1:t})P(v_{t+1}|ID_{t+1},S_{1:t})$$  
 其中，$P(ID_{t+1}|S_{1:t})$表示基于历史交互序列$S_{1:t}$预测$ID_{t+1}$，即捕获下一项的分类本质。$P(v_{t+1}|ID_{t+1},S_{1:t})$则捕获下一项的细颗粒细节。
+
 **Sequential Modeling with a Unified Generative Model**
 - Embedding Sparse IDs：稀疏ID，通过emdedding层转化为dense vector：$e_{t} = Embed(ID_{t})$，连接$e_{t},v_{t}$形成模型再每个时间步的输入:  
-    $h_t=[e_t:v_t].$
+    $$h_t=[e_t:v_t].$$
 - Tansformer Modeling：Transformer Decoder模型包括多个层，每个层都具有自注意机制和前馈网络。如图上半部分所示，解码器的输入序列由级联表示组成。为了增强序列和上下文信息的建模，这些表示被增加了项目位置和类型嵌入。为了简洁起见，下面几节中的数学公式集中在级联序列表示上，省略了位置和类型嵌入的显式符号。解码器处理该丰富的输入以生成用于预测后续稀疏ID和密集向量的上下文化表示。
 - Sparse ID Prediction：给定历史交互序列$S_{1:t}$预测稀疏$ID_{t+1}$，transformer的输入序列是：  
-  $S_{1:t}=[h_1,h_2,...,h_t]=[e_1,v_1,e_2,v_2,...e_t,v_t].$  
-  Transformer decoder处理$S
-_{1:t}$产生一系列向量$y_t=TransformerDecoder(S_{1:t})$，稀疏ID的预测推导为：  
-$z_{t+1}=SparseHead(y_t)$   
-其中，$z_{t+1}表示$ID_{t+1}的概率。$$
+  $$S_{1:t}=[h_1,h_2,...,h_t]=[e_1,v_1,e_2,v_2,...e_t,v_t].$$  
+  Transformer decoder处理$S_{1:t}$产生一系列向量$y_t=TransformerDecoder(S_{1:t})$，稀疏ID的预测推导为：  
+$$z_{t+1}=SparseHead(y_t)$$   
+其中，$z_{t+1}表示$ID_{t+1}的概率。
 - Dense Vector Prediction：为了预测$v_{t+1}$，Transformer 输入序列为：  
-- $\bar{S}_{1:t}=[S_{1:t},e_{t+1}]=[e_1,v_1,e_2,v_2,...e_t,v_t,e_{t+1}]$  
-- Transformer decoder处理$\bar{S}_{1:t}$产生对于$v_{t+1}$的预测：  
-  $\hat{v}_{t+1}=TransformerDecode(\bar{S}_{1:t})$
+- $\bar{S_{1:t}}=[S_{1:t},e_{t+1}]=[e_1,v_1,e_2,v_2,...e_t,v_t,e_{t+1}]$
+- Transformer decoder处理$\bar{S_{1:t}}$产生对于$v_{t+1}$的预测：$\hat{v_{t+1}}=TransformerDecode(\bar{S_{1:t}})$
 ### End-to-End Training
-端到端训练过程旨在联合优化稀疏和密集表示预测。训练过程由组合稀疏ID预测和密集向量预测的损失的复合损失函数控制。稀疏ID预测损失：$L_{sparse}=-\Sigma_{t=1}^{T-1}log(\frac{exp(z_{t+1}^{ID_{t+1}})}{\Sigma_{j=1}^{C}exp(z^{j}_{t+1})})$。密集向量预测损失$L_{dense}$专注于细化密集向量，使它们能够区分相似和不相似的项目,$L_{dense} = -\Sigma_{t=1}^{T-1}log\frac{exp(cos(\hat{v}_{t+1}\dot v_{t+1}))}{\Sigma_{item_{j\in Batch}exp(cos(\hat{v}_{t+1},v_{item_{j}}))]}}$。密集矢量由端到端可训练编码器Encoder生成，该编码器在训练过程中进行了优化。这确保了密集向量被动态地细化并适应推荐任务的特定要求。
+端到端训练过程旨在联合优化稀疏和密集表示预测。训练过程由组合稀疏ID预测和密集向量预测的损失的复合损失函数控制。稀疏ID预测损失：$$L_{\mathrm{sparse}} = -\sum_{t=1}^{T-1} \log \left( \frac{ \exp \left( z_{t+1}^{ID_{t+1}} \right) }{ \sum_{j=1}^{C} \exp \left( z_{t+1}^{j} \right) } \right )。$$
+密集向量预测损失$L_{dense}$专注于细化密集向量，使它们能够区分相似和不相似的项目,$$L_{\mathrm{dense}} = -\sum_{t=1}^{T-1} \log \frac{ \exp \left( \cos \left( \hat{v_{t+1}}, v_{t+1} \right) \right) }{ \sum_{j \in \mathrm{Batch}} \exp \left( \cos \left( \hat{v_{t+1}}, v_{j} \right) \right) }。$$
+密集矢量由端到端可训练编码器Encoder生成，该编码器在训练过程中进行了优化。这确保了密集向量被动态地细化并适应推荐任务的特定要求。
 ## Coarse-to-Fine Generation
 ![](images/COBRA-粗到精.png)
 在推理阶段，COBRA实现了从粗到细的生成过程，包括顺序生成稀疏ID，然后以级联方式细化密集向量，如图所示。COBRA中由粗到细的生成过程旨在捕获用户-项目交互的分类本质和细粒度细节。涉及两个阶段：
-- Sparse ID Generation：给定用户序列$$S_{1:T}，我们利用由Transformer解码器建模的ID概率分布$\hat{ID}_{T+1}~P(i_{T+1}|S_{1:T})$，并使用BeamSearch算法来推导出顶部𝑀个ID：  
-  ${\hat{ID}^{k}_{k=1}=BeamSearch(TransformerDecoder(S_{1:T}),M)}$
-- Dense Vector Refinement：每个生成的稀疏ID $\hat{ID}^k_{T+1}$随后被转化为embedding加入到之前的$S_{1:T}$ embedding。然后生成相应的稠密向量$\hat{v}^{k}_{T+1}$：  
-  $\hat{v}^{k}_{T+1}=TransformerDecoder([S_{1:T},Embed(\hat{ID}^{k}_{T+1})])]$，  
+- Sparse ID Generation：给定用户序列$S_{1:T}$，我们利用由Transformer解码器建模的ID概率分布$\hat{ID_{T+1}}$ $\sim P(i_{T+1} \mid S_{1:T})$，并使用BeamSearch算法来推导出顶部𝑀个ID：  
+   ![](images/COBRA_formula.png)
+- Dense Vector Refinement：每个生成的稀疏ID $\hat{\text{ID}}^k_{T+1}$随后被转化为embedding加入到之前的$S_{1:T}$ embedding。然后生成相应的稠密向量$\hat{v}^k_{T+1}$：  
+  $$\hat{v}^k_{T+1}=TransformerDecoder([S_{1:T},Embed(\hat{\text{ID}}^k_{T+1})])],$$  
   然后我们应用Approximate Nearest Neighbor (ANN)得到top N候选items:
-  $\mathcal{A}_k = \mathrm{ANN}(\mathbf{\hat{ID}}_{T+1}^k,\, \mathcal{C}(\mathbf{\hat{ID}}_{T+1}^k),\, N)$，表示在候选项目集合使用近似最近邻搜索找到与生成的稀疏ID和密集向量最相似的 k 个项目。
+  ![](images/COBRA_Ak.png)
+  表示在候选项目集合使用近似最近邻搜索找到与生成的稀疏ID和密集向量最相似的 k 个项目。
 - BeamFusion Mechanism：为了在精度和多样性之间取得平衡，我们为每个稀疏ID对应的项目设计了一个全局可比的分数。该分数能够反映不同稀疏ID之间的差异以及同一稀疏ID下项目之间的细粒度差异。为了实现这一点，我们提出了BeamFusion机制：  
-  $\Phi(\hat{\mathbf{v}}_{T+1}^{k}, \hat{\mathbf{ID}}_{T+1}^{k}, \mathbf{a}) = \mathrm{Softmax}(\tau \phi_{\hat{\mathbf{ID}}_{T+1}^{k}}) \times \mathrm{Softmax}(\psi \cos(\hat{\mathbf{v}}_{T+1}^{k}, \mathbf{a}))$，  
+![](images/COBRA_formula2.png)
 - `**BeamFusion Mechanism** 公式解读`：
   1. **输入参数**：
-      - \(\hat{v}_{t+1}^{(i)}\)：生成的密集向量，表示项目的细粒度特征。
-      - \(\hat{\text{ID}}_{t+1}^{(i)}\)：生成的稀疏ID，表示项目的类别信息。
-      - \(a\)：候选项目，从ANN检索中得到的项目。
-      - \(\pi_1\) 和 \(\pi_2\)：超参数，用于调整Beam Score和相似性得分的权重。
+      - $\hat{v}_{T+1}^{(i)}$：生成的密集向量，表示项目的细粒度特征。
+      - $\hat{\text{ID}}_{t+1}^{(i)}$：生成的稀疏ID，表示项目的类别信息。
+      - a：候选项目，从ANN检索中得到的项目。
+      - $\pi_1$ 和 $\pi_2$：超参数，用于调整Beam Score和相似性得分的权重。
 
   2. **Beam Score**：
-      - \(\text{BeamScore}(\hat{\text{ID}}_{t+1}^{(i)})\)：Beam Search算法为每个生成的稀疏ID分配的得分，表示该稀疏ID在生成过程中的累积概率。这个得分反映了稀疏ID的生成质量。
+      - $\text{BeamScore}(\hat{\text{ID}}_{t+1}^{(i)})$：Beam Search算法为每个生成的稀疏ID分配的得分，表示该稀疏ID在生成过程中的累积概率。这个得分反映了稀疏ID的生成质量。
 
-  3. **相似性得分**：
-      - \(\text{CosineSimilarity}(\hat{v}_{t+1}^{(i)}, a)\)：计算生成的密集向量 \(\hat{v}_{t+1}^{(i)}\) 与候选项目 \(a\) 的密集向量之间的余弦相似度。这个得分反映了生成的密集向量与候选项目之间的相似性。
 
-  4. **Softmax函数**：
-      - \(\text{Softmax}(x)\)：将输入 \(x\) 转换为概率分布，确保所有得分的和为1。这一步使得不同得分具有可比性。
+  3. **Softmax函数**：
+      - Softmax(x)：将输入 x 转换为概率分布，确保所有得分的和为1。这一步使得不同得分具有可比性。
 
 ## 实验结果解读
 采用3级语义ID结构，其中每级对应于码本大小32。这些语义ID是使用T5模型生成的。COBRA采用轻量级架构实现，具有1层编码器和2层解码器。

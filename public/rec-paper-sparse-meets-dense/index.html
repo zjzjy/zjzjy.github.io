@@ -40,7 +40,7 @@ COBRA框架：创新性地整合稀疏语义标识符和密集向量，通过级
                             "url": "http:\/\/localhost:1313\/rec-paper-sparse-meets-dense\/featured-image.jpg",
                             "width":  1726 ,
                             "height":  392 
-                        }],"genre": "posts","wordcount":  6933 ,
+                        }],"genre": "posts","wordcount":  6731 ,
         "url": "http:\/\/localhost:1313\/rec-paper-sparse-meets-dense\/","datePublished": "2025-07-03T14:22:30+08:00","dateModified": "2025-07-04T11:54:19+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "xxxx","logo": {
@@ -125,7 +125,7 @@ COBRA框架：创新性地整合稀疏语义标识符和密集向量，通过级
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Rec - Sparse Meets Dense: Unified Generative Recommendations with Cascaded Sparse-Dense Representations</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://github.com/zjzjy" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>June</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="30330-30-20">30330-30-20</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 6933 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="30330-30-20">30330-30-20</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 6731 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 14 分钟&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -200,26 +200,26 @@ COBRA的输入是一系列级联表示，由稀疏ID和与用户交互历史中�
 -<code>'稀疏ID通过离散约束提供了稳定的分类基础，而密集向量保持了连续的特征分辨率，确保模型既能捕获高级语义，又能捕获细粒度细节'，怎么做到的？</code></p>
 <h3 id="sequential-modeling">Sequential Modeling</h3>
 <p><strong>Probabilistic Decomposition</strong>目标项的概率分布建模被分解为两个阶段，利用稀疏表示和密集表示的互补优势。具体来说，COBRA不是直接根据历史交互序列$S_{1:t}$预测下一个项目$s_{t+1}$，而是分别预测稀疏ID $ID_{t+1}$和密集向量$v_{T+1}$：<br>
-$P(ID_{t+1},v_{t+1}|S_{1:t})=P(ID_{t+1}|S_{1:t})P(v_{t+1}|ID_{t+1},S_{1:t})$<br>
-其中，$P(ID_{t+1}|S_{1:t})$表示基于历史交互序列$S_{1:t}$预测$ID_{t+1}$，即捕获下一项的分类本质。$P(v_{t+1}|ID_{t+1},S_{1:t})$则捕获下一项的细颗粒细节。
-<strong>Sequential Modeling with a Unified Generative Model</strong></p>
+$$P(ID_{t+1},v_{t+1}|S_{1:t})=P(ID_{t+1}|S_{1:t})P(v_{t+1}|ID_{t+1},S_{1:t})$$<br>
+其中，$P(ID_{t+1}|S_{1:t})$表示基于历史交互序列$S_{1:t}$预测$ID_{t+1}$，即捕获下一项的分类本质。$P(v_{t+1}|ID_{t+1},S_{1:t})$则捕获下一项的细颗粒细节。</p>
+<p><strong>Sequential Modeling with a Unified Generative Model</strong></p>
 <ul>
 <li>Embedding Sparse IDs：稀疏ID，通过emdedding层转化为dense vector：$e_{t} = Embed(ID_{t})$，连接$e_{t},v_{t}$形成模型再每个时间步的输入:<br>
-$h_t=[e_t:v_t].$</li>
+$$h_t=[e_t:v_t].$$</li>
 <li>Tansformer Modeling：Transformer Decoder模型包括多个层，每个层都具有自注意机制和前馈网络。如图上半部分所示，解码器的输入序列由级联表示组成。为了增强序列和上下文信息的建模，这些表示被增加了项目位置和类型嵌入。为了简洁起见，下面几节中的数学公式集中在级联序列表示上，省略了位置和类型嵌入的显式符号。解码器处理该丰富的输入以生成用于预测后续稀疏ID和密集向量的上下文化表示。</li>
 <li>Sparse ID Prediction：给定历史交互序列$S_{1:t}$预测稀疏$ID_{t+1}$，transformer的输入序列是：<br>
-$S_{1:t}=[h_1,h_2,&hellip;,h_t]=[e_1,v_1,e_2,v_2,&hellip;e_t,v_t].$<br>
-Transformer decoder处理$S
-<em>{1:t}$产生一系列向量$y_t=TransformerDecoder(S</em>{1:t})$，稀疏ID的预测推导为：<br>
-$z_{t+1}=SparseHead(y_t)$<br>
-其中，$z_{t+1}表示$ID_{t+1}的概率。$$</li>
+$$S_{1:t}=[h_1,h_2,&hellip;,h_t]=[e_1,v_1,e_2,v_2,&hellip;e_t,v_t].$$<br>
+Transformer decoder处理$S_{1:t}$产生一系列向量$y_t=TransformerDecoder(S_{1:t})$，稀疏ID的预测推导为：<br>
+$$z_{t+1}=SparseHead(y_t)$$<br>
+其中，$z_{t+1}表示$ID_{t+1}的概率。</li>
 <li>Dense Vector Prediction：为了预测$v_{t+1}$，Transformer 输入序列为：</li>
-<li>$\bar{S}<em>{1:t}=[S</em>{1:t},e_{t+1}]=[e_1,v_1,e_2,v_2,&hellip;e_t,v_t,e_{t+1}]$</li>
-<li>Transformer decoder处理$\bar{S}<em>{1:t}$产生对于$v</em>{t+1}$的预测：<br>
-$\hat{v}<em>{t+1}=TransformerDecode(\bar{S}</em>{1:t})$</li>
+<li>$\bar{S_{1:t}}=[S_{1:t},e_{t+1}]=[e_1,v_1,e_2,v_2,&hellip;e_t,v_t,e_{t+1}]$</li>
+<li>Transformer decoder处理$\bar{S_{1:t}}$产生对于$v_{t+1}$的预测：$\hat{v_{t+1}}=TransformerDecode(\bar{S_{1:t}})$</li>
 </ul>
 <h3 id="end-to-end-training">End-to-End Training</h3>
-<p>端到端训练过程旨在联合优化稀疏和密集表示预测。训练过程由组合稀疏ID预测和密集向量预测的损失的复合损失函数控制。稀疏ID预测损失：$L_{sparse}=-\Sigma_{t=1}^{T-1}log(\frac{exp(z_{t+1}^{ID_{t+1}})}{\Sigma_{j=1}^{C}exp(z^{j}<em>{t+1})})$。密集向量预测损失$L</em>{dense}$专注于细化密集向量，使它们能够区分相似和不相似的项目,$L_{dense} = -\Sigma_{t=1}^{T-1}log\frac{exp(cos(\hat{v}<em>{t+1}\dot v</em>{t+1}))}{\Sigma_{item_{j\in Batch}exp(cos(\hat{v}<em>{t+1},v</em>{item_{j}}))]}}$。密集矢量由端到端可训练编码器Encoder生成，该编码器在训练过程中进行了优化。这确保了密集向量被动态地细化并适应推荐任务的特定要求。</p>
+<p>端到端训练过程旨在联合优化稀疏和密集表示预测。训练过程由组合稀疏ID预测和密集向量预测的损失的复合损失函数控制。稀疏ID预测损失：$$L_{\mathrm{sparse}} = -\sum_{t=1}^{T-1} \log \left( \frac{ \exp \left( z_{t+1}^{ID_{t+1}} \right) }{ \sum_{j=1}^{C} \exp \left( z_{t+1}^{j} \right) } \right )。$$
+密集向量预测损失$L_{dense}$专注于细化密集向量，使它们能够区分相似和不相似的项目,$$L_{\mathrm{dense}} = -\sum_{t=1}^{T-1} \log \frac{ \exp \left( \cos \left( \hat{v_{t+1}}, v_{t+1} \right) \right) }{ \sum_{j \in \mathrm{Batch}} \exp \left( \cos \left( \hat{v_{t+1}}, v_{j} \right) \right) }。$$
+密集矢量由端到端可训练编码器Encoder生成，该编码器在训练过程中进行了优化。这确保了密集向量被动态地细化并适应推荐任务的特定要求。</p>
 <h2 id="coarse-to-fine-generation">Coarse-to-Fine Generation</h2>
 <p><img
         class="lazyload"
@@ -231,41 +231,57 @@ $\hat{v}<em>{t+1}=TransformerDecode(\bar{S}</em>{1:t})$</li>
         title="/images/COBRA-%E7%B2%97%E5%88%B0%E7%B2%BE.png" width="856" height="282" />
 在推理阶段，COBRA实现了从粗到细的生成过程，包括顺序生成稀疏ID，然后以级联方式细化密集向量，如图所示。COBRA中由粗到细的生成过程旨在捕获用户-项目交互的分类本质和细粒度细节。涉及两个阶段：</p>
 <ul>
-<li>Sparse ID Generation：给定用户序列$$S_{1:T}，我们利用由Transformer解码器建模的ID概率分布$\hat{ID}<em>{T+1}~P(i</em>{T+1}|S_{1:T})$，并使用BeamSearch算法来推导出顶部𝑀个ID：<br>
-${\hat{ID}^{k}<em>{k=1}=BeamSearch(TransformerDecoder(S</em>{1:T}),M)}$</li>
-<li>Dense Vector Refinement：每个生成的稀疏ID $\hat{ID}^k_{T+1}$随后被转化为embedding加入到之前的$S_{1:T}$ embedding。然后生成相应的稠密向量$\hat{v}^{k}<em>{T+1}$：<br>
-$\hat{v}^{k}</em>{T+1}=TransformerDecoder([S_{1:T},Embed(\hat{ID}^{k}<em>{T+1})])]$，<br>
+<li>Sparse ID Generation：给定用户序列$S_{1:T}$，我们利用由Transformer解码器建模的ID概率分布$\hat{ID_{T+1}}$ $\sim P(i_{T+1} \mid S_{1:T})$，并使用BeamSearch算法来推导出顶部𝑀个ID：<br>
+<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/COBRA_formula.png"
+        data-srcset="/images/COBRA_formula.png, /images/COBRA_formula.png 1.5x, /images/COBRA_formula.png 2x"
+        data-sizes="auto"
+        alt="/images/COBRA_formula.png"
+        title="/images/COBRA_formula.png" width="828" height="80" /></li>
+<li>Dense Vector Refinement：每个生成的稀疏ID $\hat{\text{ID}}^k_{T+1}$随后被转化为embedding加入到之前的$S_{1:T}$ embedding。然后生成相应的稠密向量$\hat{v}^k_{T+1}$：<br>
+$$\hat{v}^k_{T+1}=TransformerDecoder([S_{1:T},Embed(\hat{\text{ID}}^k_{T+1})])],$$<br>
 然后我们应用Approximate Nearest Neighbor (ANN)得到top N候选items:
-$\mathcal{A}<em>k = \mathrm{ANN}(\mathbf{\hat{ID}}</em>{T+1}^k,, \mathcal{C}(\mathbf{\hat{ID}}</em>{T+1}^k),, N)$，表示在候选项目集合使用近似最近邻搜索找到与生成的稀疏ID和密集向量最相似的 k 个项目。</li>
+<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/COBRA_Ak.png"
+        data-srcset="/images/COBRA_Ak.png, /images/COBRA_Ak.png 1.5x, /images/COBRA_Ak.png 2x"
+        data-sizes="auto"
+        alt="/images/COBRA_Ak.png"
+        title="/images/COBRA_Ak.png" width="578" height="108" />
+表示在候选项目集合使用近似最近邻搜索找到与生成的稀疏ID和密集向量最相似的 k 个项目。</li>
 <li>BeamFusion Mechanism：为了在精度和多样性之间取得平衡，我们为每个稀疏ID对应的项目设计了一个全局可比的分数。该分数能够反映不同稀疏ID之间的差异以及同一稀疏ID下项目之间的细粒度差异。为了实现这一点，我们提出了BeamFusion机制：<br>
-$\Phi(\hat{\mathbf{v}}<em>{T+1}^{k}, \hat{\mathbf{ID}}</em>{T+1}^{k}, \mathbf{a}) = \mathrm{Softmax}(\tau \phi_{\hat{\mathbf{ID}}<em>{T+1}^{k}}) \times \mathrm{Softmax}(\psi \cos(\hat{\mathbf{v}}</em>{T+1}^{k}, \mathbf{a}))$，</li>
+<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/COBRA_formula2.png"
+        data-srcset="/images/COBRA_formula2.png, /images/COBRA_formula2.png 1.5x, /images/COBRA_formula2.png 2x"
+        data-sizes="auto"
+        alt="/images/COBRA_formula2.png"
+        title="/images/COBRA_formula2.png" width="872" height="90" /></li>
 <li><code>**BeamFusion Mechanism** 公式解读</code>：
 <ol>
 <li>
 <p><strong>输入参数</strong>：</p>
 <ul>
-<li>(\hat{v}_{t+1}^{(i)})：生成的密集向量，表示项目的细粒度特征。</li>
-<li>(\hat{\text{ID}}_{t+1}^{(i)})：生成的稀疏ID，表示项目的类别信息。</li>
-<li>(a)：候选项目，从ANN检索中得到的项目。</li>
-<li>(\pi_1) 和 (\pi_2)：超参数，用于调整Beam Score和相似性得分的权重。</li>
+<li>$\hat{v}_{T+1}^{(i)}$：生成的密集向量，表示项目的细粒度特征。</li>
+<li>$\hat{\text{ID}}_{t+1}^{(i)}$：生成的稀疏ID，表示项目的类别信息。</li>
+<li>a：候选项目，从ANN检索中得到的项目。</li>
+<li>$\pi_1$ 和 $\pi_2$：超参数，用于调整Beam Score和相似性得分的权重。</li>
 </ul>
 </li>
 <li>
 <p><strong>Beam Score</strong>：</p>
 <ul>
-<li>(\text{BeamScore}(\hat{\text{ID}}_{t+1}^{(i)}))：Beam Search算法为每个生成的稀疏ID分配的得分，表示该稀疏ID在生成过程中的累积概率。这个得分反映了稀疏ID的生成质量。</li>
-</ul>
-</li>
-<li>
-<p><strong>相似性得分</strong>：</p>
-<ul>
-<li>(\text{CosineSimilarity}(\hat{v}<em>{t+1}^{(i)}, a))：计算生成的密集向量 (\hat{v}</em>{t+1}^{(i)}) 与候选项目 (a) 的密集向量之间的余弦相似度。这个得分反映了生成的密集向量与候选项目之间的相似性。</li>
+<li>$\text{BeamScore}(\hat{\text{ID}}_{t+1}^{(i)})$：Beam Search算法为每个生成的稀疏ID分配的得分，表示该稀疏ID在生成过程中的累积概率。这个得分反映了稀疏ID的生成质量。</li>
 </ul>
 </li>
 <li>
 <p><strong>Softmax函数</strong>：</p>
 <ul>
-<li>(\text{Softmax}(x))：将输入 (x) 转换为概率分布，确保所有得分的和为1。这一步使得不同得分具有可比性。</li>
+<li>Softmax(x)：将输入 x 转换为概率分布，确保所有得分的和为1。这一步使得不同得分具有可比性。</li>
 </ul>
 </li>
 </ol>
