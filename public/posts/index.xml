@@ -4,13 +4,30 @@
         <link>http://localhost:1313/posts/</link>
         <description>所有文章 | June&#39;s Island</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>224040086@link.cuhk.edu.cn (Junyin Zheng)</managingEditor>
-            <webMaster>224040086@link.cuhk.edu.cn (Junyin Zheng)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 01 Jul 2025 17:44:49 &#43;0800</lastBuildDate><atom:link href="http://localhost:1313/posts/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>224040086@link.cuhk.edu.cn (Junyin Zheng)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 03 Jul 2025 14:22:30 &#43;0800</lastBuildDate><atom:link href="http://localhost:1313/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>Rec - Sparse Meets Dense: Unified Generative Recommendations with Cascaded Sparse-Dense Representations</title>
+    <link>http://localhost:1313/rec-paper-sparse-meets-dense/</link>
+    <pubDate>Thu, 03 Jul 2025 14:22:30 &#43;0800</pubDate>
+    <author>June</author>
+    <guid>http://localhost:1313/rec-paper-sparse-meets-dense/</guid>
+    <description><![CDATA[<p>创新点：</p>
+<ul>
+<li><strong>COBRA框架</strong>：创新性地整合稀疏语义标识符和密集向量，通过级联表示捕捉项目语义和细粒度特征。</li>
+<li><strong>从粗到精策略</strong>：推理时先生成稀疏标识符定位项目类别，再生成密集向量捕捉细节，提升推荐准确性和个性化。</li>
+<li><strong>BeamFusion机制</strong>：结合beam search和最近邻检索分数，平衡推荐的精确度和多样性，增强系统灵活性。</li>
+<li><strong>端到端训练</strong>：动态优化密集表示，捕捉用户 - 项目交互的语义和协同信号，适应推荐需求。</li>
+</ul>
+<h2 id="实施细节">实施细节</h2>
+<p>
+COBRA的输入是一系列级联表示，由稀疏ID和与用户交互历史中的项相对应的密集向量组成。在训练过程中，密集表示是通过对比学习目标和端到端的方式学习的。通过首先生成稀疏ID，然后生成稠密表示，COBRA降低了稠密表示的学习难度，并促进了两种表示之间的相互学习。在推理过程中，COBRA采用了一个由粗到细的生成过程，从稀疏ID开始，稀疏ID提供了一个捕获项目分类本质的高级分类草图。然后，生成的ID被附加到输入序列中，并反馈到模型中，以预测捕获细粒度细节的密集向量，从而实现更精确和个性化的推荐。为了确保灵活的推理，我们引入了BeamFusion，这是一种将波束搜索与最近邻检索分数相结合的采样技术，确保了检索到的项目的可控多样性。与TIGER不同，它只依赖于稀疏ID，COBRA利用稀疏和密集表示的优势。</p>]]></description>
+</item>
+<item>
     <title>Embedding - MULTIMODAL FUSION</title>
     <link>http://localhost:1313/embedding-multimodal-alignment-and-fusion_a-survey/</link>
     <pubDate>Tue, 01 Jul 2025 17:44:49 &#43;0800</pubDate>
     <author>June</author>
     <guid>http://localhost:1313/embedding-multimodal-alignment-and-fusion_a-survey/</guid>
-    <description><![CDATA[]]></description>
+    <description><![CDATA[<p>Reference：Multimodal Alignment and Fusion: A Survey 第五章</p>]]></description>
 </item>
 <item>
     <title>Rec - HLLM Enhancing Sequential Recommendations via Hierarchical Large Language Models for Item and User Modeling</title>

@@ -113,6 +113,35 @@
         alt="/images/avatar.png"
         title="/images/avatar.png" width="1164" height="819" /></a></div><div class="home-subtitle"><div id="id-3" class="typeit"></div></div><div class="links"><a href="https://github.com/xxxx" title="GitHub" target="_blank" rel="noopener noreffer me"><i class="fab fa-github fa-fw" aria-hidden="true"></i></a><a href="https://gitlab.com/https://github.com/zjzjy" title="GitLab" target="_blank" rel="noopener noreffer me"><i class="fab fa-gitlab fa-fw" aria-hidden="true"></i></a><a href="https://weibo.com/xxxx" title="微博" target="_blank" rel="noopener noreffer me"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="https://steamcommunity.com/id/xxxx" title="Steam" target="_blank" rel="noopener noreffer me"><i class="fab fa-steam fa-fw" aria-hidden="true"></i></a><a href="https://www.zhihu.com/people/xxxx" title="知乎" target="_blank" rel="noopener noreffer me"><i data-svg-src="/lib/simple-icons/icons/zhihu.min.svg" aria-hidden="true"></i></a><a href="https://www.douban.com/people/xxxx" title="豆瓣" target="_blank" rel="noopener noreffer me"><i data-svg-src="/lib/simple-icons/icons/douban.min.svg" aria-hidden="true"></i></a><a href="https://dev.to/xxxx" title="Dev.To" target="_blank" rel="noopener noreffer me"><i class="fab fa-dev fa-fw" aria-hidden="true"></i></a><a href="https://space.bilibili.com/xxxx" title="bilibili" target="_blank" rel="noopener noreffer me"><i data-svg-src="/lib/simple-icons/icons/bilibili.min.svg" aria-hidden="true"></i></a><a href="tel:555-555-555" title="Phone" rel="me"><i class="fas fa-phone fa-fw" aria-hidden="true"></i></a><a href="mailto:xxxx@xxxx.com" title="Email" rel="me"><i class="far fa-envelope fa-fw" aria-hidden="true"></i></a><a href="/index.xml" title="RSS" target="_blank" rel="noopener noreffer me"><i class="fas fa-rss fa-fw" aria-hidden="true"></i></a></div></div>
 <article class="single summary" itemscope itemtype="http://schema.org/Article"><div class="featured-image-preview">
+            <a href="/rec-paper-sparse-meets-dense/"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/rec-paper-sparse-meets-dense/featured-image.jpg"
+        data-srcset="/rec-paper-sparse-meets-dense/featured-image.jpg, /rec-paper-sparse-meets-dense/featured-image.jpg 1.5x, /rec-paper-sparse-meets-dense/featured-image.jpg 2x"
+        data-sizes="auto"
+        alt="/rec-paper-sparse-meets-dense/featured-image.jpg"
+        title="/rec-paper-sparse-meets-dense/featured-image.jpg" /></a>
+        </div><h1 class="single-title" itemprop="name headline">
+        <a href="/rec-paper-sparse-meets-dense/">Rec - Sparse Meets Dense: Unified Generative Recommendations with Cascaded Sparse-Dense Representations</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="https://github.com/zjzjy" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>June</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="30330-30-20">30330-30-20</time></span></div><div class="content"><p>创新点：</p>
+<ul>
+<li><strong>COBRA框架</strong>：创新性地整合稀疏语义标识符和密集向量，通过级联表示捕捉项目语义和细粒度特征。</li>
+<li><strong>从粗到精策略</strong>：推理时先生成稀疏标识符定位项目类别，再生成密集向量捕捉细节，提升推荐准确性和个性化。</li>
+<li><strong>BeamFusion机制</strong>：结合beam search和最近邻检索分数，平衡推荐的精确度和多样性，增强系统灵活性。</li>
+<li><strong>端到端训练</strong>：动态优化密集表示，捕捉用户 - 项目交互的语义和协同信号，适应推荐需求。</li>
+</ul>
+<h2 id="实施细节">实施细节</h2>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/COBRA-outline.png"
+        data-srcset="/images/COBRA-outline.png, /images/COBRA-outline.png 1.5x, /images/COBRA-outline.png 2x"
+        data-sizes="auto"
+        alt="/images/COBRA-outline.png"
+        title="COBRA概览" width="976" height="656" />
+COBRA的输入是一系列级联表示，由稀疏ID和与用户交互历史中的项相对应的密集向量组成。在训练过程中，密集表示是通过对比学习目标和端到端的方式学习的。通过首先生成稀疏ID，然后生成稠密表示，COBRA降低了稠密表示的学习难度，并促进了两种表示之间的相互学习。在推理过程中，COBRA采用了一个由粗到细的生成过程，从稀疏ID开始，稀疏ID提供了一个捕获项目分类本质的高级分类草图。然后，生成的ID被附加到输入序列中，并反馈到模型中，以预测捕获细粒度细节的密集向量，从而实现更精确和个性化的推荐。为了确保灵活的推理，我们引入了BeamFusion，这是一种将波束搜索与最近邻检索分数相结合的采样技术，确保了检索到的项目的可控多样性。与TIGER不同，它只依赖于稀疏ID，COBRA利用稀疏和密集表示的优势。</p></div><div class="post-footer">
+        <a href="/rec-paper-sparse-meets-dense/">阅读全文</a></div>
+</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><div class="featured-image-preview">
             <a href="/embedding-multimodal-alignment-and-fusion_a-survey/"><img
         class="lazyload"
         src="/svg/loading.min.svg"
@@ -123,7 +152,7 @@
         title="/embedding-multimodal-alignment-and-fusion_a-survey/featured-image.jpg" /></a>
         </div><h1 class="single-title" itemprop="name headline">
         <a href="/embedding-multimodal-alignment-and-fusion_a-survey/">Embedding - MULTIMODAL FUSION</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="https://github.com/zjzjy" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>June</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="10149-49-50">10149-49-50</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/embedding/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Embedding</a></span></div><div class="content"></div><div class="post-footer">
+    </h1><div class="post-meta"><span class="post-author"><a href="https://github.com/zjzjy" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>June</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="10149-49-50">10149-49-50</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/embedding/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Embedding</a></span></div><div class="content"><p>Reference：Multimodal Alignment and Fusion: A Survey 第五章</p></div><div class="post-footer">
         <a href="/embedding-multimodal-alignment-and-fusion_a-survey/">阅读全文</a><div class="post-tags">
                 <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/embedding/">Embedding</a></div></div>
 </article><article class="single summary" itemscope itemtype="http://schema.org/Article"><div class="featured-image-preview">
@@ -186,27 +215,6 @@
 相关资源：</p></div><div class="post-footer">
         <a href="/agent-langgraph/">阅读全文</a><div class="post-tags">
                 <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/agent/">Agent</a>,&nbsp;<a href="/tags/langgraph/">LangGraph</a></div></div>
-</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><div class="featured-image-preview">
-            <a href="/agent-llamaindex/"><img
-        class="lazyload"
-        src="/svg/loading.min.svg"
-        data-src="/agent-llamaindex/featured-image.jpg"
-        data-srcset="/agent-llamaindex/featured-image.jpg, /agent-llamaindex/featured-image.jpg 1.5x, /agent-llamaindex/featured-image.jpg 2x"
-        data-sizes="auto"
-        alt="/agent-llamaindex/featured-image.jpg"
-        title="/agent-llamaindex/featured-image.jpg" /></a>
-        </div><h1 class="single-title" itemprop="name headline">
-        <a href="/agent-llamaindex/">LlamaIndex - Introduction</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="https://github.com/zjzjy" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>June</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="191953-53-20">191953-53-20</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/agent/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Agent</a></span></div><div class="content"><p>本文根据<a href="https://huggingface.co/learn/agents-course/unit2/llama-index/introduction" target="_blank" rel="noopener noreffer ">Hugging Face上的Agent课程</a>编写而成。</p>
-<h1 id="什么是llamaindex">什么是LlamaIndex？</h1>
-<p>LlamaIndex 是一个完整的工具包，用于使用索引和工作流创建基于LLM的Agent。</p>
-<h2 id="llamaindex的关键部分以及它们如何帮助代理">LlamaIndex的关键部分以及它们如何帮助代理？</h2>
-<p><strong>Components</strong>：在 LlamaIndex 中使用的基本构建块。 These include things like prompts, models, and databases.组件通常用于将 LlamaIndex 与其他工具和库连接起来。<br>
-<strong>Tools</strong>: 工具是提供特定功能（例如搜索、计算或访问外部服务）的组件。<br>
-<strong>Agents</strong>：能够使用工具并做出决策的自主组件。它们协调工具的使用，以实现复杂的目标。<br>
-<strong>Workflows</strong>：是将逻辑整合在一起的逐步流程。工作流或代理工作流是一种无需明确使用代理即可构建代理行为的方法。</p></div><div class="post-footer">
-        <a href="/agent-llamaindex/">阅读全文</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/agent/">Agent</a>,&nbsp;<a href="/tags/llamaindex/">LlamaIndex</a></div></div>
 </article><ul class="pagination"><li class="page-item active">
                     <span class="page-link">
                         <a href="/">1</a>
@@ -227,5 +235,5 @@
             </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
                 <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
             </a>
-        </div><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/algoliasearch/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/typeit/index.umd.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"data":{"id-1":"June's Island","id-2":"June's Island","id-3":"June的记录小岛"},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"],"id-3":["id-3"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+        </div><link rel="stylesheet" href="/lib/katex/katex.min.css"><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/algoliasearch/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/typeit/index.umd.js"></script><script type="text/javascript" src="/lib/katex/katex.min.js"></script><script type="text/javascript" src="/lib/katex/contrib/auto-render.min.js"></script><script type="text/javascript" src="/lib/katex/contrib/copy-tex.min.js"></script><script type="text/javascript" src="/lib/katex/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"data":{"id-1":"June's Island","id-2":"June's Island","id-3":"June的记录小岛"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"],"id-3":["id-3"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
 </html> 

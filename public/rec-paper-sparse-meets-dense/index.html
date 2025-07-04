@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Rec - Sparse Meets Dense: Unified Generative Recommendations with Cascaded Sparse-Dense Representations - June&#39;s Island</title><meta name="Description" content="Hiro&#39;s Learning and Daily Records Island"><meta property="og:url" content="http://localhost:1313/rec-paper-sparse-meets-dense/">
+  <meta property="og:site_name" content="June&#39;s Island">
+  <meta property="og:title" content="Rec - Sparse Meets Dense: Unified Generative Recommendations with Cascaded Sparse-Dense Representations">
+  <meta property="og:description" content="创新点：
+COBRA框架：创新性地整合稀疏语义标识符和密集向量，通过级联表示捕捉项目语义和细粒度特征。 从粗到精策略：推理时先生成稀疏标识符定位项目类别，再生成密集向量捕捉细节，提升推荐准确性和个性化。 BeamFusion机制：结合beam search和最近邻检索分数，平衡推荐的精确度和多样性，增强系统灵活性。 端到端训练：动态优化密集表示，捕捉用户 - 项目交互的语义和协同信号，适应推荐需求。 实施细节 COBRA的输入是一系列级联表示，由稀疏ID和与用户交互历史中的项相对应的密集向量组成。在训练过程中，密集表示是通过对比学习目标和端到端的方式学习的。通过首先生成稀疏ID，然后生成稠密表示，COBRA降低了稠密表示的学习难度，并促进了两种表示之间的相互学习。在推理过程中，COBRA采用了一个由粗到细的生成过程，从稀疏ID开始，稀疏ID提供了一个捕获项目分类本质的高级分类草图。然后，生成的ID被附加到输入序列中，并反馈到模型中，以预测捕获细粒度细节的密集向量，从而实现更精确和个性化的推荐。为了确保灵活的推理，我们引入了BeamFusion，这是一种将波束搜索与最近邻检索分数相结合的采样技术，确保了检索到的项目的可控多样性。与TIGER不同，它只依赖于稀疏ID，COBRA利用稀疏和密集表示的优势。">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-07-03T14:22:30+08:00">
+    <meta property="article:modified_time" content="2025-07-04T11:54:19+08:00">
+    <meta property="og:image" content="http://localhost:1313/rec-paper-sparse-meets-dense/featured-image.jpg">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="http://localhost:1313/rec-paper-sparse-meets-dense/featured-image.jpg">
+  <meta name="twitter:title" content="Rec - Sparse Meets Dense: Unified Generative Recommendations with Cascaded Sparse-Dense Representations">
+  <meta name="twitter:description" content="创新点：
+COBRA框架：创新性地整合稀疏语义标识符和密集向量，通过级联表示捕捉项目语义和细粒度特征。 从粗到精策略：推理时先生成稀疏标识符定位项目类别，再生成密集向量捕捉细节，提升推荐准确性和个性化。 BeamFusion机制：结合beam search和最近邻检索分数，平衡推荐的精确度和多样性，增强系统灵活性。 端到端训练：动态优化密集表示，捕捉用户 - 项目交互的语义和协同信号，适应推荐需求。 实施细节 COBRA的输入是一系列级联表示，由稀疏ID和与用户交互历史中的项相对应的密集向量组成。在训练过程中，密集表示是通过对比学习目标和端到端的方式学习的。通过首先生成稀疏ID，然后生成稠密表示，COBRA降低了稠密表示的学习难度，并促进了两种表示之间的相互学习。在推理过程中，COBRA采用了一个由粗到细的生成过程，从稀疏ID开始，稀疏ID提供了一个捕获项目分类本质的高级分类草图。然后，生成的ID被附加到输入序列中，并反馈到模型中，以预测捕获细粒度细节的密集向量，从而实现更精确和个性化的推荐。为了确保灵活的推理，我们引入了BeamFusion，这是一种将波束搜索与最近邻检索分数相结合的采样技术，确保了检索到的项目的可控多样性。与TIGER不同，它只依赖于稀疏ID，COBRA利用稀疏和密集表示的优势。">
+<meta name="application-name" content="June&#39;s Island">
+<meta name="apple-mobile-web-app-title" content="June&#39;s Island"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/rec-paper-sparse-meets-dense/" /><link rel="prev" href="http://localhost:1313/embedding-multimodal-alignment-and-fusion_a-survey/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Rec - Sparse Meets Dense: Unified Generative Recommendations with Cascaded Sparse-Dense Representations",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/rec-paper-sparse-meets-dense\/"
+        },"image": [{
+                            "@type": "ImageObject",
+                            "url": "http:\/\/localhost:1313\/rec-paper-sparse-meets-dense\/featured-image.jpg",
+                            "width":  1726 ,
+                            "height":  392 
+                        }],"genre": "posts","wordcount":  6933 ,
+        "url": "http:\/\/localhost:1313\/rec-paper-sparse-meets-dense\/","datePublished": "2025-07-03T14:22:30+08:00","dateModified": "2025-07-04T11:54:19+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": {
+                    "@type": "ImageObject",
+                    "url": "http:\/\/localhost:1313\/images\/avatar.png",
+                    "width":  1164 ,
+                    "height":  819 
+                }},"author": {
+                "@type": "Person",
+                "name": "June"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="June&#39;s Island"><span class="header-title-pre"><img src='/favicon.ico' style='height:1.5em;vertical-align:-0.25em;margin-right:0.2em;'/></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/zjzjy" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/rec-paper-sparse-meets-dense/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="June&#39;s Island"><span class="header-title-pre"><img src='/favicon.ico' style='height:1.5em;vertical-align:-0.25em;margin-right:0.2em;'/></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/zjzjy" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/rec-paper-sparse-meets-dense/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Rec - Sparse Meets Dense: Unified Generative Recommendations with Cascaded Sparse-Dense Representations</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/zjzjy" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>June</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="30330-30-20">30330-30-20</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 6933 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 14 分钟&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/rec-paper-sparse-meets-dense/featured-image.jpg"
+        data-srcset="/rec-paper-sparse-meets-dense/featured-image.jpg, /rec-paper-sparse-meets-dense/featured-image.jpg 1.5x, /rec-paper-sparse-meets-dense/featured-image.jpg 2x"
+        data-sizes="auto"
+        alt="/rec-paper-sparse-meets-dense/featured-image.jpg"
+        title="/rec-paper-sparse-meets-dense/featured-image.jpg" /></div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#实施细节">实施细节</a>
+      <ul>
+        <li><a href="#sparse-dense-representation">Sparse-Dense Representation</a></li>
+        <li><a href="#sequential-modeling">Sequential Modeling</a></li>
+        <li><a href="#end-to-end-training">End-to-End Training</a></li>
+      </ul>
+    </li>
+    <li><a href="#coarse-to-fine-generation">Coarse-to-Fine Generation</a></li>
+    <li><a href="#实验结果解读">实验结果解读</a></li>
+    <li><a href="#想要解决什么问题">想要解决什么问题？</a></li>
+    <li><a href="#如何解决的">如何解决的？</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>创新点：</p>
+<ul>
+<li><strong>COBRA框架</strong>：创新性地整合稀疏语义标识符和密集向量，通过级联表示捕捉项目语义和细粒度特征。</li>
+<li><strong>从粗到精策略</strong>：推理时先生成稀疏标识符定位项目类别，再生成密集向量捕捉细节，提升推荐准确性和个性化。</li>
+<li><strong>BeamFusion机制</strong>：结合beam search和最近邻检索分数，平衡推荐的精确度和多样性，增强系统灵活性。</li>
+<li><strong>端到端训练</strong>：动态优化密集表示，捕捉用户 - 项目交互的语义和协同信号，适应推荐需求。</li>
+</ul>
+<h2 id="实施细节">实施细节</h2>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/COBRA-outline.png"
+        data-srcset="/images/COBRA-outline.png, /images/COBRA-outline.png 1.5x, /images/COBRA-outline.png 2x"
+        data-sizes="auto"
+        alt="/images/COBRA-outline.png"
+        title="COBRA概览" width="976" height="656" />
+COBRA的输入是一系列级联表示，由稀疏ID和与用户交互历史中的项相对应的密集向量组成。在训练过程中，密集表示是通过对比学习目标和端到端的方式学习的。通过首先生成稀疏ID，然后生成稠密表示，COBRA降低了稠密表示的学习难度，并促进了两种表示之间的相互学习。在推理过程中，COBRA采用了一个由粗到细的生成过程，从稀疏ID开始，稀疏ID提供了一个捕获项目分类本质的高级分类草图。然后，生成的ID被附加到输入序列中，并反馈到模型中，以预测捕获细粒度细节的密集向量，从而实现更精确和个性化的推荐。为了确保灵活的推理，我们引入了BeamFusion，这是一种将波束搜索与最近邻检索分数相结合的采样技术，确保了检索到的项目的可控多样性。与TIGER不同，它只依赖于稀疏ID，COBRA利用稀疏和密集表示的优势。</p>
+<ul>
+<li><code>怎么就降低了密集表示生成的难度？</code>：先生成稀疏ID，再生成密集向量的方式，使得模型在生成密集向量时能够更有效地利用稀疏ID提供的语义信息，从而简化了密集向量生成的过程。</li>
+<li><code>既然都要生成两种表示，怎么会降低计算复杂度？</code>：
+<ul>
+<li><strong>分阶段生成</strong>：COBRA框架采用分阶段生成稀疏ID和密集向量的方式。先生成稀疏ID确定项目类别，再生成密集向量捕捉细粒度特征，减少了直接生成高维密集向量的复杂性。</li>
+<li><strong>稀疏ID的语义引导</strong>：稀疏ID提供了项目的高级别语义信息，帮助模型在生成密集向量时更精确地定位细粒度特征。这使得模型可以集中在与该类别相关的特征上，减少不必要的计算。</li>
+<li><strong>端到端训练</strong>：COBRA采用端到端训练方式，动态调整稀疏ID和密集向量的生成。联合优化使得模型能够更高效地学习到两者的最佳表示，减少生成过程中的冗余计算。</li>
+<li><strong>BeamFusion机制</strong>：BeamFusion结合beam search和最近邻检索分数，提高了推荐的多样性和灵活性。通过灵活调整超参数，在精确度和多样性之间取得平衡，进一步减少计算量。</li>
+</ul>
+</li>
+</ul>
+<h3 id="sparse-dense-representation">Sparse-Dense Representation</h3>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/COBRA-details.png"
+        data-srcset="/images/COBRA-details.png, /images/COBRA-details.png 1.5x, /images/COBRA-details.png 2x"
+        data-sizes="auto"
+        alt="/images/COBRA-details.png"
+        title="COBRA细节" width="1816" height="1238" />
+<strong>Sparse Representation</strong>：对于每个项目，我们提取其属性以生成文本描述，该文本描述被嵌入到密集向量空间中并被量化以生成稀疏ID。这些ID捕获了项目的分类本质，形成了后续处理的基础。为了简洁起见，随后的方法描述将假设稀疏ID由单个级别组成。</p>
+<ul>
+<li><code>提取其属性以生成文本描述，该文本描述被嵌入到密集向量空间中并被量化以生成稀疏ID。</code>：例如，对于一个商品项目，其属性可能包括品牌、类型、价格范围、主要功能等。这些属性被提取出来后，可以形成一段描述该商品的文本，如“这是一款苹果品牌的智能手机，价格在5000-6000元之间，具有高清摄像头和快速充电功能”。使用预定义的模板将提取的属性填充到模板中，生成文本描述。再将这段描述映射到高维空间。</li>
+</ul>
+<p><strong>Dense Representation</strong>：为了捕获细微的属性信息，我们开发了一个端到端的可训练密集编码器，对项目文本内容进行编码。每个项目的属性都被展平为一个文本语句，并以[CLS]标记作为前缀，然后被送入基于Transformer的文本编码器Encoder。密集表示v是从对应于[CLS]标记的输出中提取的，捕获了项的文本内容的细粒度细节。如图所示，结合了位置嵌入和类型嵌入来对序列中标记的位置和上下文进行建模。这些嵌入以相加的方式添加到令牌嵌入中，增强了模型区分不同标记及其在序列中的位置的能力。</p>
+<p><strong>Cascaded Representation</strong>：将稀疏ID和密集向量集成在统一的生成模型中。稀疏ID通过离散约束提供了稳定的分类基础，而密集向量保持了连续的特征分辨率，确保模型既能捕获高级语义，又能捕获细粒度细节。
+-<code>'稀疏ID通过离散约束提供了稳定的分类基础，而密集向量保持了连续的特征分辨率，确保模型既能捕获高级语义，又能捕获细粒度细节'，怎么做到的？</code></p>
+<h3 id="sequential-modeling">Sequential Modeling</h3>
+<p><strong>Probabilistic Decomposition</strong>目标项的概率分布建模被分解为两个阶段，利用稀疏表示和密集表示的互补优势。具体来说，COBRA不是直接根据历史交互序列$S_{1:t}$预测下一个项目$s_{t+1}$，而是分别预测稀疏ID $ID_{t+1}$和密集向量$v_{T+1}$：<br>
+$P(ID_{t+1},v_{t+1}|S_{1:t})=P(ID_{t+1}|S_{1:t})P(v_{t+1}|ID_{t+1},S_{1:t})$<br>
+其中，$P(ID_{t+1}|S_{1:t})$表示基于历史交互序列$S_{1:t}$预测$ID_{t+1}$，即捕获下一项的分类本质。$P(v_{t+1}|ID_{t+1},S_{1:t})$则捕获下一项的细颗粒细节。
+<strong>Sequential Modeling with a Unified Generative Model</strong></p>
+<ul>
+<li>Embedding Sparse IDs：稀疏ID，通过emdedding层转化为dense vector：$e_{t} = Embed(ID_{t})$，连接$e_{t},v_{t}$形成模型再每个时间步的输入:<br>
+$h_t=[e_t:v_t].$</li>
+<li>Tansformer Modeling：Transformer Decoder模型包括多个层，每个层都具有自注意机制和前馈网络。如图上半部分所示，解码器的输入序列由级联表示组成。为了增强序列和上下文信息的建模，这些表示被增加了项目位置和类型嵌入。为了简洁起见，下面几节中的数学公式集中在级联序列表示上，省略了位置和类型嵌入的显式符号。解码器处理该丰富的输入以生成用于预测后续稀疏ID和密集向量的上下文化表示。</li>
+<li>Sparse ID Prediction：给定历史交互序列$S_{1:t}$预测稀疏$ID_{t+1}$，transformer的输入序列是：<br>
+$S_{1:t}=[h_1,h_2,&hellip;,h_t]=[e_1,v_1,e_2,v_2,&hellip;e_t,v_t].$<br>
+Transformer decoder处理$S
+<em>{1:t}$产生一系列向量$y_t=TransformerDecoder(S</em>{1:t})$，稀疏ID的预测推导为：<br>
+$z_{t+1}=SparseHead(y_t)$<br>
+其中，$z_{t+1}表示$ID_{t+1}的概率。$$</li>
+<li>Dense Vector Prediction：为了预测$v_{t+1}$，Transformer 输入序列为：</li>
+<li>$\bar{S}<em>{1:t}=[S</em>{1:t},e_{t+1}]=[e_1,v_1,e_2,v_2,&hellip;e_t,v_t,e_{t+1}]$</li>
+<li>Transformer decoder处理$\bar{S}<em>{1:t}$产生对于$v</em>{t+1}$的预测：<br>
+$\hat{v}<em>{t+1}=TransformerDecode(\bar{S}</em>{1:t})$</li>
+</ul>
+<h3 id="end-to-end-training">End-to-End Training</h3>
+<p>端到端训练过程旨在联合优化稀疏和密集表示预测。训练过程由组合稀疏ID预测和密集向量预测的损失的复合损失函数控制。稀疏ID预测损失：$L_{sparse}=-\Sigma_{t=1}^{T-1}log(\frac{exp(z_{t+1}^{ID_{t+1}})}{\Sigma_{j=1}^{C}exp(z^{j}<em>{t+1})})$。密集向量预测损失$L</em>{dense}$专注于细化密集向量，使它们能够区分相似和不相似的项目,$L_{dense} = -\Sigma_{t=1}^{T-1}log\frac{exp(cos(\hat{v}<em>{t+1}\dot v</em>{t+1}))}{\Sigma_{item_{j\in Batch}exp(cos(\hat{v}<em>{t+1},v</em>{item_{j}}))]}}$。密集矢量由端到端可训练编码器Encoder生成，该编码器在训练过程中进行了优化。这确保了密集向量被动态地细化并适应推荐任务的特定要求。</p>
+<h2 id="coarse-to-fine-generation">Coarse-to-Fine Generation</h2>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/COBRA-%E7%B2%97%E5%88%B0%E7%B2%BE.png"
+        data-srcset="/images/COBRA-%E7%B2%97%E5%88%B0%E7%B2%BE.png, /images/COBRA-%E7%B2%97%E5%88%B0%E7%B2%BE.png 1.5x, /images/COBRA-%E7%B2%97%E5%88%B0%E7%B2%BE.png 2x"
+        data-sizes="auto"
+        alt="/images/COBRA-%E7%B2%97%E5%88%B0%E7%B2%BE.png"
+        title="/images/COBRA-%E7%B2%97%E5%88%B0%E7%B2%BE.png" width="856" height="282" />
+在推理阶段，COBRA实现了从粗到细的生成过程，包括顺序生成稀疏ID，然后以级联方式细化密集向量，如图所示。COBRA中由粗到细的生成过程旨在捕获用户-项目交互的分类本质和细粒度细节。涉及两个阶段：</p>
+<ul>
+<li>Sparse ID Generation：给定用户序列$$S_{1:T}，我们利用由Transformer解码器建模的ID概率分布$\hat{ID}<em>{T+1}~P(i</em>{T+1}|S_{1:T})$，并使用BeamSearch算法来推导出顶部𝑀个ID：<br>
+${\hat{ID}^{k}<em>{k=1}=BeamSearch(TransformerDecoder(S</em>{1:T}),M)}$</li>
+<li>Dense Vector Refinement：每个生成的稀疏ID $\hat{ID}^k_{T+1}$随后被转化为embedding加入到之前的$S_{1:T}$ embedding。然后生成相应的稠密向量$\hat{v}^{k}<em>{T+1}$：<br>
+$\hat{v}^{k}</em>{T+1}=TransformerDecoder([S_{1:T},Embed(\hat{ID}^{k}<em>{T+1})])]$，<br>
+然后我们应用Approximate Nearest Neighbor (ANN)得到top N候选items:
+$\mathcal{A}<em>k = \mathrm{ANN}(\mathbf{\hat{ID}}</em>{T+1}^k,, \mathcal{C}(\mathbf{\hat{ID}}</em>{T+1}^k),, N)$，表示在候选项目集合使用近似最近邻搜索找到与生成的稀疏ID和密集向量最相似的 k 个项目。</li>
+<li>BeamFusion Mechanism：为了在精度和多样性之间取得平衡，我们为每个稀疏ID对应的项目设计了一个全局可比的分数。该分数能够反映不同稀疏ID之间的差异以及同一稀疏ID下项目之间的细粒度差异。为了实现这一点，我们提出了BeamFusion机制：<br>
+$\Phi(\hat{\mathbf{v}}<em>{T+1}^{k}, \hat{\mathbf{ID}}</em>{T+1}^{k}, \mathbf{a}) = \mathrm{Softmax}(\tau \phi_{\hat{\mathbf{ID}}<em>{T+1}^{k}}) \times \mathrm{Softmax}(\psi \cos(\hat{\mathbf{v}}</em>{T+1}^{k}, \mathbf{a}))$，</li>
+<li><code>**BeamFusion Mechanism** 公式解读</code>：
+<ol>
+<li>
+<p><strong>输入参数</strong>：</p>
+<ul>
+<li>(\hat{v}_{t+1}^{(i)})：生成的密集向量，表示项目的细粒度特征。</li>
+<li>(\hat{\text{ID}}_{t+1}^{(i)})：生成的稀疏ID，表示项目的类别信息。</li>
+<li>(a)：候选项目，从ANN检索中得到的项目。</li>
+<li>(\pi_1) 和 (\pi_2)：超参数，用于调整Beam Score和相似性得分的权重。</li>
+</ul>
+</li>
+<li>
+<p><strong>Beam Score</strong>：</p>
+<ul>
+<li>(\text{BeamScore}(\hat{\text{ID}}_{t+1}^{(i)}))：Beam Search算法为每个生成的稀疏ID分配的得分，表示该稀疏ID在生成过程中的累积概率。这个得分反映了稀疏ID的生成质量。</li>
+</ul>
+</li>
+<li>
+<p><strong>相似性得分</strong>：</p>
+<ul>
+<li>(\text{CosineSimilarity}(\hat{v}<em>{t+1}^{(i)}, a))：计算生成的密集向量 (\hat{v}</em>{t+1}^{(i)}) 与候选项目 (a) 的密集向量之间的余弦相似度。这个得分反映了生成的密集向量与候选项目之间的相似性。</li>
+</ul>
+</li>
+<li>
+<p><strong>Softmax函数</strong>：</p>
+<ul>
+<li>(\text{Softmax}(x))：将输入 (x) 转换为概率分布，确保所有得分的和为1。这一步使得不同得分具有可比性。</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<h2 id="实验结果解读">实验结果解读</h2>
+<p>采用3级语义ID结构，其中每级对应于码本大小32。这些语义ID是使用T5模型生成的。COBRA采用轻量级架构实现，具有1层编码器和2层解码器。</p>
+<p>并且在百度自己的工业级数据集上也有测试：该数据集是从百度广告平台的用户交互日志中提取的大规模数据集。该数据集包含多种推荐场景，包括列表页面、双列和短视频。它由<strong>500万用户和200万广告</strong>组成，提供了真实世界用户行为和广告内容的全面表示。广告商和广告通过标题、行业标签、品牌和活动文本等属性来表示。这些属性被处理并编码为<strong>两级稀疏ID和密集向量</strong>，从而捕获粗粒度和细粒度的语义信息。这种双重表示使COBRA能够有效地对用户偏好和项目特征进行建模。该数据集分为两部分：train和 test。训练集train包括在前60天内收集的用户交互日志，涵盖了在此期间的推荐内容交互。测试集test是根据train期之后第二天的日志构建的，用作评估模型性能的基准。对于离线评估，我们使用Recall@K作为评估度量，使用∈{50，100，200，500，800}进行测试。此度量提供了模型在不同阈值下准确检索相关建议的能力的度量。</p>
+<ul>
+<li><code>两级稀疏ID是什么意思？</code>比如说，第一级稀疏ID是‘科技’，第二级稀疏ID是‘智能手机’。</li>
+<li>表3：说明 稀疏ID, Dense ID，BeamFusion都很重要。</li>
+<li>实验细节：COBRA构建于基于变压器的架构之上。在该框架中，文本编码器将广告文本处理成序列，然后由稀疏ID头处理这些序列，以预测配置为32×32的2级语义ID。对于更细粒度的广告建模，变体COBRA w/o Dense采用3级语义ID（256 × 256 × 256）。</li>
+</ul>
+<h2 id="想要解决什么问题">想要解决什么问题？</h2>
+<p>这篇论文试图解决如何在推荐系统中有效结合生成式模型（generative models）和密集向量检索（dense retrieval）方法的问题。具体来说，它旨在克服现有生成式推荐方法在信息精度和准确性方面的不足，同时弥补这些方法在细粒度相似性建模方面的缺陷，以实现更精准和多样化的推荐。</p>
+<ul>
+<li>生成式模型的局限性：现有的生成式推荐方法（如TIGER）通过直接预测项目标识符来提供推荐，虽然在效率上有优势，但在处理复杂用户-项目交互时，往往缺乏细粒度的相似性建模能力，导致信息丢失，限制了推荐的准确性和多样性。</li>
+<li>密集向量检索的优势与挑战：密集向量检索方法通过为每个项目生成密集的嵌入向量来实现高精度和鲁棒性，但这种方法需要大量的存储和计算资源。此外，生成式方法在直接预测项目标识符时，难以捕捉到用户偏好的细微差别。</li>
+</ul>
+<h2 id="如何解决的">如何解决的？</h2>
+<p>论文通过提出Cascaded Organized Bi-Represented generAtive retrieval（COBRA）框架来解决如何有效结合生成式模型和密集向量检索的问题。COBRA框架通过级联稀疏语义标识符（sparse semantic IDs）和密集向量（dense vectors）的表示，以及从粗到精的生成策略，实现了生成式模型和密集向量检索方法的优势互补。以下是COBRA框架解决该问题的具体方法：</p>
+<ol>
+<li>级联稀疏-密集表示（Cascaded Sparse-Dense Representation）
+稀疏表示（Sparse Representation）：使用残差量化变分自编码器（RQ-VAE）从项目的属性中提取文本描述，并将其嵌入到密集向量空间中进行量化，生成稀疏标识符。这些标识符捕捉了项目的类别本质，为后续处理提供了基础。
+密集表示（Dense Representation）：通过一个可端到端训练的密集编码器，将项目的文本内容编码为密集向量。这些向量能够捕捉项目的细粒度细节。
+级联表示（Cascaded Representation）：将每个项目的稀疏标识符和密集向量结合起来，形成级联表示。这种表示方法结合了稀疏标识符的稳定性和密集向量的连续性，使得模型能够同时捕捉到项目的高级语义和细粒度特征。</li>
+<li>序列建模（Sequential Modeling）
+概率分解（Probabilistic Decomposition）：将目标项目的概率分布分解为两个阶段，先预测稀疏标识符，再预测密集向量。这种分解方式使得模型能够充分利用稀疏标识符提供的类别信息和密集向量提供的细粒度细节。
+统一生成模型（Unified Generative Model）：使用基于Transformer架构的统一生成模型来捕捉用户与项目交互的序列依赖性。模型接收级联表示作为输入，通过Transformer解码器生成后续的稀疏标识符和密集向量。</li>
+<li>端到端训练（End-to-End Training）
+联合优化（Joint Optimization）：通过一个复合损失函数联合优化稀疏标识符预测和密集向量预测。损失函数包括稀疏标识符预测损失（Lsparse）和密集向量预测损失（Ldense），确保模型在训练过程中动态地优化两种表示。
+动态调整（Dynamic Adjustment）：密集向量通过端到端可训练的编码器生成，能够在训练过程中动态调整，以适应推荐任务的具体需求。</li>
+<li>从粗到精的生成策略（Coarse-to-Fine Generation）
+稀疏标识符生成（Sparse ID Generation）：在推理阶段，首先使用Beam Search算法生成多个稀疏标识符，这些标识符提供了项目的类别轮廓。
+密集向量细化（Dense Vector Refinement）：将生成的稀疏标识符反馈到模型中，生成对应的密集向量，进一步细化项目的表示，捕捉细粒度的细节。</li>
+<li>BeamFusion机制：结合beam search得分和最近邻检索得分，对候选项目进行全局可比的评分，从而在精确度和多样性之间取得平衡。</li>
+</ol>
+<p><strong>Q1：端到端训练出来的dense vector的表示意义是趋于同一类中的细分还是能完全表示整个item，动态优化的方向是朝哪里优化，问这个问题的意思是dense vector对于系统的帮助是在哪？</strong></p>
+<p>**KIMI：**密集向量能够捕捉项目的细粒度特征，如品牌、功能、价格等。这些特征使得模型能够更精确地表示每个项目的特性，从而提高推荐的准确性和个性化程度。例如，对于同一类别的不同项目，密集向量可以区分它们的具体差异。密集向量不仅捕捉细粒度特征，还保持了语义一致性。这意味着即使在不同类别之间，具有相似语义的项目也会在嵌入空间中彼此接近。例如，两个不同类别的项目如果都具有“促销”这一特性，它们在嵌入空间中可能会有一定的相似性。密集向量的优化方向之一是更准确地捕捉用户的偏好。通过端到端训练，模型能够动态调整密集向量，使其更好地反映用户对项目的具体偏好，如品牌、功能、价格等。密集向量的优化方向还包括适应数据的变化。通过端到端训练，模型能够动态调整密集向量，使其能够适应新的用户行为和项目特征，从而保持推荐系统的时效性和适应性。密集向量的动态优化方向主要包括捕捉用户偏好、提高语义一致性、增强类别内聚性和分离性、适应数据变化以及提高计算效率。</p>
+<p><strong>Q2：论文中使用的是同一个transformer交替输出稀疏ID和密集向量，这会不会混淆Transformer？是用同一个Transformer输出好还是稀疏ID和密集向量各一个transformer好？有没有相关文献支持。</strong></p>
+<p><strong>KIMI：</strong> 在COBRA框架中，使用同一个Transformer交替输出稀疏ID和密集向量的设计选择有其合理性和优势，特别是在共享上下文信息、减少模型复杂度和端到端训练方面。然而，这种设计也存在一些潜在的挑战，如任务混淆和优化冲突。使用两个独立的Transformer分别生成稀疏ID和密集向量可以解决这些挑战，但会增加模型的复杂度和训练难度。</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 40419-19-110&nbsp;<a class="git-hash" href="https://github.com/zjzjy/commit/76fc15be034783d696c59b90aefaf2ca2fcb0674" target="_blank" title="commit by 郑钧尹(Zheng Junyin)(108924030&#43;zjzjy@users.noreply.github.com) 76fc15be034783d696c59b90aefaf2ca2fcb0674: 55">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>76fc15b</a></span>
+            </div><div class="post-info-license">
+                <span><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/rec-paper-sparse-meets-dense/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="http://localhost:1313/rec-paper-sparse-meets-dense/" data-title="Rec - Sparse Meets Dense: Unified Generative Recommendations with Cascaded Sparse-Dense Representations"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="http://localhost:1313/rec-paper-sparse-meets-dense/"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="http://localhost:1313/rec-paper-sparse-meets-dense/" data-title="Rec - Sparse Meets Dense: Unified Generative Recommendations with Cascaded Sparse-Dense Representations"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="http://localhost:1313/rec-paper-sparse-meets-dense/" data-title="Rec - Sparse Meets Dense: Unified Generative Recommendations with Cascaded Sparse-Dense Representations"><i data-svg-src="/lib/simple-icons/icons/line.min.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="http://localhost:1313/rec-paper-sparse-meets-dense/" data-title="Rec - Sparse Meets Dense: Unified Generative Recommendations with Cascaded Sparse-Dense Representations" data-ralateuid="xxxx"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/embedding-multimodal-alignment-and-fusion_a-survey/" class="prev" rel="prev" title="Embedding - MULTIMODAL FUSION"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Embedding - MULTIMODAL FUSION</a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.147.6">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.0"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">Junyin Zheng</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/algoliasearch/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lightgallery.min.js"></script><script type="text/javascript" src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/typeit/index.umd.js"></script><script type="text/javascript" src="/lib/katex/katex.min.js"></script><script type="text/javascript" src="/lib/katex/contrib/auto-render.min.js"></script><script type="text/javascript" src="/lib/katex/contrib/copy-tex.min.js"></script><script type="text/javascript" src="/lib/katex/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"data":{"id-1":"June's Island","id-2":"June's Island"},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html> 
