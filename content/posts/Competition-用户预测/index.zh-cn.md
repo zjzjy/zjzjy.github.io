@@ -1,6 +1,6 @@
 ---
 weight: 1
-title: "科大讯飞-用户新增预测挑战赛 赛季3"
+title: "Datawhale AI夏令营-科大讯飞-用户新增预测挑战赛 赛季3"
 subtitle: ""
 date: 2025-07-14T16:29:28+08:00
 draft: false
