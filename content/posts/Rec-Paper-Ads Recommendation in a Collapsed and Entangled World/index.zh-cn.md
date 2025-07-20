@@ -1,0 +1,101 @@
+---
+weight: 1
+title: "Rec - Ads Recommendation in a Collapsed and Entangled World"
+subtitle: ""
+date: 2025-07-03T14:22:30+08:00
+draft: false
+author: "June"
+authorLink: "https://github.com/zjzjy"
+description: ""
+images: []
+resources:
+- name: "featured-image"
+  src: "featured-image.jpg"
+
+tags: []
+categories: []
+lightgallery: true
+
+hiddenFromHomePage: false
+hiddenFromSearch: false
+
+featuredImage: ""
+featuredImagePreview: ""
+
+license: '<a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a>'
+toc:
+  auto: false
+---
+# 1.想要解决的问题
+1. 表示的先验知识：现实世界的系统包含来自不同来源的各种类型的特征，包括序列特征（例如，用户点击/转换历史），数字特征（例如，保留语义的广告ID），以及嵌入来自预先训练的外部模型的特征（例如，GNN或LLM）。在推荐系统中对这些特征进行编码时，保留这些特征的固有先验是至关重要的。
+2. 维度折叠：编码过程将所有特征映射到嵌入中，通常表示为多维向量，并在模型训练期间学习。然而，我们观察到，许多字段的嵌入往往占据一个低维的子空间，而不是充分利用可用的二维空间。这种维度压缩不仅导致了参数的浪费，而且限制了推荐模型的可扩展性。
+3. 兴趣纠缠：广告推荐系统中的用户响应由复杂的潜在因素决定，特别是当同时学习多个任务或场景时。现有的共享嵌入方法可能无法充分解决这些因素，因为它们依赖于每个特征的单个纠缠嵌入。通俗的讲，一个用户（或广告）在所有任务/场景下，都被强行塞进同一条 embedding 向量里，导致不同任务所需的兴趣信号互相打架。
+
+# 2.方法
+## 2.1 Feature Encoding
+特征编码在工业广告推荐系统中，特征是从许多来源生成的，并且属于不同的类型，例如序列特征、数字特征和嵌入特征。在对这些特征进行编码时，我们希望尽可能地保留其固有的时间、顺序或距离（相似性）先验。
+### 2.1.1 序列特征
+| 原文                                          | 直译         | 真实含义（举例）                                                                                         |
+| ------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------ |
+| **quadruple semantic-temporal correlation** | 四元语义-时间相关性 | 同时刻画 4 个维度的匹配度：<br>1. 历史行为本身的语义（点了什么品类）<br>2. 候选广告的语义（推的是什么品类）<br>3. 历史行为发生的时间点<br>4. 候选广告曝光的时间点 |
+| **behavior semantic**                       | 行为语义       | 用户 3 天前点击的「传奇手游」这条行为的「品类 ID → Embedding」                                                         |
+| **target semantic**                         | 目标语义       | 候选广告「原神手游」的「品类 ID → Embedding」                                                                   |
+| **behavior temporal**                       | 行为时间       | 行为时间戳离散化后得到的「时间间隔 id → Temporal Embedding」                                                       |
+| **target temporal**                         | 目标时间       | 候选广告曝光时间戳离散化后得到的「相对位置 id → Temporal Embedding」                                                   |
+| **Target-aware Temporal Encoding (TTE)**    | 目标感知时间编码   | 把“行为发生时间”与“广告曝光时间”之差 Δt 映射成可学习的向量                                                                |
+| **Target-aware Attention (TA)**             | 目标感知注意力    | 用候选广告向量作为 Query，去计算每条历史行为的权重 α\_i                                                                |
+| **Target-aware Representation (TR)**        | 目标感知表示     | 把每条历史行为向量与候选广告向量做元素级乘法 ⊙，得到交互向量                                                                  |
+| **explicit 4-way interaction**              | 显式四路交互     | 在注意力权重 α\_i 与交互向量 ⊙ 结果之间再乘一次，<br>把 4 个维度全部显式揉进最终输出                                               |
+
+Target-aware Attention 用“候选广告本身”去给用户历史行为打权重，筛出与这条广告最相关的行为，从而生成“针对这条广告”的用户兴趣向量。
+
+与self-attention对比
+|          | Self-Attention         | Target-aware Attention (TIM) |
+| -------- | ---------------------- | ---------------------------- |
+| Query 来源 | 行为自身                   | **候选广告**                     |
+| 输出含义     | 行为序列内部的依赖              | **针对当前广告的用户兴趣**              |
+| 适用场景     | 序列模型（SASRec, BERT4Rec） | 广告 CTR/CVR 预测                |
+
+TIM 把「点过什么、什么时候点的」与「推的是什么、什么时候推的」全部量化成向量，然后用“目标感知的注意力”挑出最相关的行为，再用“目标感知的表示”把这些行为的四元信息压缩成一条用户兴趣向量。
+
+ **Temporal Interest Module（TIM）** 的核心表达式，它把“用户历史行为序列”压缩成一个定长向量，用于预测对当前候选广告的兴趣。逐元素拆解如下：
+
+\[
+\mathbf{A}_{\text{TIM}} = \sum_{\mathbf{b}_i \in \mathcal{H}} \underbrace{\alpha(\tilde{\mathbf{b}}_i, \tilde{\mathbf{t}})}_{\text{① 权重}} \cdot \underbrace{(\tilde{\mathbf{b}}_i \odot \tilde{\mathbf{t}})}_{\text{② 交互}}
+\]
+
+
+| 符号 | 含义 | 维度 | 具体示例 |
+|---|---|---|---|
+| \(\mathcal{H}\) | 用户历史行为序列 | 长度 \(L\) | 最近 50 次点击/转化行为 |
+| \(\mathbf{b}_i\) | 第 \(i\) 条行为的**原始语义向量**（品类/商品 embedding） | \(d\) | 传奇手游品类向量 |
+| \(\tilde{\mathbf{b}}_i\) | 加时间信息后的行为向量：<br>\(\mathbf{b}_i \oplus \mathbf{p}_\text{temp}(t_i)\) | \(d+d_t\) | 语义向量 + 3 天前时间向量 |
+| \(\tilde{\mathbf{t}}\) | 候选广告的“目标向量”：<br>\(\mathbf{t} \oplus \mathbf{p}_\text{temp}(t_\text{target})\) | \(d+d_t\) | 原神广告向量 + 此刻时间向量 |
+| \(\alpha(\cdot)\) | **Target-aware Attention Score** | 标量 | 用广告向量做 Query，<br>计算行为与广告的相关度 |
+| \(\odot\) | 元素级乘法（Hadamard Product） | \(d+d_t\) | 语义-语义、时间-时间全部逐位相乘 |
+| \(\mathbf{A}_{\text{TIM}}\) | 最终输出的**用户兴趣向量** | \(d+d_t\) | 压缩了 50 条行为后的定长表示 |
+
+---
+
+> 把每一条历史行为与候选广告做“语义×时间”的四元匹配，<br>用广告本身做 Query 给行为打分，再把所有行为按权重融合，<br>得到一条“此刻对该广告最相关的用户兴趣”向量。
+
+1. **时间衰减**：通过时间 embedding 把“3 天前点击”与“此刻曝光”的差距量化。  
+2. **语义匹配**：用 ⊙ 把“传奇手游”与“原神手游”的语义相似度显式相乘。  
+3. **注意力筛选**：用广告自身向量做 Query，自动聚焦最相关的行为。
+
+！！！有个疑问，“此刻”这个概念是怎么得到的？仅仅是通过时间向量逐位相乘，时间近的权重大就能得出此刻最想点击的这个结论吗？
+KIMI：不能直接推出“此刻最想点”，它只是把“时间近”转成可学习的信号；真正的“此刻最想点”是由整个 TIM + 上层网络一起学出来的。时间向量把“时间近”变成可学习的偏置信号；
+“此刻最想点”是整个 TIM + 上层网络在亿万样本里用梯度一起调出来的，时间向量只是帮它省了一道“重新发现时间衰减规律”的力气。
+
+
+- **输入侧**  
+  只有 2 个时间戳：  
+  - 行为发生时间 `t_i`（例如 3 天前）  
+  - 广告曝光时间 `t_target`（例如此刻 2024-07-20 10:00）  
+  差值 `Δt = t_target - t_i` 被离散化成 bucket-id，再查表得到 `p_temp(Δt)`。  
+  所以它**并不神秘**，就是系统日志里现成的两个时间戳。
+
+- **模型侧**  
+  时间向量 `p_temp` 的权重（embedding 值）是**随机初始化后由梯度反传学出来的**。  
+  如果数据里“Δt 越小→最终转化率越高”，反向传播就会把靠近 0 的 bucket 学得更大，远离 0 的 bucket 学得更小——**数据驱动**而非人工写死。
+
