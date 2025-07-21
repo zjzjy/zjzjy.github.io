@@ -181,7 +181,7 @@ Deployment Details 分两部分：
 (1) HashID 工程落地（把无意义的自增 Ad ID 换成携带视觉语义的离散 ID）
 
 (2) MNS 编码落地（把 HashID 当成数值特征，用 MNS 训练）
-## 2.1.3 Embedding Features
+### 2.1.3 Embedding Features
 Embedding Features —— 如何把「外部预训练好的嵌入」（LLM、GNN、CV 模型产出的向量）无缝接入广告推荐主模型，同时解决两大难题：  
 1) 语义鸿沟（semantic gap）——外部嵌入与推荐 ID 嵌入的语义/距离度量不一致；  
 2) 训练协同 —— 既要保留外部知识，又不能让外部向量喧宾夺主。
