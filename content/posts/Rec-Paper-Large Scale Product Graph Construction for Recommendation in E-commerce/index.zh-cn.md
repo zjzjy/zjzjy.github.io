@@ -127,4 +127,108 @@ Q：如果两人越同质，那么在相似度上的贡献权重应该越大？
 A：弱化泛化用户
 Q：确实有泛化用户的存在，但这样会不会错过真正很像的用户？
 A：用户权重惩罚项
+
+### **Swing 算法：严谨定义与公式**
+
+#### **1. 图模型**
+给定用户-商品二部图 \( \mathcal{G} = (\mathcal{U} \cup \mathcal{I}, \mathcal{E}) \)，其中边 \( (u, i) \in \mathcal{E} \) 表示用户 \( u \in \mathcal{U} \) 对商品 \( i \in \mathcal{I} \) 的点击行为。
+
+#### **2. 相似度定义**
+对于任意商品对 \( (i, j) \in \mathcal{I} \times \mathcal{I} \)，定义共同点击用户集合：
+\[
+\mathcal{S}_{ij} = \mathcal{U}_i \cap \mathcal{U}_j
+\]
+其中 \( \mathcal{U}_i = \{ u \in \mathcal{U} \mid (u, i) \in \mathcal{E} \} \) 为点击商品 \( i \) 的用户集合。
+
+**Swing 相似度**定义为：
+\[
+\text{Swing}(i, j) = \sum_{u \in \mathcal{S}_{ij}} \sum_{\substack{v \in \mathcal{S}_{ij} \\ v \neq u}} \frac{w_u w_v}{\alpha + |\mathcal{I}_u \cap \mathcal{I}_v|}
+\]
+其中：
+- \( \mathcal{I}_u = \{ i \in \mathcal{I} \mid (u, i) \in \mathcal{E} \} \) 为用户 \( u \) 点击的商品集合；
+- \( w_u = \frac{1}{\sqrt{|\mathcal{I}_u|}} \) 为用户活跃度惩罚权重（Adamic/Adar 形式）；
+- \( \alpha > 0 \) 为平滑超参数（论文中默认 \( \alpha = 1 \)）。
+
+#### **3. 复杂度分析**
+设：
+- \( |\mathcal{I}| = T \)（商品总数）；
+- 平均商品度为 \( N \)（每商品平均被 \( N \) 个用户点击）；
+- 平均用户度为 \( M \)（每用户平均点击 \( M \) 个商品）。
+
+则 Swing 计算复杂度为：
+\[
+\Theta(T N^2 M)
+\]
+通过 **MapReduce/Spark** 两级聚合实现线性可扩展：
+- **Map 阶段**：广播用户点击向量；
+- **Reduce 阶段**：局部计算商品对相似度。
+
+#### **4. 关键性质**
+- **噪声鲁棒**：需至少两个用户共同点击商品对，误点击影响指数下降；
+- **长尾友好**：仅依赖局部二阶共现，无需全局统计；
+- **可并行**：无共享状态，适合分布式计算。
 ### Surprise
+
+
+#### **1. 问题定义**  
+给定用户-商品购买记录，学习互补关系  
+\[
+\mathcal{G}_\text{purchase} = (\mathcal{U} \cup \mathcal{I}, \mathcal{E}_\text{purchase}),
+\]  
+目标：为每件已购商品 \(i\) 输出互补候选商品列表，解决**数据稀疏**与**时间敏感性**。
+
+---
+
+#### **2. 三级漏斗框架**
+
+| 层级 | 输入 | 公式 | 作用 |
+|---|---|---|---|
+| **类别级** | 商品类别树 & 共购 | \(\theta(c_i, c_j) = \frac{N(c_j \succ c_i)}{N(c_j)}\) | 先筛大类，降候选量 |
+| **商品级** | 时序购买记录 | \(s_1(i,j) = \frac{\sum_{u \in \mathcal{U}_{i \succ j}} \frac{1}{1+|t_{u,j}-t_{u,i}|}}{|\mathcal{U}_i|\cdot|\mathcal{U}_j|}\) | 细粒度互补，带时间衰减 |
+| **聚类级** | Swing 相似度图 | \(s_2(i,j) = s_1\bigl(L(i),L(j)\bigr)\) | 用簇-簇共购补稀疏 |
+
+---
+
+#### **3. 核心公式**
+
+1. **类别相关度**  
+\[
+\theta(c_i, c_j) = \frac{\left|\{u \mid \exists t_{u,j} > t_{u,i},\, i \in c_i,\, j \in c_j\}\right|}{\left|\{u \mid j \in c_j\}\right|}
+\]
+
+2. **商品级互补分数**（含时间衰减）  
+\[
+s_1(i,j) = \frac{\displaystyle\sum_{u \in \mathcal{U}_{i \succ j}} \frac{1}{1+|t_{u,j}-t_{u,i}|}}{|\mathcal{U}_i|\cdot|\mathcal{U}_j|}, \qquad \mathcal{U}_{i \succ j} \triangleq \{u \mid t_{u,j} > t_{u,i}\}
+\]
+
+3. **聚类级互补分数**  
+\[
+s_2(i,j) = \frac{\displaystyle\sum_{u \in \mathcal{U}_{L(i) \succ L(j)}} \frac{1}{1+|t_{u,L(j)}-t_{u,L(i)}|}}{|\mathcal{U}_{L(i)}|\cdot|\mathcal{U}_{L(j)}|}
+\]
+
+4. **最终 Surprise 得分**  
+\[
+s(i,j) = \omega \cdot s_1(i,j) + (1-\omega)\cdot s_2(i,j), \qquad \omega=0.8\ (\text{实验设定})
+\]
+
+---
+
+#### **4. 聚类实现（Algorithm 2）**  
+- **图**：以 Swing 相似度为权重的有向图 \(G=(\mathcal{I},E)\)。  
+- **算法**：Label Propagation（异步更新，阻尼系数 \(\beta=0.25\)，最大迭代 10 轮）。  
+- **复杂度**：\(O(|E|)\)，十亿节点 15 min 收敛。
+
+---
+
+#### **5. 复杂度与效果**  
+- **离线**：共购-CF 1.3 h → Surprise 2.5 h（可接受）。  
+- **在线 A/B**：  
+  - CTR +35 %、CVR +183 %（vs. 共购-CF）。  
+  - 长尾商品覆盖提升 2.1×。
+
+---
+
+#### **6. 性质**  
+- **稀疏鲁棒**：簇级统计 + 类别过滤 + 时间衰减三重降稀疏。  
+- **方向保持**：严格 \(t_{u,j} > t_{u,i}\) 保证互补方向性。  
+- **可扩展**：MapReduce/Spark 并行，支持千亿边图。
